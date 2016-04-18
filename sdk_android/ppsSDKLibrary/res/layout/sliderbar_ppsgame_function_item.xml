@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sliderbar_ppsgame_function_item_body"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="1px"
+    android:orientation="vertical"
+    android:padding="5dip" >
+
+    <ImageView
+        android:id="@+id/sliderbar_ppsgame_function_item_img"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip"
+        android:src="@drawable/dddddddd" />
+
+    <TextView
+        android:id="@+id/sliderbar_ppsgame_function_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dip" />
+
+    <ProgressBar
+        android:id="@+id/pb"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="5dip"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dip"
+        android:layout_marginTop="5dip"
+        android:progress="50" />
+
+</LinearLayout>

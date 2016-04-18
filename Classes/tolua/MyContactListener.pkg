@@ -1,0 +1,20 @@
+
+class CContact :CCObject{
+public:
+	b2Contact *contact;
+
+
+};
+
+class MyContactListener : public b2ContactListener
+{
+;
+	MyContactListener();
+	void registerEventScript(LUA_FUNCTION nHandler);
+	void unregisterEventScript();
+	inline LUA_FUNCTION getScriptHandler();
+	virtual void BeginContact(b2Contact* contact);
+
+
+
+};

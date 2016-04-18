@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Classes">
+      <UniqueIdentifier>{fc5cb953-2953-4968-83b3-39e3ff951754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="win32">
+      <UniqueIdentifier>{037a9a02-b906-4cc5-ad98-304acd4e25ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\SqLite">
+      <UniqueIdentifier>{949c7b3c-ab6e-414e-8f3b-6ff734cd6f72}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\APC.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\capi.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LogicController.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\lz4.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\NetController.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\cjson\fpconv.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\cjson\lua_cjson.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\cjson\lua_extensions.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\cjson\strbuf.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LuaBox2D.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\luacurl.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LuaCallBack.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\sqLite\sqlite3.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\sqLite\sqlite3ext.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\sqLite\lsqlite3.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Video\KxAudioManager.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Video\KxMovieDecoder.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Video\KxMovieGLView.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Video\VideoController.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Video\VideoPlatform.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Video\VideoWindow.h">
+      <Filter>Classes\SqLite</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\capi.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LogicController.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\lz4.c">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\NetController.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\cjson\fpconv.c">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\cjson\lua_cjson.c">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\cjson\lua_extensions.c">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\cjson\strbuf.c">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\APC.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LuaBox2D.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\luacurl.c">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LuaCallBack.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\sqLite\sqlite3.c">
+      <Filter>Classes\SqLite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\sqLite\shell.c">
+      <Filter>Classes\SqLite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\sqLite\lsqlite3.c">
+      <Filter>Classes\SqLite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Video\VideoPlatform.cpp">
+      <Filter>Classes\SqLite</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\游戏icon.ico" />
+    <Image Include="res\bitbug_favicon.ico" />
+    <Image Include="..\..\..\女神幻想\gameclient\icon2.ico" />
+    <Image Include="..\..\..\女神幻想\gameclient\游戏icon.ico" />
+    <Image Include="res\pr_source.512x512-75.ico" />
+  </ItemGroup>
+</Project>

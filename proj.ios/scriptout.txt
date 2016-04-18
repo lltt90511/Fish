@@ -1,0 +1,15 @@
+Debug
+scriptsVersion=317
+_TARGET_BUILD_CONTENTS_PATH: /Users/zhangjl/Library/Developer/Xcode/DerivedData/Ball-esctrzwgalwedfbcjlefbxnbpaim/Build/Products/Debug-iphoneos/Ball.app
+PWD: /Users/zhangjl/Documents/nshx/cashclient/proj.ios
+Cleaning /Users/zhangjl/Library/Developer/Xcode/DerivedData/Ball-esctrzwgalwedfbcjlefbxnbpaim/Build/Products/Debug-iphoneos/Ball.app/
+processing lua script files
+compilation finished
+------------------------------
+
+copy ../ios_sound to /Users/zhangjl/Library/Developer/Xcode/DerivedData/Ball-esctrzwgalwedfbcjlefbxnbpaim/Build/Products/Debug-iphoneos/Ball.app/Res/sound/
+copy ../build to /Users/zhangjl/Library/Developer/Xcode/DerivedData/Ball-esctrzwgalwedfbcjlefbxnbpaim/Build/Products/Debug-iphoneos/Ball.app/Res/scripts/
+copy ../res to /Users/zhangjl/Library/Developer/Xcode/DerivedData/Ball-esctrzwgalwedfbcjlefbxnbpaim/Build/Products/Debug-iphoneos/Ball.app/Res/res/
+write scripts version
+scriptsVersion = 317
+end build sh

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfGuidesProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GuidesProject>
+    <Project>fruit_machine</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>main_scene</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>login_scene</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>chat</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>self_info</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>setting</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>Rank</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>loginGift</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>mail</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>charge</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>activity</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>service</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>login_alert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>common_top</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>fish_machine</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>about</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>binding</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>start</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>vip</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>receive</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>reward</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>tree</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>lottery</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>quitAlert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>charge_alert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>chatHistory</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>chatPrivate</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>inviterAlert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>betAlert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>moraGame</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>waitInviterAlert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>loading</Project>
+    <GuidesList />
+  </GuidesProject>
+</ArrayOfGuidesProject>

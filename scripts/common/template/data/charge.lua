@@ -1,0 +1,21 @@
+module("template.data.charge")
+data = {
+[1]={id = 1,name = '10元超值大礼包',rmb = 10,goldGet = 500000,giftGet = 0,specialAdd = 0,alipay = 1,limit = 1,tips = '50万（送VIP、摇钱树、抽奖）',vipExp = 100,platform = 0,res = '1',productId = 0},
+[2]={id = 2,name = '1万金币',rmb = 1,goldGet = 10000,giftGet = 1000,specialAdd = 2000,alipay = 0,limit = -1,tips = '',vipExp = 10,platform = 0,res = '1',productId = 0},
+[3]={id = 3,name = '3万金币',rmb = 3,goldGet = 30000,giftGet = 3000,specialAdd = 6000,alipay = 0,limit = -1,tips = '',vipExp = 30,platform = 0,res = '1',productId = 0},
+[4]={id = 4,name = '5万金币',rmb = 5,goldGet = 50000,giftGet = 5000,specialAdd = 10000,alipay = 0,limit = -1,tips = '',vipExp = 50,platform = 0,res = '1',productId = 0},
+[5]={id = 5,name = '10万金币',rmb = 10,goldGet = 100000,giftGet = 20000,specialAdd = 30000,alipay = 0,limit = -1,tips = '',vipExp = 100,platform = 0,res = '1',productId = 0},
+[6]={id = 6,name = '30万金币',rmb = 30,goldGet = 300000,giftGet = 100000,specialAdd = 300000,alipay = 0,limit = -1,tips = '',vipExp = 300,platform = 0,res = '2',productId = 0},
+[7]={id = 7,name = '50万金币',rmb = 50,goldGet = 500000,giftGet = 200000,specialAdd = 800000,alipay = 0,limit = -1,tips = '',vipExp = 500,platform = 0,res = '3',productId = 0},
+[8]={id = 8,name = '100万金币',rmb = 100,goldGet = 1000000,giftGet = 500000,specialAdd = 2500000,alipay = 0,limit = -1,tips = '',vipExp = 1000,platform = 0,res = '4',productId = 0},
+[9]={id = 9,name = '300万金币',rmb = 300,goldGet = 3000000,giftGet = 2000000,specialAdd = 9000000,alipay = 0,limit = -1,tips = '',vipExp = 3000,platform = 0,res = '5',productId = 0},
+[10]={id = 10,name = '500万金币',rmb = 500,goldGet = 5000000,giftGet = 5000000,specialAdd = 20000000,alipay = 0,limit = -1,tips = '',vipExp = 5000,platform = 0,res = '6',productId = 0},
+[11]={id = 11,name = '6元超值大礼包',rmb = 6,goldGet = 300000,giftGet = 0,specialAdd = 0,alipay = 1,limit = 1,tips = '30万（送VIP、摇钱树、抽奖）',vipExp = 100,platform = 1,res = '1',productId = 6},
+[12]={id = 12,name = '1万金币',rmb = 1,goldGet = 10000,giftGet = 1000,specialAdd = 2000,alipay = 0,limit = -1,tips = '',vipExp = 10,platform = 1,res = '1',productId = 1},
+[13]={id = 13,name = '12万金币',rmb = 12,goldGet = 120000,giftGet = 120000,specialAdd = 35000,alipay = 0,limit = -1,tips = '',vipExp = 120,platform = 1,res = '1',productId = 12},
+[14]={id = 14,name = '30万金币',rmb = 30,goldGet = 300000,giftGet = 100000,specialAdd = 300000,alipay = 0,limit = -1,tips = '',vipExp = 300,platform = 1,res = '2',productId = 30},
+[15]={id = 15,name = '60万金币',rmb = 60,goldGet = 600000,giftGet = 120000,specialAdd = 900000,alipay = 0,limit = -1,tips = '',vipExp = 600,platform = 1,res = '3',productId = 60},
+[16]={id = 16,name = '120万金币',rmb = 118,goldGet = 1200000,giftGet = 120000,specialAdd = 3000000,alipay = 0,limit = -1,tips = '',vipExp = 1180,platform = 1,res = '4',productId = 120},
+[17]={id = 17,name = '300万金币',rmb = 298,goldGet = 3000000,giftGet = 100000,specialAdd = 9000000,alipay = 0,limit = -1,tips = '',vipExp = 2980,platform = 1,res = '5',productId = 300},
+[18]={id = 18,name = '600万金币',rmb = 588,goldGet = 6000000,giftGet = 120000,specialAdd = 24000000,alipay = 0,limit = -1,tips = '',vipExp = 5880,platform = 1,res = '6',productId = 600},
+}

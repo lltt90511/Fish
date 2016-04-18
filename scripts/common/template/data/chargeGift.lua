@@ -1,0 +1,23 @@
+module("template.data.chargeGift")
+data = {
+[1]={id = 1,rank = 1,multi = 100000},
+[2]={id = 2,rank = 2,multi = 80000},
+[3]={id = 3,rank = 3,multi = 60000},
+[4]={id = 4,rank = 4,multi = 50000},
+[5]={id = 5,rank = 5,multi = 50000},
+[6]={id = 6,rank = 6,multi = 40000},
+[7]={id = 7,rank = 7,multi = 40000},
+[8]={id = 8,rank = 8,multi = 30000},
+[9]={id = 9,rank = 9,multi = 30000},
+[10]={id = 10,rank = 10,multi = 30000},
+[11]={id = 11,rank = 11,multi = 20000},
+[12]={id = 12,rank = 12,multi = 20000},
+[13]={id = 13,rank = 13,multi = 20000},
+[14]={id = 14,rank = 14,multi = 20000},
+[15]={id = 15,rank = 15,multi = 20000},
+[16]={id = 16,rank = 16,multi = 10000},
+[17]={id = 17,rank = 17,multi = 10000},
+[18]={id = 18,rank = 18,multi = 10000},
+[19]={id = 19,rank = 19,multi = 10000},
+[20]={id = 20,rank = 20,multi = 10000},
+}

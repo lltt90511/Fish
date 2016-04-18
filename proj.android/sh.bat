@@ -1,0 +1,1 @@
+C:\cygwin64\Cygwin.bat %~dp0

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yuninfo_video_content_bg" > 
+    <FrameLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/yuninfo_ll_recorder_bar_content"
+        android:layout_alignParentTop="true">
+	    <SurfaceView 
+	        android:id="@+id/yuninfo_sv_recorder_preview"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_gravity="center"/>
+
+	    <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:padding="10dip" >
+
+	        <ImageButton
+	            android:id="@+id/yuninfo_ibtn_video_change"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:background="@color/yuninfo_transparent"
+	            android:contentDescription="@string/yuninfo_view_descreption"
+	            android:minWidth="@dimen/yuninfo_videw_bar_button_minHeight"
+	            android:src="@drawable/yuninfo_ic_video_change" />
+
+	        <TextView
+	            android:id="@+id/yuninfo_tv_recorder_time_count"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textColor="@color/yuninfo_white"
+	            android:textSize="30sp"
+	            android:textStyle="bold" />
+	    </LinearLayout>
+
+    </FrameLayout>
+	<LinearLayout 
+	    android:id="@+id/yuninfo_ll_recorder_bar_content"
+	    android:orientation="horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:minHeight="60dip"
+	    android:gravity="center"
+	    android:padding="@dimen/yuninfo_video_bar_padding"
+	    android:background="@color/yuninfo_video_bar_bg">
+	    <ImageButton 
+	        android:id="@+id/yuninfo_ibtn_video_ok"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:minWidth="@dimen/yuninfo_videw_bar_button_minHeight"
+	        android:src="@drawable/yuninfo_ic_video_ok"
+	        android:background="@color/yuninfo_transparent" 
+	        android:contentDescription="@string/yuninfo_view_descreption"/>
+	    <LinearLayout 
+	        android:orientation="vertical"
+	        android:layout_width="0dip"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:paddingTop="@dimen/yuninfo_video_bar_padding"
+	        android:paddingBottom="@dimen/yuninfo_video_bar_padding"
+	        android:gravity="center">
+
+		    <Button
+		        android:id="@+id/yuninfo_btn_video_record"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:background="@drawable/yuninfo_btn_video_start"
+		        android:minHeight="48dip"
+		        android:minWidth="48dip" />
+
+	    </LinearLayout>
+	    <ImageButton 
+	        android:id="@+id/yuninfo_ibtn_video_cancel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:minWidth="@dimen/yuninfo_videw_bar_button_minHeight"
+	        android:src="@drawable/yuninfo_ic_video_cancel"
+	        android:background="@color/yuninfo_transparent" 
+	        android:contentDescription="@string/yuninfo_view_descreption"/>
+	</LinearLayout>
+</RelativeLayout>

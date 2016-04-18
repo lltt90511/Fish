@@ -1,0 +1,1 @@
+start "" proj.win32\Debug.win32\Ball.exe

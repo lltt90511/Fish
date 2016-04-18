@@ -1,0 +1,4 @@
+([a-zA-Z]*)=.*\{_type\s*=\s*"([a-zA-Z]*).*\},
+local $1 = tool.findChild\(obj,"$1","$2"\)
+
+\"texturesPng\"\ *\:\ *\[[\n0-9a-zA-Z\.\(\)\\\/\"\,\_\:\ ]*

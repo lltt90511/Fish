@@ -1,0 +1,2 @@
+php exportLua.php
+pause

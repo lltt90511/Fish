@@ -1,0 +1,40 @@
+私密相册接口
+0 照片结构
+public class PhotoInfo{
+    public int id=0;
+    public String uuid="";
+    public String desc="";
+    public int like=0;
+    public long dearNeed=0;
+    public long uploadTime=0;
+    public PhotoInfo(){
+
+    }
+}
+上传借口
+1.uploadAlbumPhoto  String desc,int dearNeed
+ON_UPLOAD_PHOTO_ALBUM_SUCCEED = "onUploadPhotoAlbumSucceed" --返回uuid
+ON_UPLOAD_PHOTO_ALBUM_FAILED = "onUploadPhotoAlbumFailed" --失败报错，可能是文件数量达到上限
+上传成功后返回一个消息 结构是table（photo）
+ON_UPLOAD_ALBUM_PHOTO_TO_SERVER_SUCCEED = "onUploadAlbumPhotoToServerSucceed"
+更新信息接口
+2.updateAlbum int id,String desc,int dearNeed
+ON_UPDATE_ALBUM_PHOTO_SUCCEED = "onUpdateAlbumPhotoSucceed"; --返回 id desc dearNeed
+
+ON_UPDATE_ALBUM_PHOTO_FAILED = "onUpdateAlbumPhotoFailed"; --失败原因
+删除接口
+3.delAlbumPhoto id
+ON_DELETE_ALBUM_PHOTO_FAILED = "onDeleteAlbumPhotoFailed" -- 失败原因
+
+ON_LIKE_ALBUM_PHOTO_SUCCEED = "onLikeAlbumPhotoSucceed" -- id
+
+获取相册列表
+4getAlbumPhotoList charId
+ON_GET_ALBUM_PHOTO_LIST ="onGetAlbumPhotoList" --photolist
+
+5.点赞
+likePhoto charId,id
+
+ON_LIKE_ALBUM_PHOTO_SUCCEED = "onLikeAlbumPhotoSucceed" -- Id,nowlike
+
+ON_LIKE_ALBUM_PHOTO_FAILED = "onLikeAlbumPhotoFailed" --失败原因
