@@ -84,27 +84,27 @@ function create()
    if UserSetting["fishHistoryGold"] then
       userdata.userFishHistoryGold = UserSetting["fishHistoryGold"]
    end
-   getChar(userdata.UserInfo.id or userdata.UserInfo.charId)
-   local now = os.time()
-   for k,v in pairs(UserChar) do
-       local lastTime = 0
-       local needDelete = false
-       local cnt = 0
-       for m,n in pairs(v) do
-           if n.time/1000 < now - 7*24*3600 then
-              lastTime = n.time
-              needDelete = true
-           end
-           cnt = cnt + 1
-       end
-       if needDelete then
-          if cnt == #v then
-             lastTime = v[#v].time
-          end
-          deleteChar(k,lastTime)
-       end
-   end
-   getChar(userdata.UserInfo.id or userdata.UserInfo.charId)
+   -- getChar(userdata.UserInfo.id or userdata.UserInfo.charId)
+   -- local now = os.time()
+   -- for k,v in pairs(UserChar) do
+   --     local lastTime = 0
+   --     local needDelete = false
+   --     local cnt = 0
+   --     for m,n in pairs(v) do
+   --         if n.time/1000 < now - 7*24*3600 then
+   --            lastTime = n.time
+   --            needDelete = true
+   --         end
+   --         cnt = cnt + 1
+   --     end
+   --     if needDelete then
+   --        if cnt == #v then
+   --           lastTime = v[#v].time
+   --        end
+   --        deleteChar(k,lastTime)
+   --     end
+   -- end
+   -- getChar(userdata.UserInfo.id or userdata.UserInfo.charId)
    print("main messageList")
    printTable(UserChar)
    userdata.isInGame = false
@@ -258,12 +258,12 @@ function initView()
       unSchedule(freeGoldTimer)
       freeGoldTimer = nil
    end
-   freeGoldTimer = schedule(scheduleFunc,1)
-   scheduleFunc()
+   -- freeGoldTimer = schedule(scheduleFunc,1)
+   -- scheduleFunc()
    setMailPaoNum()
-   call("getQuestCountList")
-   call("getPrivateCharList")
-   call("getActivityExist")
+   -- call("getQuestCountList")
+   -- call("getPrivateCharList")
+   -- call("getActivityExist")
 end
 
 function cleanEvent()
@@ -275,7 +275,7 @@ end
 
 
 function onSetDefaultImageSucceed()
-   tool.loadRemoteImage(eventHash, widget.top.image.obj, userdata.UserInfo.id)
+   -- tool.loadRemoteImage(eventHash, widget.top.image.obj, userdata.UserInfo.id)
 end
 
 function armatureBlend(armature)
@@ -450,79 +450,79 @@ function setMailPaoNum()
 end
 
 function setRewardPaoNum()
-   -- if isFirstToReward == false then return end
-   local rewardNum = 0
-   local isReached = false
-   for k,v in pairs(template['quest']) do
-       local tpl = userdata.UserInfo.hashKey[tostring(k)] 
-       if tpl == nil then
-          tpl = 0
-       end
-       print("tpl",tpl,v.finishCnt)
-       local isReached = false
-       if userdata.UserInfo and userdata.UserInfo.reachedQuest then
-           for m,n in pairs(userdata.UserInfo.reachedQuest) do
-               if tonumber(n) == v.id then
-                  isReached = true
-                  break
-               end
-           end
-       end
-       if v then
-          if tonumber(tpl) >= v.finishCnt then
-             if isReached == false then
-                 if v.timeType == 0 then
-                    rewardNum = rewardNum + 1 
-                 elseif v.timeType == 3 then
-                    if userdata.UserInfo.timeHashKey[tostring(k)] and timeToDayStart(getSyncedTime()) < userdata.UserInfo.timeHashKey[tostring(k)]/1000 then
-                       rewardNum = rewardNum + 1
-                    end
-                 end 
-             end
-          end
-       end
-   end 
-   -- print("rewardNum",rewardNum)
-   if rewardNum > 0 then
-      widget.top_btn_list.jiangli.pao.obj:setVisible(true)
-      widget.top_btn_list.jiangli.pao.num.obj:setText(rewardNum)
-      activityAni(widget.top_btn_list.jiangli.pao.obj)
-   else
-      widget.top_btn_list.jiangli.pao.obj:setVisible(false)
-   end
+   -- -- if isFirstToReward == false then return end
+   -- local rewardNum = 0
+   -- local isReached = false
+   -- for k,v in pairs(template['quest']) do
+   --     local tpl = userdata.UserInfo.hashKey[tostring(k)] 
+   --     if tpl == nil then
+   --        tpl = 0
+   --     end
+   --     print("tpl",tpl,v.finishCnt)
+   --     local isReached = false
+   --     if userdata.UserInfo and userdata.UserInfo.reachedQuest then
+   --         for m,n in pairs(userdata.UserInfo.reachedQuest) do
+   --             if tonumber(n) == v.id then
+   --                isReached = true
+   --                break
+   --             end
+   --         end
+   --     end
+   --     if v then
+   --        if tonumber(tpl) >= v.finishCnt then
+   --           if isReached == false then
+   --               if v.timeType == 0 then
+   --                  rewardNum = rewardNum + 1 
+   --               elseif v.timeType == 3 then
+   --                  if userdata.UserInfo.timeHashKey[tostring(k)] and timeToDayStart(getSyncedTime()) < userdata.UserInfo.timeHashKey[tostring(k)]/1000 then
+   --                     rewardNum = rewardNum + 1
+   --                  end
+   --               end 
+   --           end
+   --        end
+   --     end
+   -- end 
+   -- -- print("rewardNum",rewardNum)
+   -- if rewardNum > 0 then
+   --    widget.top_btn_list.jiangli.pao.obj:setVisible(true)
+   --    widget.top_btn_list.jiangli.pao.num.obj:setText(rewardNum)
+   --    activityAni(widget.top_btn_list.jiangli.pao.obj)
+   -- else
+   --    widget.top_btn_list.jiangli.pao.obj:setVisible(false)
+   -- end
 end
 
 function setLotteryPaoNum()
-   local randomCnt = userdata.UserInfo.randomCnt
-   local now = getSyncedTime() 
-   local time_21 = timeToDayStart(now) + 21*3600
-   local time_13 = timeToDayStart(now) + 13*3600
-   local time_21_y = time_21 - 24*3600
-   if now < time_13 then
-      now = time_21_y
-   elseif now < time_21 then
-      now = time_13 
-   else
-      now = time_21
-   end 
-   if userdata.UserInfo.lastRandomTime/1000 < now then
-      randomCnt = 0
-   end
-   local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-   randomCnt = 2 + vipLv - randomCnt
-   if randomCnt > 0 then
-      widget.top_btn_list.choujiang.pao.obj:setVisible(true)
-      widget.top_btn_list.choujiang.pao.num.obj:setText(randomCnt)
-      if isLotterAction == false then
-         isLotterAction = true
-         activityAni(widget.top_btn_list.choujiang.pao.obj)
-      end
-   else
-      if isLotterAction == true then
-         isLotterAction = false
-      end
-      widget.top_btn_list.choujiang.pao.obj:setVisible(false)
-   end
+   -- local randomCnt = userdata.UserInfo.randomCnt
+   -- local now = getSyncedTime() 
+   -- local time_21 = timeToDayStart(now) + 21*3600
+   -- local time_13 = timeToDayStart(now) + 13*3600
+   -- local time_21_y = time_21 - 24*3600
+   -- if now < time_13 then
+   --    now = time_21_y
+   -- elseif now < time_21 then
+   --    now = time_13 
+   -- else
+   --    now = time_21
+   -- end 
+   -- if userdata.UserInfo.lastRandomTime/1000 < now then
+   --    randomCnt = 0
+   -- end
+   -- local vipLv = userdata.UserInfo.viplevel --countLv.getVipLv(userdata.UserInfo.vipExp)
+   -- randomCnt = 2 + vipLv - randomCnt
+   -- if randomCnt > 0 then
+   --    widget.top_btn_list.choujiang.pao.obj:setVisible(true)
+   --    widget.top_btn_list.choujiang.pao.num.obj:setText(randomCnt)
+   --    if isLotterAction == false then
+   --       isLotterAction = true
+   --       activityAni(widget.top_btn_list.choujiang.pao.obj)
+   --    end
+   -- else
+   --    if isLotterAction == true then
+   --       isLotterAction = false
+   --    end
+   --    widget.top_btn_list.choujiang.pao.obj:setVisible(false)
+   -- end
 end
 
 function activityAni(obj)
@@ -870,23 +870,23 @@ function onShezhi(event)
    end
 end
 middleList ={
-  {img = "image/game01.png",call = function ()
-        tool.buttonSound("releaseUp","effect_12")
-        if settingVis then
-           -- switchSetting()
-           settingVis = false
-           widget.bottom.setting_panel.obj:setVisible(false)
-           for i=1,settingMax do
-               widget.bottom.setting_panel['btn'..i].obj:setTouchEnabled(false)
-               widget.bottom.setting_panel['btn'..i].pos = tool.getPosition(widget.bottom.setting_panel['btn'..i].obj)
-           end
-           currenScene = nil
-           switchBottomBright("dating")
-        end
-        gameLoading.gameTitle = 1
-        createSubWidget(widgetID.gameLoading)
-        call("enterGame", 0)
-  end},
+  -- {img = "image/game01.png",call = function ()
+  --       tool.buttonSound("releaseUp","effect_12")
+  --       if settingVis then
+  --          -- switchSetting()
+  --          settingVis = false
+  --          widget.bottom.setting_panel.obj:setVisible(false)
+  --          for i=1,settingMax do
+  --              widget.bottom.setting_panel['btn'..i].obj:setTouchEnabled(false)
+  --              widget.bottom.setting_panel['btn'..i].pos = tool.getPosition(widget.bottom.setting_panel['btn'..i].obj)
+  --          end
+  --          currenScene = nil
+  --          switchBottomBright("dating")
+  --       end
+  --       gameLoading.gameTitle = 1
+  --       createSubWidget(widgetID.gameLoading)
+  --       call("enterGame", 0)
+  -- end},
   {img = "image/game02.png",call = function ()
         tool.buttonSound("releaseUp","effect_12")
         if settingVis then
@@ -902,25 +902,25 @@ middleList ={
         end
         gameLoading.gameTitle = 2
         createSubWidget(widgetID.gameLoading)
-        call("enterGame", 1)
+        call(6001, userdata,UserInfo.uidx, 1)
   end},
-  {img = "image/game03.png",call = function ()
-        tool.buttonSound("releaseUp","effect_12")
-        if settingVis then
-           -- switchSetting()
-           settingVis = false
-           widget.bottom.setting_panel.obj:setVisible(false)
-           for i=1,settingMax do
-               widget.bottom.setting_panel['btn'..i].obj:setTouchEnabled(false)
-               widget.bottom.setting_panel['btn'..i].pos = tool.getPosition(widget.bottom.setting_panel['btn'..i].obj)
-           end
-           currenScene = nil
-           switchBottomBright("dating")
-        end
-        gameLoading.gameTitle = 3
-        createSubWidget(widgetID.gameLoading)
-        call("enterGame", 3)
-  end},
+  -- {img = "image/game03.png",call = function ()
+  --       tool.buttonSound("releaseUp","effect_12")
+  --       if settingVis then
+  --          -- switchSetting()
+  --          settingVis = false
+  --          widget.bottom.setting_panel.obj:setVisible(false)
+  --          for i=1,settingMax do
+  --              widget.bottom.setting_panel['btn'..i].obj:setTouchEnabled(false)
+  --              widget.bottom.setting_panel['btn'..i].pos = tool.getPosition(widget.bottom.setting_panel['btn'..i].obj)
+  --          end
+  --          currenScene = nil
+  --          switchBottomBright("dating")
+  --       end
+  --       gameLoading.gameTitle = 3
+  --       createSubWidget(widgetID.gameLoading)
+  --       call("enterGame", 3)
+  -- end},
 
 }
 
@@ -930,7 +930,7 @@ function initMiddle()
    widget.middle.center.obj:setVisible(false)
    widget.middle.page.obj:setVisible(false)
    widget.middle.page.obj:setTouchEnabled(false)
-   
+
    local diff = 120
    local startX = 540 - (#middleList-1)/2*diff
    for i = 1,#middleList do
@@ -971,10 +971,10 @@ function changeSelectedItem()
     end
 end
 function initTop()
-  widget.top.name.obj:setText(userdata.UserInfo.name)
-  widget.top.gold.gold_num.obj:setStringValue(userdata.UserInfo.gold+userdata.UserInfo.giftGold)
-  local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-   widget.top.vip.vip_num.obj:setStringValue(vipLv)
+  widget.top.name.obj:setText(userdata.UserInfo.nickName)
+  widget.top.gold.gold_num.obj:setStringValue(userdata.UserInfo.owncash)
+  -- local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+  widget.top.vip.vip_num.obj:setStringValue(userdata.UserInfo.viplevel)
 end
 function initTips()
   local mailNum = 0

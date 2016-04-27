@@ -6,7 +6,7 @@ connectId = 1
 
 function connect()
    local server = serverList[connectId]
-   C_connectAsync(server.ip, server.port)
+   C_connectAsync("120.27.156.196", "51111")
    setUploadURL(server.uploadURL)
    setDownloadURL(server.downloadURL)
    setPayServerUrl(server.payUrl)

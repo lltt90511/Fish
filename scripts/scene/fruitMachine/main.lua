@@ -472,7 +472,7 @@ function startFruitTimer()
             local str = string.format("%02d", time)
             widget.num_layout.time_atlas.obj:setStringValue(str)
             changeTouchEnabled(time > 0 and true or false)
-            
+              
             local cd = math.floor(data.currentEndTime - now)
             cd = cd > 0 and cd or 0
             if cd <= data.countDownTime and cd > 0 and cdEffectPlaying == false then

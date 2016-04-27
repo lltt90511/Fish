@@ -41,6 +41,7 @@ local lastUserGold = 0
 local historyUserGold = {}
 local max_list_y = -350
 local isRepeat = false
+local isBet = {}
 
 function create(_parent, _parentModule)
    thisParent = _parent
@@ -133,21 +134,29 @@ function initClassicOutSide()
    end
 end
 
-function initData(btnCountTrueInfo,btnCountFalseInfo,currentEndTime,clickEndTime,messageList,countDownTime,gameIntervalTime,history,lastBigTime,userAction,prizePool)
-   print("initData!@@@@@@@@@@@@@@@@@@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+-- function initData(btnCountTrueInfo,btnCountFalseInfo,currentEndTime,clickEndTime,messageList,countDownTime,gameIntervalTime,history,lastBigTime,userAction,prizePool)
+--    print("initData!@@@@@@@@@@@@@@@@@@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+--    data = {}
+--    data.btnCountTrueInfo = btnCountTrueInfo
+--    data.btnCountFalseInfo = btnCountFalseInfo
+--    data.currentEndTime = currentEndTime / 1000
+--    data.clickEndTime = clickEndTime / 1000
+--    data.messageList = messageList
+--    data.countDownTime = countDownTime / 1000
+--    data.gameIntervalTime = gameIntervalTime / 1000
+--    data.history = history
+--    data.userAction = userAction
+--    data.lastBigTime = lastBigTime
+--    data.prizePool = prizePool
+--    -- printTable(data)
+-- end
+
+function initData(currentEndTime,clickEndTime,messageList,userAction)
    data = {}
-   data.btnCountTrueInfo = btnCountTrueInfo
-   data.btnCountFalseInfo = btnCountFalseInfo
-   data.currentEndTime = currentEndTime / 1000
-   data.clickEndTime = clickEndTime / 1000
+   data.currentEndTime = currentEndTime/1000
+   data.clickEndTime = clickEndTime/1000   
    data.messageList = messageList
-   data.countDownTime = countDownTime / 1000
-   data.gameIntervalTime = gameIntervalTime / 1000
-   data.history = history
-   data.userAction = userAction
-   data.lastBigTime = lastBigTime
-   data.prizePool = prizePool
-   -- printTable(data)
+   data.userAction = userAction 
 end
 
 function resetShowChatHistory(flag) 
@@ -214,6 +223,7 @@ function initView()
    local cnt = 0
    local arr = {13,14,15,16,12,11}
    for i = 1,#arr do
+      isBet[arr[i]] = false
       local typeTmp = template["classicType"][arr[i]]
       
       widget.bottom_bg.bet_list.obj:pushBackDefaultItem()
@@ -226,28 +236,31 @@ function initView()
       local info = {cnt = arr[i],index = singleIndex}
       v.obj:setTouchEnabled(true)
       v.obj:registerEventScript(function(ev,data)
-                          local longPressFunc = function (info1,event1,data1)
-                            print("longPressFunc",event1)
-                             local time = 0
-                             if longPressHandler then
-                                unSchedule(longPressHandler)
-                                longPressHandler = nil
-                             end
-                             longPressHandler = schedule(function()
-                                time = time + 1
-                                if time%2 == 0 then
-                                   bet(info1.cnt, singleArr[info1.index])
-                                end
-                             end,1)
-                          end
-                          if ev == "releaseUp" then
-                             if longPressHandler then
-                                unSchedule(longPressHandler)
-                                longPressHandler = nil
-                             end
-                          end
-                          if tool.longPress(ev,data,info,longPressFunc) then
-                             return 
+                          -- local longPressFunc = function (info1,event1,data1)
+                          --   print("longPressFunc",event1)
+                          --    local time = 0
+                          --    if longPressHandler then
+                          --       unSchedule(longPressHandler)
+                          --       longPressHandler = nil
+                          --    end
+                          --    longPressHandler = schedule(function()
+                          --       time = time + 1
+                          --       if time%2 == 0 then
+                          --          bet(info1.cnt, singleArr[info1.index])
+                          --       end
+                          --    end,1)
+                          -- end
+                          -- if ev == "releaseUp" then
+                          --    if longPressHandler then
+                          --       unSchedule(longPressHandler)
+                          --       longPressHandler = nil
+                          --    end
+                          -- end
+                          -- if tool.longPress(ev,data,info,longPressFunc) then
+                          --    return 
+                          -- end
+                          if isBet[arr[i]] then
+                             return
                           end
                           if ev == "releaseUp" then
                              tool.buttonSound("releaseUp","effect_12")
@@ -878,8 +891,8 @@ function startFishTimer()
          end,1
       )
    end
-   setPrizePoll(data.prizePool)
-   call("getRankList",5)
+   -- setPrizePoll(data.prizePool)
+   -- call("getRankList",5)
    --print("http.request!!!!!!!!!!!!!!!!!!!!!!!!!!!",payServerUrl.."/ydream/login?type=502")
    --http.request(payServerUrl.."/ydream/login?type=502",onGetPrizepool)
 end
@@ -1023,23 +1036,28 @@ function onRepeatBet(event1)
 end
 
 function bet(id, needGold)
-   if userdata.UserInfo.giftGold + userdata.UserInfo.gold < needGold then
+   if userdata.UserInfo.owncash < needGold then
       alert.create("余额不足！")
       return
    end
-   local _needGiftGold = userdata.UserInfo.giftGold < needGold and userdata.UserInfo.giftGold or needGold 
-   local _needGold = needGold - _needGiftGold
-   totalCashGold = totalCashGold + _needGold + _needGiftGold
+   if not isBet[id] then
+      isBet[id] = true
+   end
+   -- local _needGiftGold = userdata.UserInfo.giftGold < needGold and userdata.UserInfo.giftGold or needGold 
+   -- local _needGold = needGold - _needGiftGold
+   -- totalCashGold = totalCashGold + _needGold + _needGiftGold
 
-   userdata.UserInfo.gold = userdata.UserInfo.gold - _needGold
-   userdata.UserInfo.giftGold = userdata.UserInfo.giftGold - _needGiftGold
-   
+   -- userdata.UserInfo.gold = userdata.UserInfo.gold - _needGold
+   -- userdata.UserInfo.giftGold = userdata.UserInfo.giftGold - _needGiftGold
+
+   userdata.UserInfo.owncash = userdata,UserInfo.owncash - needGold
+
    if userdata.isFirstGame == 1 then
       userdata.isFirstGame = 0
       saveSetting("isFirstGame",userdata.isFirstGame)
       widget.bottom_bg.alert.obj:setVisible(false)
    end
-   call("userAction", id, _needGold, _needGiftGold)
+   call(9001, userdata.UserInfo.uidx, id, needGold)
 end
 
 function onAutoBet(event1)
@@ -1156,7 +1174,7 @@ end
 function onBack(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call("leaveGame")
+      call(7001,userdata.UserInfo.uidx,1)
       -- local mainScene = package.loaded["scene.main"]
       -- mainScene.createSubWidget(nil)
    end

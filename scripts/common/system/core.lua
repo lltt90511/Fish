@@ -109,12 +109,18 @@ end
 
 
 function L_onRPC( str )
-	--print(str)
+	print("l_onRPC!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str)
 	local t = cjson.decode(str)
+	print("atttttttttttttttttttttttttttttttttttttttt")
+	printTable(t)
+	if t[1] then
+		t = t[1]
+	end
 	local funcName = t.functionName
-	local parameters = t.parameters
+	local parameters = t.p or t.parameters
 	print("Server : "..funcName,"parametersNum:"..#parameters)
-	local func = map[funcName]
+	local func = map[tostring(funcName)]
 	if func  then
 		xpcall(function()
 			func(unpack(parameters))
@@ -132,23 +138,25 @@ regListner("onRemuseFormBackground",onRemuseFormBackground)
 
 
 function call( funcName, ... )
-	assert(type(funcName) == type(""))
+	assert(type(funcName) == type(0))
 	print("Client : "..funcName)
-	local t = {
-		functionName = funcName,
-		parameters = { ...}
-	}
-	local flag = true
-	for i,v in pairs(t.parameters) do
-		flag = false
-	end
-	if flag then
-		t.parameters = nil
-	end
+	-- local t = {
+	-- 	functionName = funcName,
+	-- 	p = { ...}
+	-- }
+	-- local flag = true
+	-- for i,v in pairs(t.p) do
+	-- 	flag = false
+	-- end
+	-- if flag then
+	-- 	t.p = nil
+	-- end
 	--printTable(t)
 	-- table.insert(t,1,funcName)
-	local str = cjson.encode(t)
-	--print(str)
+	local str = tostring(funcName)--cjson.encode(t)
+	for k,v in pairs({ ...}) do
+		str = str .. "&" .. v
+	end
 	C_senddata(str,0)
 end
 function encryptCall(funcName,...)
@@ -156,14 +164,14 @@ function encryptCall(funcName,...)
 	print("Client : "..funcName)
 	local t = {
 		functionName = funcName,
-		parameters = { ...}
+		p = { ...}
 	}
 	local flag = true
-	for i,v in pairs(t.parameters) do
+	for i,v in pairs(t.p) do
 		flag = false
 	end
 	if flag then
-		t.parameters = nil
+		t.p = nil
 	end
 	--printTable(t)
 	-- table.insert(t,1,funcName)

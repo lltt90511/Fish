@@ -24,7 +24,7 @@ function initEditBox()
    textInput:setPlaceHolder("输入帐号")
    textInput:setText("")
    textInput:setVisible(true)
-
+ 
    local function editBoxTextEventHandler(strEventName, pSender)
       print(textInput:getText())
       print(strEventName)
@@ -65,7 +65,7 @@ function onLogin(event)
    if event == "releaseUp" then
       local str = textInput:getText()
       if str ~= "" then
-         call("login", 0, str)
+         call(1001, "6", "aaa", "0", "0")
       end
    end
 end

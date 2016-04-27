@@ -7,42 +7,44 @@ payServerUrl = payServerUrl
 module("handler.login",package.seeall)
 function onLoginSucceed(data,token)
    printTable(data)
-   if data.isCreateChar == false then
-      local loginScene = package.loaded["scene.login"]
-      --local accName = loginScene.textInput:getText()
-      if userdata.appInfo.appModel then
-         call("setInitUserName",1,userdata.appInfo.appModel)
-      else
-         call("setInitUserName",1,"")
-      end
-      -- call("setInitUserName",1,"")
-      userdata.UserInfo = {}
-      userdata.UserInfo.charId = data.charId
-      userdata.UserInfo.vipExp = data.vipExp
-      userdata.UserInfo.rmb = data.rmb
-      userdata.UserInfo.diamonds = data.diamonds
-      userdata.UserInfo.lastChargeTime = data.lastChargeTime
-      userdata.UserInfo.lastPhoneCodeTime = data.lastPhoneCodeTime
-      userdata.UserInfo.phoneNumber = data.phoneNumber
-       userdata.UserInfo.phoneTmp = data.phoneTmp
-      userdata.UserInfo.changeUserName = data.changeUserName
-      userdata.UserInfo.accId = data.accId
-      setChargeMap(data.chargeMap)
-   else 
-      call("getGiftList")
-      userdata.UserInfo = data.character
-      userdata.UserInfo.vipExp = data.vipExp
-      userdata.UserInfo.rmb = data.rmb
-      userdata.UserInfo.diamonds = data.diamonds
-      userdata.UserInfo.lastChargeTime = data.lastChargeTime
-      userdata.UserInfo.lastPhoneCodeTime = data.lastPhoneCodeTime
-      userdata.UserInfo.phoneNumber = data.phoneNumber
-      userdata.UserInfo.phoneTmp = data.phoneTmp
-      userdata.UserInfo.changeUserName = data.changeUserName
-      userdata.UserInfo.accId = data.accId
-      setChargeMap(data.chargeMap)
-      firstToMainScene()
-   end
+   userdata.UserInfo = data
+   firstToMainScene()
+   -- if data.isCreateChar == false then
+   --    local loginScene = package.loaded["scene.login"]
+   --    --local accName = loginScene.textInput:getText()
+   --    if userdata.appInfo.appModel then
+   --       call("setInitUserName",1,userdata.appInfo.appModel)
+   --    else
+   --       call("setInitUserName",1,"")
+   --    end
+   --    -- call("setInitUserName",1,"")
+   --    userdata.UserInfo = {}
+   --    userdata.UserInfo.charId = data.charId
+   --    userdata.UserInfo.vipExp = data.vipExp
+   --    userdata.UserInfo.rmb = data.rmb
+   --    userdata.UserInfo.diamonds = data.diamonds
+   --    userdata.UserInfo.lastChargeTime = data.lastChargeTime
+   --    userdata.UserInfo.lastPhoneCodeTime = data.lastPhoneCodeTime
+   --    userdata.UserInfo.phoneNumber = data.phoneNumber
+   --    userdata.UserInfo.phoneTmp = data.phoneTmp
+   --    userdata.UserInfo.changeUserName = data.changeUserName
+   --    userdata.UserInfo.accId = data.accId
+   --    setChargeMap(data.chargeMap)
+   -- else 
+   --    call("getGiftList")
+   --    userdata.UserInfo = data.character
+   --    userdata.UserInfo.vipExp = data.vipExp
+   --    userdata.UserInfo.rmb = data.rmb
+   --    userdata.UserInfo.diamonds = data.diamonds
+   --    userdata.UserInfo.lastChargeTime = data.lastChargeTime
+   --    userdata.UserInfo.lastPhoneCodeTime = data.lastPhoneCodeTime
+   --    userdata.UserInfo.phoneNumber = data.phoneNumber
+   --    userdata.UserInfo.phoneTmp = data.phoneTmp
+   --    userdata.UserInfo.changeUserName = data.changeUserName
+   --    userdata.UserInfo.accId = data.accId
+   --    setChargeMap(data.chargeMap)
+   --    firstToMainScene()
+   -- end
 end
 
 function setChargeMap(data) 
@@ -56,10 +58,10 @@ end
 
 function firstToMainScene()
    local daily = false
-   print (timeToDayStart(getSyncedTime()) , userdata.UserInfo.lastDailyGiftTime/1000 )
-   if timeToDayStart(getSyncedTime()) > userdata.UserInfo.lastDailyGiftTime/1000 then
-      daily = true
-   end
+   -- print (timeToDayStart(getSyncedTime()) , userdata.UserInfo.lastDailyGiftTime/1000 )
+   -- if timeToDayStart(getSyncedTime()) > userdata.UserInfo.lastDailyGiftTime/1000 then
+   --    daily = true
+   -- end
    local main = package.loaded['scene.main']
    main.daily = daily
    local sceneManager = package.loaded["logic.sceneManager"]
@@ -67,11 +69,11 @@ function firstToMainScene()
       local binding = package.loaded["scene.binding"]
       binding.exit()
       sceneManager.Scene[sceneManager.currentScene].initView() 
-   end
+   end 
    sceneManager.change(sceneManager.SceneType.mainScene)
-   luaoc.callStaticMethod("AppController","pushRegister",{account=userdata.UserInfo.id,server=payServerUrl.."/ydream/login",environment=""})
-   print("payServerUrl url", payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.id)
-   http.request(payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.id,nil)
+   luaoc.callStaticMethod("AppController","pushRegister",{account=userdata.UserInfo.uidx,server=payServerUrl.."/ydream/login",environment=""})
+   print("payServerUrl url", payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.uidx)
+   http.request(payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.uidx,nil)
 end
 function onLoginFailed(data)
 

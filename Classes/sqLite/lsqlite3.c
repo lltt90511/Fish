@@ -1263,13 +1263,14 @@ static void db_update_hook_callback(void *user, int op, char const *dbname, char
     lua_State *L = db->L;
     int top = lua_gettop(L);
 
+	lua_Number n;
     /* setup lua callback call */
     lua_rawgeti(L, LUA_REGISTRYINDEX, db->update_hook_cb);    /* get callback */
     lua_rawgeti(L, LUA_REGISTRYINDEX, db->update_hook_udata); /* get callback user data */
     lua_pushnumber(L, (lua_Number )op);
     lua_pushstring(L, dbname); /* update_hook database name */
     lua_pushstring(L, tblname); /* update_hook database name */
-    lua_Number n = (lua_Number)rowid;
+    n = (lua_Number)rowid;
     if (n == rowid)
         lua_pushnumber(L, n);
     else

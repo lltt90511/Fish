@@ -11,131 +11,176 @@ local handler = {
 module("handler.all", package.seeall)
 
 handlerMap = {
-   --network--
-   "onChangedNetwork",
-   --nc--
-   "onConnect",
-   "onClose",
-   --userdata change--
-   "onChangeGold",
-   --login--
-   "onLoginSucceed",
-   "onLoginFailed",
-   "onSetInitNameSucceed",
-   "onSetInitNameFailed",
-   --fruitMachine--
-   "onEnterGameSucceed",
-   "onEnterGameFailed",
-   "onLeaveGameSucceed",
-   "onLeaveGameFailed",
-   "onOpenCashOne",
-   "onOpenCash",
-   "onUpdateGameStatus",
-   "onGameUserActionSucceed",
-   "onGameUserActionFailed",
-   "onGameNotice",
-   --chat--
-   "onUserSendMessage",
-   "onSendMessageSucceed",
-   "onSendMessageFailed",
-   "onSetSexSucceed",
-   "onChangeVipExp",
-   "onGetRankListSucceed",
-   "onGetRankListFailed",
-   "onGetDailyGift",
-   "onChargeSucceed",
-   "onChargeFailed",
-   "onGetGiftList",
-   "onOpenGiftPackSucceed",
-   "onOpenGiftPackFailed",
-   "onNewGiftSend",
-   "onUpdateUserNameSucceed",
-   "onUpdateUserNameFailed",
    
-   --tree--
-   "onUpdateTreeGift",
-   "onGetTreeGiftSucceed",
+   -- --network--
+   -- "onChangedNetwork",
+   -- --nc--
+   -- "onConnect",
+   -- "onClose",
+   -- --userdata change--
+   -- "onChangeGold",
+   -- --login--
+   -- "onLoginSucceed",
+   -- "onLoginFailed",
+   -- "onSetInitNameSucceed",
+   -- "onSetInitNameFailed",
+   -- --fruitMachine--
+   -- "onEnterGameSucceed",
+   -- "onEnterGameFailed",
+   -- "onLeaveGameSucceed",
+   -- "onLeaveGameFailed",
+   -- "onOpenCashOne",
+   -- "onOpenCash",
+   -- "onUpdateGameStatus",
+   -- "onGameUserActionSucceed",
+   -- "onGameUserActionFailed",
+   -- "onGameNotice",
+   -- --chat--
+   -- "onUserSendMessage",
+   -- "onSendMessageSucceed",
+   -- "onSendMessageFailed",
+   -- "onSetSexSucceed",
+   -- "onChangeVipExp",
+   -- "onGetRankListSucceed",
+   -- "onGetRankListFailed",
+   -- "onGetDailyGift",
+   -- "onChargeSucceed",
+   -- "onChargeFailed",
+   -- "onGetGiftList",
+   -- "onOpenGiftPackSucceed",
+   -- "onOpenGiftPackFailed",
+   -- "onNewGiftSend",
+   -- "onUpdateUserNameSucceed",
+   -- "onUpdateUserNameFailed",
+   
+   -- --tree--
+   -- "onUpdateTreeGift",
+   -- "onGetTreeGiftSucceed",
 
-   --binding--
-   "onGetPhoneCodeSucceed",
-   "onGetPhoneCodeFailed",
-   "onRegisterPhoneSucceed",
-   "onRegisterPhoneFailed",
-   "onUnregisterPhoneFailed",
+   -- --binding--
+   -- "onGetPhoneCodeSucceed",
+   -- "onGetPhoneCodeFailed",
+   -- "onRegisterPhoneSucceed",
+   -- "onRegisterPhoneFailed",
+   -- "onUnregisterPhoneFailed",
 
-   --receive--
-   "onGetFreeGoldSucceed",
-   "onGetFreeGoldFailed",
+   -- --receive--
+   -- "onGetFreeGoldSucceed",
+   -- "onGetFreeGoldFailed",
 
-   --quest--
-   "onGetQuestCountList",
-   "onFinishQuestSucceed",
-   "onFinishQuestFailed",
-   "onUpdateQuestCount",
+   -- --quest--
+   -- "onGetQuestCountList",
+   -- "onFinishQuestSucceed",
+   -- "onFinishQuestFailed",
+   -- "onUpdateQuestCount",
 
-   --lottery random--
-   "onGetRandomGoldSucceed",
-   "onGetRandomGoldFailed",
+   -- --lottery random--
+   -- "onGetRandomGoldSucceed",
+   -- "onGetRandomGoldFailed",
 
-   --upload photo--
-   "onUploadImageSucceed",
-   "onUploadImageFailed",
-   "onUpload",
-   "onUploadError",
-   "onDownload",
-   "onDownloadError",
-   "onProgress",
-   "onSetDefaultImageFailed",
-   "onSetDefaultImageSucceed",
-   "onGetImageFileList",
+   -- --upload photo--
+   -- "onUploadImageSucceed",
+   -- "onUploadImageFailed",
+   -- "onUpload",
+   -- "onUploadError",
+   -- "onDownload",
+   -- "onDownloadError",
+   -- "onProgress",
+   -- "onSetDefaultImageFailed",
+   -- "onSetDefaultImageSucceed",
+   -- "onGetImageFileList",
 
-   "onUnregisterPhone",
+   -- "onUnregisterPhone",
 
-   "onBigWin",
-   "systemContext",
+   -- "onBigWin",
+   -- "systemContext",
 
-   "onGetVIPRewardSucceed",
-   "onGetVIPRewardFailed",
+   -- "onGetVIPRewardSucceed",
+   -- "onGetVIPRewardFailed",
 
-   "onSendPrivateMessage",
-   "onSendPrivateMessageSucceed",
-   "onGetPrivateMessageListSucceed",
-   "onGetPrivateCharListSucceed",
+   -- "onSendPrivateMessage",
+   -- "onSendPrivateMessageSucceed",
+   -- "onGetPrivateMessageListSucceed",
+   -- "onGetPrivateCharListSucceed",
 
-   --mora game 
-   "onFingerGameBetSucceed",
-   "onFingerGameBetFailed",
-   "onFingerGameBetChange",
+   -- --mora game 
+   -- "onFingerGameBetSucceed",
+   -- "onFingerGameBetFailed",
+   -- "onFingerGameBetChange",
 
-   "onFingerGameGuessSucceed",
-   "onFingerGameGuessFailed",
-   "onFingerGameEndTime",
-   "onFingerGameResult",
+   -- "onFingerGameGuessSucceed",
+   -- "onFingerGameGuessFailed",
+   -- "onFingerGameEndTime",
+   -- "onFingerGameResult",
 
-   "onFingerGameInvite",
-   "onFingerGameInviteSucceed",
-   "onFingerGameInviteFailed",
-   "onFingerGameInviteAgreeSucceed",
-   "onFingerGameInviteAgreeFailed",
-   "onFingerGameInviteRefuse",
-   "onFingerGameInviteCancel",
+   -- "onFingerGameInvite",
+   -- "onFingerGameInviteSucceed",
+   -- "onFingerGameInviteFailed",
+   -- "onFingerGameInviteAgreeSucceed",
+   -- "onFingerGameInviteAgreeFailed",
+   -- "onFingerGameInviteRefuse",
+   -- "onFingerGameInviteCancel",
 
-   "onGetAllActivityInfo",
-   "onGetActivityExist",
+   -- "onGetAllActivityInfo",
+   -- "onGetActivityExist",
+
+   --login
+   [1002] = "onLoginSucceed",
+   [1003] = "onLoginFailed",
+
+   --change info
+   [2002] = "onChangeInfoSucceed",
+   [2003] = "onChangeInfoFailed",
+
+   --change gold
+   [3002] = "onChangeGold",
+
+   --get phone code
+   [4002] = "onGetPhoneCodeSucceed",
+   [4003] = "onGetPhoneCodeFailed",
+
+   --bind phone
+   [5002] = "onBindPhoneSucceed",
+   [5003] = "onBindPhoneFailed",
+
+   --enter game
+   [6002] = "onEnterGameSucceed",
+   [6003] = "onEnterGameFailed",
+
+   --leave game
+   [7002] = "onLeaveGameSucceed",
+   [7003] = "onLeaveGameFailed",
+
+   --game status
+   [8002] = "onGetGameStatus",
+
+   --bet
+   [9002] = "onBetSucceed",
+   [9003] = "onBetFailed",
+
+   --game result
+   [10002] = "onOpenCash",
+
+   --send chat
+   [11002] = "onSendMessageSucceed",
+   [11003] = "onSendMessageFailed",
+
+   --get chat 
+   [12002] = "onGetMessage",
 }
 
 
 callBackList = {}
 for i,funcName in pairs(handlerMap) do
-	print ("newFuncName",funcName)
+	print ("newFuncName",funcName,i)
 	assert(callBackList[funcName] == nil,"funcName has exist")
-	callBackList[funcName] = funcName
+	callBackList[funcName] = tostring(i)
 end
 
 for i,v in pairs(handler) do
 	for name,func in pairs(v) do
 		if type(func) == "function" and callBackList[name] then
-		  regListner(name,func)
+		  regListner(callBackList[name],func)
 		end
 	end
 end

@@ -72,31 +72,33 @@ void *do_receive(void *data){
 		}
         CCLOG("recv %d", nread);
 		readed += nread;
-        
+
         while (true) {
             if (readed < 4) {
                 break;
             }
             
             if (apcLenth == 0) {
-                for (int i = 0; i < 4; i++) {
+                for (int i = 3; i >= 0; i--) {
                     apcLenth = (apcLenth << 8) + (unsigned char)(*(revBuff+i));
                     if (apcLenth > buffSize ) {
                         CCLog("data too large len=%d, i=%d", apcLenth, i);
                         CCAssert(true, "protocal error");
                         break;
                     }
-                }
-                CCLOG("data len %d", apcLenth);
+				    CCLOG("data len %d,%d", apcLenth,i);
+				}
+
+                CCLOG("data len %d,%d", apcLenth,readed);
             }
 			//apcLenth--;
             int left = readed - 4 - apcLenth;
             if (left >= 0) {
-				char protocol = revBuff[4];
-				apc = new APC(1 << 6, revBuff + 5, apcLenth - 1);
-				if (protocol & 0x01){
+				//char protocol = revBuff[4];
+				apc = new APC(1 << 6, revBuff+4, apcLenth);
+				/*if (protocol & 0x01){
 					apc->unEncrypt();
-				}
+				}*/
 				
                 LogicController::getInstance()->pushRpcQueue(apc);
                 if (left > 0) { // 处理粘包
@@ -148,8 +150,8 @@ void *do_send(void *data){
         
 		{
 			//apc->encrypt();
-			int dataLen = apc->data_len+1;
-			char *sendBuf = new char[dataLen + 5];
+			int dataLen = apc->data_len;
+			char *sendBuf = new char[dataLen+4];
 			for(int i=3; i>=0; i--) {
 				sendBuf[i] = dataLen % (1<<8);
 				dataLen = dataLen >> 8;
@@ -163,13 +165,13 @@ void *do_send(void *data){
 			if (apc->isCompressed()){
 				protocol = protocol | 0x2;
 			}*/
-			sendBuf[4] = protocol;//协议字段
-			memcpy(sendBuf+5, apc->data, apc->data_len);
+			//sendBuf[4] = protocol;//协议字段
+			memcpy(sendBuf+4, apc->data, apc->data_len);
             
-            CCLOG("send: %s %d", apc->data, apc->data_len);
+            CCLOG("send: %s %d,", apc->data, apc->data_len);
 			int sended = 0;
-			while(sended < apc->data_len + 5) {
-				int num = send(fd, sendBuf, apc->data_len + 5-sended, 0);
+			while(sended < apc->data_len + 4) {
+				int num = send(fd, sendBuf, apc->data_len + 4 - sended, 0);
 				if (num < 0) {
 					controller->disConected();
 					break;
