@@ -5,7 +5,7 @@ local sqlite = require "sqlite"
 payServerUrl = payServerUrl
 
 module("handler.login",package.seeall)
-function onLoginSucceed(data,token)
+function onLoginSucceed(data)
    printTable(data)
    userdata.UserInfo = data
    firstToMainScene()

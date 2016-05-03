@@ -4,7 +4,6 @@ module("scene.login", package.seeall)
 
 this = nil
 textInput = nil
-
 function create()
    this = tool.loadWidget("cash/login_scene",widget)
    nc.connect()

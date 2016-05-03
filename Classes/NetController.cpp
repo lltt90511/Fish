@@ -152,10 +152,11 @@ void *do_send(void *data){
 			//apc->encrypt();
 			int dataLen = apc->data_len;
 			char *sendBuf = new char[dataLen+4];
-			for(int i=3; i>=0; i--) {
-				sendBuf[i] = dataLen % (1<<8);
+			for(int i=0; i<4; i++) {
+				sendBuf[i] = (byte)(dataLen % (1<<8));
 				dataLen = dataLen >> 8;
 			}
+			//sendBuf[0] = dataLen;
 			int protocol = 0;
 			if (apc->isEncrypted()){
 				protocol = protocol | 0x1;

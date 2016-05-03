@@ -116,6 +116,7 @@ function L_onRPC( str )
 	printTable(t)
 	if t[1] then
 		t = t[1]
+		return
 	end
 	local funcName = t.functionName
 	local parameters = t.p or t.parameters
@@ -138,7 +139,7 @@ regListner("onRemuseFormBackground",onRemuseFormBackground)
 
 
 function call( funcName, ... )
-	assert(type(funcName) == type(0))
+	-- assert(type(funcName) == type(0))
 	print("Client : "..funcName)
 	-- local t = {
 	-- 	functionName = funcName,
@@ -157,6 +158,7 @@ function call( funcName, ... )
 	for k,v in pairs({ ...}) do
 		str = str .. "&" .. v
 	end
+	print("call!!!!!!!!!!!!!!!!!",str)
 	C_senddata(str,0)
 end
 function encryptCall(funcName,...)

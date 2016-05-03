@@ -3,11 +3,10 @@ local userdata = require"logic.userdata"
 
 module("handler.fruitMachine",package.seeall)
 
-function onEnterGameSucceed(gameId, ...)
+function onEnterGameSucceed(gameData)
    local mainScene = package.loaded["scene.main"]
    local gameLoading = package.loaded["scene.gameLoading"]
    AudioEngine.stopMusic(true)
-
    local enterGameFunc = function (mod) 
       if gameLoading.isEnded == false then
          gameLoading.endFunc = function ()
@@ -17,17 +16,19 @@ function onEnterGameSucceed(gameId, ...)
          mainScene.createSubWidget(mod)
       end
    end
-   if gameId == 0 then
+   if gameData.GameId == 0 then
       local fruitMachine = package.loaded["scene.fruitMachine.main"]
-      fruitMachine.initData(...)
-      enterGameFunc(mainScene.widgetID.fruitMachine)
-   elseif gameId == 1 then
+      fruitMachine.initData(gameData)
+      -- enterGameFunc(mainScene.widgetID.fruitMachine)
+      mainScene.createSubWidget(mainScene.widgetID.fruitMachine)
+   elseif gameData.GameId == 1 then
       local fishMachine = package.loaded["scene.fishMachine.main"]
-      fishMachine.initData(...)
-      enterGameFunc(mainScene.widgetID.fishMachine)
-   elseif gameId == 3 then
+      fishMachine.initData(gameData)
+      -- enterGameFunc(mainScene.widgetID.fishMachine)
+      mainScene.createSubWidget(mainScene.widgetID.fishMachine)
+   elseif gameData.GameId == 3 then
       local moraGame = package.loaded["scene.moraGame"]
-      moraGame.initData(...)
+      moraGame.initData(gameData)
       enterGameFunc(mainScene.widgetID.moraGame)
    end
 end
@@ -63,8 +64,8 @@ function onOpenCash(id,currentEndTime,clickEndTime,prizePool)
    event.pushEvent("OPEN_CASH",id,currentEndTime,clickEndTime,prizePool)
 end
 
-function onUpdateGameStatus(now, currentEndTime, clickEndTime, btnCountTrueInfo ,btnCountFalseInfo)
-   event.pushEvent("UPDATE_GAME_STATUS", currentEndTime, clickEndTime, btnCountTrueInfo, btnCountFalseInfo)
+function onGetGameStatus(gameData)
+   event.pushEvent("ON_GET_GAME_STATUS", gameData)
 end
 
 function onGameUserActionSucceed(data)

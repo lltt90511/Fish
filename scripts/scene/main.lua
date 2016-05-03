@@ -900,9 +900,9 @@ middleList ={
            currenScene = nil
            switchBottomBright("dating")
         end
-        gameLoading.gameTitle = 2
-        createSubWidget(widgetID.gameLoading)
-        call(6001, userdata,UserInfo.uidx, 1)
+        -- gameLoading.gameTitle = 2
+        -- createSubWidget(widgetID.gameLoading)
+        call(6001, 1)
   end},
   -- {img = "image/game03.png",call = function ()
   --       tool.buttonSound("releaseUp","effect_12")

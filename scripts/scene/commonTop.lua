@@ -76,7 +76,7 @@ end
 
 
 function onSetDefaultImageSucceed()
-   tool.loadRemoteImage(eventHash, widget.top_bg.image.obj, userdata.UserInfo.id)
+   -- tool.loadRemoteImage(eventHash, widget.top_bg.image.obj, userdata.UserInfo.id)
 end
 
 function registerEvent()
@@ -93,14 +93,14 @@ function onChangeGold()
       return
    end
    if userdata.goldAction == false then
-      local gold = userdata.UserInfo.gold+userdata.UserInfo.giftGold
-      widget.top_bg.gold.obj:setStringValue(gold)
+      -- local gold = userdata.UserInfo.gold+userdata.UserInfo.giftGold
+      -- widget.top_bg.gold.obj:setStringValue(gold)
    end
 end
 
 function onChangeVip()
-   local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-   widget.top_bg.vip.vip_num.obj:setStringValue(vipLv)
+   -- local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+   -- widget.top_bg.vip.vip_num.obj:setStringValue(vipLv)
 end
 
 function onRecharge(event)

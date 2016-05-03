@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <UIProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <ProjectDir>D:\cashclient\cocostudio\cash</ProjectDir>
+  <ProjectDir>E:\fish\cocostudio\cash</ProjectDir>
   <Version>1.5.0.1</Version>
-  <Resources>D:\cashclient\cocostudio\cash\Resources</Resources>
+  <Resources>E:\fish\cocostudio\cash\Resources</Resources>
   <Name>cash</Name>
   <JsonFileName>cash.json</JsonFileName>
-  <JsonFolder>D:\cashclient\cocostudio\cash\Json</JsonFolder>
+  <JsonFolder>E:\fish\cocostudio\cash\Json</JsonFolder>
   <JsonList>
     <string>about.json</string>
     <string>activity.json</string>
@@ -44,15 +44,11 @@
     <Width>1080</Width>
     <Height>1920</Height>
   </CanvasSize>
-  <filePath>D:\cashclient\cocostudio\cash\cash.xml.ui</filePath>
+  <filePath>E:\fish\cocostudio\cash\cash.xml.ui</filePath>
   <ProjectType>UIProject</ProjectType>
   <ResRelativePath />
   <imageFileList />
-  <imagePngList>
-    <string>qietu/mora/alert.png</string>
-    <string>qietu/mora/yaoqingzhong.png</string>
-    <string>qietu/mora/quxiao.png</string>
-  </imagePngList>
+  <imagePngList />
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>waitInviterAlert.json</CurrentUIJson>
+  <CurrentUIJson>loading.json</CurrentUIJson>
 </UIProject>
