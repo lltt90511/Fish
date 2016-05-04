@@ -37,16 +37,9 @@ function onEnterGameFailed(data)
    
 end
 
-function onLeaveGameSucceed(gameId,flag)
-   if not flag then
-      alert.create("对方已退出房间！",nil,function()
-         local mainScene = package.loaded["scene.main"]
-         mainScene.createSubWidget(nil)
-      end,function()
-         local mainScene = package.loaded["scene.main"]
-         mainScene.createSubWidget(nil)
-      end)
-   else
+function onLeaveGameSucceed(gameid)
+   print("onLeaveGameSucceed",gameid)
+   if gameid > 0 then
       local mainScene = package.loaded["scene.main"]
       mainScene.createSubWidget(nil)
    end
@@ -68,17 +61,17 @@ function onGetGameStatus(gameData)
    event.pushEvent("ON_GET_GAME_STATUS", gameData)
 end
 
-function onGameUserActionSucceed(data)
-   event.pushEvent("GAME_USER_ACTION_SUCCEED", data)
+function onBetSucceed(data)
+   event.pushEvent("ON_BET_SUCCEED", data)
 end
 
-function onGameUserActionFailed(limit,data)
-   event.pushEvent("GAME_USER_ACTION_FAILED", limit)
-   userdata.UserInfo.gold = userdata.UserInfo.gold + data.gold
-   userdata.UserInfo.giftGold = userdata.UserInfo.giftGold + data.giftGold
-   if userdata.isInGame == true then
-      userdata.isInGame = false  
-   end
+function onBetFailed(data)
+   event.pushEvent("ON_BET_FAILED", data)
+   -- userdata.UserInfo.gold = userdata.UserInfo.gold + data.gold
+   -- userdata.UserInfo.giftGold = userdata.UserInfo.giftGold + data.giftGold
+   -- if userdata.isInGame == true then
+   --    userdata.isInGame = false  
+   -- end
 end
 
 --1是vip进入，2是游戏获奖，3是抽奖

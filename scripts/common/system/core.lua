@@ -120,7 +120,8 @@ function L_onRPC( str )
 	end
 	local funcName = t.functionName
 	local parameters = t.p or t.parameters
-	print("Server : "..funcName,"parametersNum:"..#parameters)
+	print("Server : "..funcName,"parametersNum:"..#parameters,parameters)
+	printTable(parameters)
 	local func = map[tostring(funcName)]
 	if func  then
 		xpcall(function()

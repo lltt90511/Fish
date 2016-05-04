@@ -21,7 +21,7 @@ function create(_parent,_parentModule)
    thisParent:addChild(this,10)
    this:setPosition(ccp(0,Screen.height/2-widget.obj:getSize().height/2))
 
-   tool.setWidgetVal(widget.top_bg.obj,"name",userdata.UserInfo.name)
+   tool.setWidgetVal(widget.top_bg.obj,"name",userdata.UserInfo.nickName)
    
    backList.setBackScene(onBack)
    event.listen("ON_CHANGE_VIP", onChangeVip)
@@ -93,14 +93,12 @@ function onChangeGold()
       return
    end
    if userdata.goldAction == false then
-      -- local gold = userdata.UserInfo.gold+userdata.UserInfo.giftGold
-      -- widget.top_bg.gold.obj:setStringValue(gold)
+      widget.top_bg.gold.obj:setStringValue(userdata.UserInfo.owncash)
    end
 end
 
 function onChangeVip()
-   -- local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-   -- widget.top_bg.vip.vip_num.obj:setStringValue(vipLv)
+   widget.top_bg.vip.vip_num.obj:setStringValue(userdata.UserInfo.viplevel)
 end
 
 function onRecharge(event)
