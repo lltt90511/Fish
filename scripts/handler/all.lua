@@ -158,9 +158,6 @@ handlerMap = {
    [9002] = "onBetSucceed",
    [9003] = "onBetFailed",
 
-   --game result
-   [10002] = "onOpenCash",
-
    --send chat
    [11002] = "onSendMessageSucceed",
    [11003] = "onSendMessageFailed",

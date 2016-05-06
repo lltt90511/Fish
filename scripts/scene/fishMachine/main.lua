@@ -46,6 +46,7 @@ local isBet = {}
 local betEndTime = 0
 local finishCircleCnt = 0
 local toNextTime = 10
+local isDoBet = false
 local fishList = {
   [1]={id = 1,name = '大捕获',res = '0',fishType = 0,seqId = 12,multi = 0.0},
   [2]={id = 2,name = '小捕获',res = '0',fishType = 1,seqId = 6,multi = 0.0},
@@ -95,7 +96,7 @@ function create(_parent, _parentModule)
    initClassicOutSide()
    initView()
    initResult()
-   -- initChatView()
+   initChatView()
    totalCashGold = 0
    lastUserGold = 0--userdata.UserInfo.giftGold + userdata.UserInfo.gold
    bigList.id = 0
@@ -163,6 +164,8 @@ function initData(gameData)
    onUpdateGameData(gameData)
    if data.type == 100 then
       betEndTime = 20 - data.time
+   else
+      betEndTime = 20
    end
 end
 
@@ -177,17 +180,28 @@ end
 function onGetGameStatus(gameData)
    onUpdateGameData(gameData)
    if data.type == 100 then
+      endNextTimer()
+      toNextTime = 10
+      if isInResult then
+         isInResult = false
+      end
       betEndTime = 20 - data.time
+      widget.bottom_bg.auto_layout.obj:setTouchEnabled(false)
+      widget.bottom_bg.auto_layout.obj:setVisible(false)
    elseif data.type == 200 then
       -- widget.bottom_bg.auto_layout.obj:setTouchEnabled(true)
       -- widget.bottom_bg.auto_layout.obj:setVisible(true)
       -- widget.bottom_bg.auto_layout.label.obj:setText("开奖中......")
+      widget.bottom_bg.time_atlas.obj:setStringValue("00")
       playFishEffect()
    elseif data.type == 201 then
       endNextTimer()
       nextTimer = schedule(
          function()
             toNextTime = toNextTime - 1
+            if isDoBet then
+              return 
+            end
             widget.bottom_bg.auto_layout.label.obj:setText("等待开始...还剩"..toNextTime.."秒")
             if toNextTime == 0 then
                toNextTime = 10
@@ -201,6 +215,9 @@ end
 
 function onBetSucceed(_data)
    isBet[_data.betid] = true
+   if not isDoBet then
+      isDoBet = true
+   end
    onGameUserActionSucceed(_data.betid,_data.betMoney)
 end
 
@@ -255,9 +272,8 @@ function initView()
 
    initCostView()
    
-   if data.type == 100 then
-      startFishTimer()
-   elseif data.type == 200 then
+   startFishTimer()
+   if data.type == 200 then
       playFishEffect()
    elseif data.type == 201 then
       widget.bottom_bg.auto_layout.obj:setTouchEnabled(true)
@@ -392,16 +408,17 @@ function initCostView()
        end
       )
    end
-   -- widget.bottom_bg.auto_btn.obj:setTouchEnabled(true)
-   -- widget.bottom_bg.auto_btn.obj:registerEventScript(
-   --    function(event)
-   --    print("event",event)
-   --       if event == "releaseUp" then
-   --          tool.buttonSound("releaseUp","effect_12")
-   --          autoFunc()
-   --       end
-   --    end
-   -- )
+   widget.bottom_bg.auto_btn.obj:setTouchEnabled(true)
+   widget.bottom_bg.auto_btn.obj:registerEventScript(
+      function(event)
+      -- print("event",event)
+         if event == "releaseUp" then
+            -- tool.buttonSound("releaseUp","effect_12")
+            -- autoFunc()
+            call(11001,20038626,0,"is a message!")
+         end
+      end
+   )
    -- local now = getSyncedTime()
    -- local time = math.floor(data.clickEndTime - now)
    -- if data.type == 100 and data.time > 3 then
@@ -606,7 +623,7 @@ function doResultAni(id)
             tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.star_r.obj) 
             tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.number.obj) 
             tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.cheng.obj) 
-            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.icon.obj,function()
+            tool.createEffect(tool.Etffect.scale,{time=0.1,scale=0},widget.result.icon.obj,function()
                tool.createEffect(tool.Effect.delay,{time=0.2},widget.result.icon.obj,function() 
                   for i=1,starNum do 
                       local star = tool.findChild(widget.result.obj,"star_"..i,"ImageView")
@@ -791,6 +808,7 @@ function endEffect(id)
    for k,v in pairs(isBet) do
        v = false
    end
+   checkWinResult()
    changeTouchEnabled(true)
    -- if lastOpenId.outside == 2 or lastOpenId.outside == 4 or lastOpenId.outside == 8 or lastOpenId.outside == 10 or lastOpenId.outside == 6 or lastOpenId.outside == 12 then
    --    if lastOpenId.outside == 2 then
@@ -821,8 +839,38 @@ function endEffect(id)
    widget.bottom_bg.auto_layout.obj:setVisible(true)
 end
 
+function checkWinResult()
+   if data.type == 201 then
+      local message = {}
+      message.type = 0
+      message.cnt = data.GameResult.c
+      message.outside = fishList[data.GameResult.f[1]].name
+      message.inside = fishList[data.GameResult.f[2]].name
+      chat.addMessage(message)
+      if data.GameResult.u then
+         local isInResult = false
+         for k,v in pairs(data.GameResult.u) do
+             if v.i == userdata.UserInfo.uidx then
+                isInResult = true
+                if v.m > 0 then
+                   widget.bottom_bg.auto_layout.label.obj:setText("恭喜您赢得了"..v.m.."金币！")
+                end
+             else
+             end
+                message.type = 1
+                message.name = v.e
+                message.money = v.m
+                chat.addMessage(message)         
+         end
+         if not isInResult and isDoBet then
+            widget.bottom_bg.auto_layout.label.obj:setText("很遗憾您没有中奖！") 
+         end
+      end
+   end
+end
+
 function initChatView()
-   chatView = chat.create(data.messageList,620,470,1,package.loaded["scene.fishMachine.main"])
+   chatView = chat.create(620,470,1,package.loaded["scene.fishMachine.main"])
    widget.bottom_bg.obj:addChild(chatView,2)
    chatView:setAnchorPoint(ccp(0,0))
    chatView:setPosition(ccp(-515,-465))
@@ -1112,23 +1160,23 @@ function onAutoBet(event1)
    if event1 == "releaseUp" then
       -- printTable(historyBet)
       -- print(#historyBet)
-      local i=0
-      for k,v in pairs(historyBet) do
-          i = i + 1
-      end
-      if i == 0 then
-         alert.create("请先选择押注内容！")
-      else
-         tool.buttonSound("releaseUp","effect_12")
-         autoCnt = autoCnt == 0 and autoArr[autoIndex] or 0
-         if autoCnt > 0 then
-            autoCnt = autoCnt - 1
-            onRepeatBet("releaseUp")
-         end
-         widget.bottom_bg.auto_layout.label.obj:setText("跟注"..autoCnt.."轮 点击取消")
-         widget.bottom_bg.auto_layout.obj:setVisible(true)
-         widget.bottom_bg.auto_layout.obj:setTouchEnabled(true)
-      end
+      -- local i=0
+      -- for k,v in pairs(historyBet) do
+      --     i = i + 1
+      -- end
+      -- if ,i == 0 then
+      --    alert.create("请先选择押注内容！")
+      -- else
+      --    tool.buttonSound("releaseUp","effect_12")
+      --    autoCnt = autoCnt == 0 and autoArr[autoIndex] or 0
+      --    if autoCnt > 0 then
+      --       autoCnt = autoCnt - 1
+      --       onRepeatBet("releaseUp")
+      --    end
+      --    widget.bottom_bg.auto_layout.label.obj:setText("跟注"..autoCnt.."轮 点击取消")
+      --    widget.bottom_bg.auto_layout.obj:setVisible(true)
+      --    widget.bottom_bg.auto_layout.obj:setTouchEnabled(true)
+      -- end
    end
 end
 

@@ -5,10 +5,14 @@ function onUserSendMessage(data)
    event.pushEvent("USER_MESSAGE",data)
 end
 
-function onSendMessageSucceed(data)
-
+function onSendMessageSucceed(gameData)
+   event.pushEvent("ON_SEND_MESSAGE_SUCCEED",gameData)
 end
 
-function onSendMessageFailed(data)
+function onSendMessageFailed(gameData)
+   event.pushEvent("ON_SEND_MESSAGE_FAILED",gameData)
+end
 
+function onGetMessage(gameData)
+   event.pushEvent("ON_GET_MESSAGE",gameData)
 end

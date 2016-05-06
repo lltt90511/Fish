@@ -23,7 +23,7 @@ local inputWidthChange = 0
 local parentModule = nil
 -- payServerUrl = payServerUrl
 
-function create(_data,_width,_height,_gameId,_parentModule)
+function create(_width,_height,_gameId,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
    parentModule = _parentModule
    widget.obj:setSize(CCSize(_width,_height))
@@ -32,16 +32,41 @@ function create(_data,_width,_height,_gameId,_parentModule)
    GAME_ID = _gameId
    inputWidthChange = 660-_width
 
-   messageList = _data
+   messageList = {}
    initEditBox()
    initListView()
    changeExpressionPanelVisible(expVisible)
    widget.system_layout.obj:setVisible(false)
 
-   event.listen("USER_MESSAGE", onUserMessage)
-   event.listen("SYSTEM_MESSAGE", onSystemMessage)
-   event.listen("SYSTEM_CONTEXT", onSystemContext)
+   -- event.listen("USER_MESSAGE", onUserMessage)
+   -- event.listen("SYSTEM_MESSAGE", onSystemMessage)
+   -- event.listen("SYSTEM_CONTEXT", onSystemContext)
+   event.listen("ON_SEND_MESSAGE_SUCCEED", onSendMessageSucceed)
+   event.listen("ON_SEND_MESSAGE_FAILED", onSendMessageFailed)
+   event.listen("ON_GET_MESSAGE", onGetMessage)
    return this
+end
+
+function onSendMessageSucceed(gameData)
+   local message = {}
+   message.from = gameData.from._nickName
+   if type(gameData.to) == type(-1) and gameData.to == -1 then
+      message.type = 2
+   elseif type(gameData.to) == type({}) then
+      message.type = 3
+      message.to = gameData.to._nickName
+   end
+   message.msg = gameData.con
+   message.private = gameData.qiaoqiao
+   addMessage(message)
+end
+
+function onSendMessageFailed(gameData)
+   alert.create(gameData.msg) 
+end
+
+function onGetMessage(gameData)
+   
 end
 
 function initEditBox()
@@ -170,77 +195,87 @@ function addSplitMessage(richText, msg)
    print("######addsplitmessage")
    local totalWidth = 0
    local args = {}
-   local pattern = '(%;(%d+))'
-   local last_end = 1
-   local s,e,cap = string.find(msg.msg,pattern, 1)
-   if s == nil then
-      table.insert(args,msg.msg)
-   elseif s > 1 then
-      table.insert(args,string.sub(msg.msg,1,s-1))
-   end
-   while s do
-      if s ~= 1 or cap ~= '' then         
-         table.insert(args,cap)
-      end
-      last_end = e + 1
-      s,e,cap = string.find(msg.msg,pattern,last_end)
-      if s == nil then
-         table.insert(args,string.sub(msg.msg,last_end))
-      elseif s > last_end then
-         table.insert(args, string.sub(msg.msg,last_end,s-1))
-      end
-   end
-   
-   local color = ccc3(255,255,255)
    if msg.type == 0 then
-     local vipLv = countLv.getVipLv(msg.vipExp)
-     if vipLv > 0 then
-       local viplbl = Label:create()
-       viplbl:setText("V"..vipLv)
-       viplbl:setFontSize(40)
-       viplbl:setFontName(DEFAULT_FONT)
-       totalWidth = viplbl:getContentSize().width
-       color = ccc3(200,0,255)
+     local textLabel = Label:create()
+     textLabel:setText("第["..msg.cnt.."]轮开奖，".."开奖结果是"..msg.inside.."和"..msg.outside)
+     textLabel:setFontSize(40)
+     textLabel:setFontName(DEFAULT_FONT)
+     totalWidth = textLabel:getContentSize().width
+   elseif msg.type == 1 then
+     local textLabel = Label:create()
+     textLabel:setText("恭喜"..msg.name.."赢得了"..msg.money.."金币")
+     textLabel:setFontSize(40)
+     textLabel:setFontName(DEFAULT_FONT)
+     totalWidth = textLabel:getContentSize().width
+   else
+     local pattern = '(%;(%d+))'
+     local last_end = 1
+     local s,e,cap = string.find(msg.msg,pattern, 1)
+     if s == nil then
+        table.insert(args,msg.con)
+     elseif s > 1 then
+        table.insert(args,string.sub(msg.msg,1,s-1))
      end
-   else 
-      color = ccc3(255,0,0)
+     while s do
+        if s ~= 1 or cap ~= '' then         
+           table.insert(args,cap)
+        end
+        last_end = e + 1
+        s,e,cap = string.find(msg.con,pattern,last_end)
+        if s == nil then
+           table.insert(args,string.sub(msg.msg,last_end))
+        elseif s > last_end then
+           table.insert(args, string.sub(msg.msg,last_end,s-1))
+        end
+     end
+     for i = 1, #args do
+        local path = isExpression(args[i])
+        if path ~= nil then
+           print(path)
+           local _image = RichElementImage:create(i+1, color, 255, "expression/expression_a_0"..path..".png");
+           richText:pushBackElement(_image)
+           
+           totalWidth = totalWidth + 72
+        else
+           local _msg = RichElementText:create(i+1,color,255,args[i],DEFAULT_FONT,40) 
+           richText:pushBackElement(_msg)
+           
+           local msg = Label:create()
+           msg:setText(args[i])
+           msg:setFontSize(40)
+           msg:setFontName(DEFAULT_FONT)
+           
+           totalWidth = totalWidth + msg:getContentSize().width
+        end
+     end
    end
+   local color = ccc3(255,255,255)
+   -- if msg.type == 0 then
+   --   local vipLv = countLv.getVipLv(msg.vipExp)
+   --   if vipLv > 0 then
+       -- local viplbl = Label:create()
+       -- viplbl:setText("V"..vipLv)
+       -- viplbl:setFontSize(40)
+       -- viplbl:setFontName(DEFAULT_FONT)
+       -- totalWidth = viplbl:getContentSize().width
+       -- color = ccc3(200,0,255)
+   --   end
+   -- else 
+   --    color = ccc3(255,0,0)
+   -- end
    
-   local name = Label:create()
-   name:setText("["..msg.name.."] ")
-   name:setFontSize(40)
-   name:setFontName(DEFAULT_FONT)
-   totalWidth = totalWidth + name:getContentSize().width
+   -- local name = Label:create()
+   -- name:setText("["..msg.name.."] ")
+   -- name:setFontSize(40)
+   -- name:setFontName(DEFAULT_FONT)
+   -- totalWidth = totalWidth + name:getContentSize().width
    
    -- printTable(args)
-   for i = 1, #args do
-      local path = isExpression(args[i])
-      if path ~= nil then
-         print(path)
-         local _image = RichElementImage:create(i+1, color, 255, "expression/expression_a_0"..path..".png");
-         richText:pushBackElement(_image)
-         
-         totalWidth = totalWidth + 72
-      else
-         local _msg = RichElementText:create(i+1,color,255,args[i],DEFAULT_FONT,40) 
-         richText:pushBackElement(_msg)
-         
-         local msg = Label:create()
-         msg:setText(args[i])
-         msg:setFontSize(40)
-         msg:setFontName(DEFAULT_FONT)
-         
-         totalWidth = totalWidth + msg:getContentSize().width
-      end
-   end
 
    return totalWidth
 end
 
 function addMessage(message, time)
-   if message.isFake and userdata.UserInfo.isGM then
-      return
-   end
    time = time == nil and 0.1 or time
    local func = function()
       if not this then return end
@@ -251,23 +286,23 @@ function addMessage(message, time)
       local num = 1
       local color = ccc3(255,255,255)
       if message.type == 0 then
-          local vipLv = countLv.getVipLv(message.vipExp)
-          if vipLv > 0 then
-             local _vip = RichElementText:create(num,ccc3(255,255,0),255,"V"..vipLv,DEFAULT_FONT,40)
-             num = num + 1
-             _richText:pushBackElement(_vip)
-             color = ccc3(200,0,255)
-          end
+         local _text = RichElementText:create(num,ccc3(255,0,0),255,"第["..message.cnt.."]轮开奖，".."开奖结果是"..message.inside.."和"..message.outside,DEFAULT_FONT,40)         
+         _richText:pushBackElement(_text) 
       elseif message.type == 1 then
-          message.name = "活动"
-          color = ccc3(255,0,0)
+         local _text = RichElementText:create(num,ccc3(255,0,0),255,"恭喜"..message.name.."赢得了"..message.money.."金币",DEFAULT_FONT,40)         
+         _richText:pushBackElement(_text) 
       elseif message.type == 2 then
-          message.name = "系统"
-          color = ccc3(255,0,0)
+         local _name = RichElementText:create(num,ccc3(200,0,255),255,message.from.."说：",DEFAULT_FONT,40)         
+         _richText:pushBackElement(_name) 
+         local _text = RichElementText:create(num,color,255,message.msg,DEFAULT_FONT,40)         
+         _richText:pushBackElement(_text) 
+      elseif message.type == 3 then
+         local _name = RichElementText:create(num,ccc3(200,0,255),255,message.from.."对"..message.to.."说：",DEFAULT_FONT,40)         
+         _richText:pushBackElement(_name) 
+         local _text = RichElementText:create(num,color,255,message.msg,DEFAULT_FONT,40)         
+         _richText:pushBackElement(_text)
       end
         
-      local _name = RichElementText:create(num,color,255,"["..message.name.."] ",DEFAULT_FONT,40)         
-      _richText:pushBackElement(_name) 
       local textWidth = addSplitMessage(_richText, message)
       if textWidth > WIDTH-10 then     
          _richText:ignoreContentAdaptWithSize(false)
@@ -278,31 +313,31 @@ function addMessage(message, time)
       layout:setSize(_richText:getSize())
       layout:addChild(_richText)     
       
-      layout:setTouchEnabled(true)
-      layout:registerEventScript(function(event)
-         if event == "releaseUp" then
-            if message.type == 0 then 
-              if message.charId == userdata.UserInfo.id or message.charId == userdata.UserInfo.charId then
-                 alert.create("您不能与自己私聊!!")
-                 return 
-              end
-              print("layout is in touch!!!!!!!!!!!!!!!!!!!!!!")
-              local fruit = package.loaded['scene.fruitMachine.main']
-              local fish = package.loaded['scene.fishMachine.main']
-              if parentModule then  
-                 if parentModule == fish or parentModule == fruit then
-                    if parentModule.resetShowChatHistory then
-                       parentModule.resetShowChatHistory(true)
-                    end
-                    chatPrivate.create(parentModule.widget.obj,message.name,message.charId,parentModule)
-                 end
-              end
-            elseif message.type == 1 then
-               local activity = require"scene.activity"
-               activity.create(parentModule.this)
-            end
-         end
-      end)
+      -- layout:setTouchEnabled(true)
+      -- layout:registerEventScript(function(event)
+      --    if event == "releaseUp" then
+      --       if message.type == 0 then 
+      --         if message.charId == userdata.UserInfo.id or message.charId == userdata.UserInfo.charId then
+      --            alert.create("您不能与自己私聊!!")
+      --            return 
+      --         end
+      --         print("layout is in touch!!!!!!!!!!!!!!!!!!!!!!")
+      --         local fruit = package.loaded['scene.fruitMachine.main']
+      --         local fish = package.loaded['scene.fishMachine.main']
+      --         if parentModule then  
+      --            if parentModule == fish or parentModule == fruit then
+      --               if parentModule.resetShowChatHistory then
+      --                  parentModule.resetShowChatHistory(true)
+      --               end
+      --               chatPrivate.create(parentModule.widget.obj,message.name,message.charId,parentModule)
+      --            end
+      --         end
+      --       elseif message.type == 1 then
+      --          local activity = require"scene.activity"
+      --          activity.create(parentModule.this)
+      --       end
+      --    end
+      -- end)
       widget.list.obj:pushBackCustomItem(layout)
    end
    performWithDelay(func,time)
@@ -415,9 +450,9 @@ end
 
 function exit()
    if this then
-      event.unListen("USER_MESSAGE", onUserMessage)
-      event.unListen("SYSTEM_MESSAGE", onSystemMessage)
-      event.unListen("SYSTEM_CONTEXT", onSystemContext)
+      event.unListen("ON_SEND_MESSAGE_SUCCEED", onSendMessageSucceed)
+      event.unListen("ON_SEND_MESSAGE_FAILED", onSendMessageFailed)
+      event.unListen("ON_GET_MESSAGE", onGetMessage)
       this:removeFromParentAndCleanup(true)
       this = nil
       parentModule = nil
@@ -448,24 +483,26 @@ function onSend(event)
    if event == "releaseUp" then
       local str = textInput:getText()
       if str ~= "" then
-         local _msg = http.urlencode(str)
-         print("_msg",payServerUrl,payServerUrl.."/ydream/login?type=99&param=",_msg)
-         http.request(payServerUrl.."/ydream/login?type=99&param=".._msg,
-           function(header,body,flag)
-             if flag == false then
-               alert.create("服务器连接失败")
-               return 
-             end
-             local tab = cjson.decode(body)
-             printTable(tab)
-             if tab.result == "false" then
-              alert.create("您输入的内容检测包含屏蔽字")
-              textInput:setText(tab.param)
-              return
-             end
-              call("gameChat",str)
-              textInput:setText("")
-           end)
+         -- local _msg = http.urlencode(str)
+         -- print("_msg",payServerUrl,payServerUrl.."/ydream/login?type=99&param=",_msg)
+         -- http.request(payServerUrl.."/ydream/login?type=99&param=".._msg,
+         --   function(header,body,flag)
+         --     if flag == false then
+         --       alert.create("服务器连接失败")
+         --       return 
+         --     end
+         --     local tab = cjson.decode(body)
+         --     printTable(tab)
+         --     if tab.result == "false" then
+         --      alert.create("您输入的内容检测包含屏蔽字")
+         --      textInput:setText(tab.param)
+         --      return
+         --     end
+         --      call("gameChat",str)
+         --      textInput:setText("")
+         --   end)
+         call(11001,-1,0,str)
+         textInput:setText("")
       end
    end
 end

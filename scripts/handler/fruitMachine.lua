@@ -61,12 +61,12 @@ function onGetGameStatus(gameData)
    event.pushEvent("ON_GET_GAME_STATUS", gameData)
 end
 
-function onBetSucceed(data)
-   event.pushEvent("ON_BET_SUCCEED", data)
+function onBetSucceed(gameData)
+   event.pushEvent("ON_BET_SUCCEED", gameData)
 end
 
-function onBetFailed(data)
-   event.pushEvent("ON_BET_FAILED", data)
+function onBetFailed(gameData)
+   event.pushEvent("ON_BET_FAILED", gameData)
    -- userdata.UserInfo.gold = userdata.UserInfo.gold + data.gold
    -- userdata.UserInfo.giftGold = userdata.UserInfo.giftGold + data.giftGold
    -- if userdata.isInGame == true then

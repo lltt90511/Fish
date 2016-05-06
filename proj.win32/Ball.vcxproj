@@ -69,7 +69,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Classes;$(COCOS2DX_ROOT)\scripting\lua\cocos2dx_support;$(COCOS2DX_ROOT)\scripting\lua\lua;$(COCOS2DX_ROOT)\scripting\lua\tolua;$(COCOS2DX_ROOT)\scripting\lua\src;$(COCOS2DX_ROOT)\cocos2dx;$(COCOS2DX_ROOT)\cocos2dx\include;$(COCOS2DX_ROOT)\cocos2dx\kazmath\include;$(COCOS2DX_ROOT)\cocos2dx\platform\win32;$(COCOS2DX_ROOT)\cocos2dx\platform\third_party\win32;$(COCOS2DX_ROOT)\cocos2dx\platform\third_party\win32\OGLES;$(COCOS2DX_ROOT)\external;$(COCOS2DX_ROOT)\external\chipmunk\include\chipmunk;$(COCOS2DX_ROOT)\CocosDenshion\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Classes;E:\cocos2d-x\scripting\lua\cocos2dx_support;E:\cocos2d-x\scripting\lua\lua;E:\cocos2d-x\scripting\lua\tolua;E:\cocos2d-x\scripting\lua\src;E:\cocos2d-x\cocos2dx;E:\cocos2d-x\cocos2dx\include;E:\cocos2d-x\cocos2dx\kazmath\include;E:\cocos2d-x\cocos2dx\platform\win32;E:\cocos2d-x\cocos2dx\platform\third_party\win32;E:\cocos2d-x\cocos2dx\platform\third_party\win32\OGLES;E:\cocos2d-x\external;E:\cocos2d-x\external\chipmunk\include\chipmunk;E:\cocos2d-x\CocosDenshion\include;E:\cocos2d-x\extensions;E:\cocos2d-x\cocos2dx\platform\third_party\win32\pthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -113,7 +113,7 @@
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>if not exist "$(OutDir)" mkdir "$(OutDir)"
-xcopy /Y /Q "$(COCOS2DX_ROOT)\external\libwebsockets\win32\lib\*.*" "$(OutDir)"</Command>
+xcopy /Y /Q "E:\cocos2d-x\external\libwebsockets\win32\lib\*.*" "$(OutDir)"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
