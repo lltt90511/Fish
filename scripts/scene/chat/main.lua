@@ -53,7 +53,7 @@ function onSendMessageSucceed(gameData)
    if type(gameData.to) == type(-1) and gameData.to == -1 then
       message.type = 2
    elseif type(gameData.to) == type({}) then
-      message.type = 3
+      message.type = gameData.qiaoqiao == 0 and 3 or 4
       message.to = gameData.to._nickName
    end
    message.msg = gameData.con
@@ -195,6 +195,7 @@ function addSplitMessage(richText, msg)
    print("######addsplitmessage")
    local totalWidth = 0
    local args = {}
+   local color = ccc3(255,255,255)
    if msg.type == 0 then
      local textLabel = Label:create()
      textLabel:setText("第["..msg.cnt.."]轮开奖，".."开奖结果是"..msg.inside.."和"..msg.outside)
@@ -212,7 +213,7 @@ function addSplitMessage(richText, msg)
      local last_end = 1
      local s,e,cap = string.find(msg.msg,pattern, 1)
      if s == nil then
-        table.insert(args,msg.con)
+        table.insert(args,msg.msg)
      elseif s > 1 then
         table.insert(args,string.sub(msg.msg,1,s-1))
      end
@@ -221,22 +222,24 @@ function addSplitMessage(richText, msg)
            table.insert(args,cap)
         end
         last_end = e + 1
-        s,e,cap = string.find(msg.con,pattern,last_end)
+        s,e,cap = string.find(msg.msg,pattern,last_end)
         if s == nil then
            table.insert(args,string.sub(msg.msg,last_end))
         elseif s > last_end then
            table.insert(args, string.sub(msg.msg,last_end,s-1))
         end
      end
+     printTable(args)
      for i = 1, #args do
         local path = isExpression(args[i])
         if path ~= nil then
-           print(path)
+           print("path!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",path,i)
            local _image = RichElementImage:create(i+1, color, 255, "expression/expression_a_0"..path..".png");
            richText:pushBackElement(_image)
            
            totalWidth = totalWidth + 72
         else
+           print("not expression!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",i)
            local _msg = RichElementText:create(i+1,color,255,args[i],DEFAULT_FONT,40) 
            richText:pushBackElement(_msg)
            
@@ -249,7 +252,6 @@ function addSplitMessage(richText, msg)
         end
      end
    end
-   local color = ccc3(255,255,255)
    -- if msg.type == 0 then
    --   local vipLv = countLv.getVipLv(msg.vipExp)
    --   if vipLv > 0 then
@@ -282,7 +284,7 @@ function addMessage(message, time)
       local layout = Layout:create()
       local _richText = RichText:create()
       _richText:ignoreContentAdaptWithSize(false)
-      _richText:setSize(CCSize(WIDTH,72))
+      _richText:setSize(CCSize(WIDTH,36))
       local num = 1
       local color = ccc3(255,255,255)
       if message.type == 0 then
@@ -294,19 +296,19 @@ function addMessage(message, time)
       elseif message.type == 2 then
          local _name = RichElementText:create(num,ccc3(200,0,255),255,message.from.."说：",DEFAULT_FONT,40)         
          _richText:pushBackElement(_name) 
-         local _text = RichElementText:create(num,color,255,message.msg,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_text) 
       elseif message.type == 3 then
          local _name = RichElementText:create(num,ccc3(200,0,255),255,message.from.."对"..message.to.."说：",DEFAULT_FONT,40)         
          _richText:pushBackElement(_name) 
-         local _text = RichElementText:create(num,color,255,message.msg,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_text)
+      elseif message.type == 4 then
+         local _name = RichElementText:create(num,ccc3(200,0,255),255,message.from.."悄悄对"..message.to.."说：",DEFAULT_FONT,40)         
+         _richText:pushBackElement(_name) 
       end
         
       local textWidth = addSplitMessage(_richText, message)
+      print("textWidth=============================================",textWidth)
       if textWidth > WIDTH-10 then     
          _richText:ignoreContentAdaptWithSize(false)
-         _richText:setSize(CCSize(WIDTH-10, 72*math.ceil(textWidth/(WIDTH-10))))
+         _richText:setSize(CCSize(WIDTH-10, 36*math.ceil(textWidth/(WIDTH-10))))
       end
       _richText:setAnchorPoint(ccp(0,0))
       _richText:setPosition(ccp(0,0))

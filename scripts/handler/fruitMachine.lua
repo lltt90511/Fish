@@ -62,7 +62,9 @@ function onGetGameStatus(gameData)
 end
 
 function onBetSucceed(gameData)
+   userdata.UserInfo.owncash = userdata.UserInfo.owncash - gameData.betMoney
    event.pushEvent("ON_BET_SUCCEED", gameData)
+   event.pushEvent("ON_CHANGE_GOLD")
 end
 
 function onBetFailed(gameData)

@@ -153,7 +153,7 @@ void *do_send(void *data){
 			int dataLen = apc->data_len;
 			char *sendBuf = new char[dataLen+4];
 			for(int i=0; i<4; i++) {
-				sendBuf[i] = (byte)(dataLen % (1<<8));
+				sendBuf[i] = (BYTE)(dataLen % (1<<8));
 				dataLen = dataLen >> 8;
 			}
 			//sendBuf[0] = dataLen;

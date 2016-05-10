@@ -28,17 +28,11 @@ exit 0
 esac
 done
 
-# paths
-
-if [ -z "${NDK_ROOT+aaa}" ];then
-echo "please define NDK_ROOT"
-exit 1
-fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # ... use paths relative to current directory
-NDK_ROOT = /cygdrive/d/android-ndk-r8e
-COCOS2DX_ROOT=/cygdrive/d/cocos2d-x
+NDK_ROOT=/cygdrive/d/android-ndk-r9d
+COCOS2DX_ROOT=/cygdrive/e/cocos2d-x
 APP_ROOT="$DIR/.."
 APP_ANDROID_ROOT="$DIR"
 
@@ -46,6 +40,13 @@ echo "NDK_ROOT = $NDK_ROOT"
 echo "COCOS2DX_ROOT = $COCOS2DX_ROOT"
 echo "APP_ROOT = $APP_ROOT"
 echo "APP_ANDROID_ROOT = $APP_ANDROID_ROOT"
+
+# paths
+
+if [ -z "${NDK_ROOT+aaa}" ];then
+echo "please define NDK_ROOT"
+exit 1
+fi
 
 
 

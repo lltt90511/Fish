@@ -156,8 +156,14 @@ function call( funcName, ... )
 	--printTable(t)
 	-- table.insert(t,1,funcName)
 	local str = tostring(funcName)--cjson.encode(t)
-	for k,v in pairs({ ...}) do
-		str = str .. "&" .. v
+	if type(...) == type({}) then
+	   for k,v in pairs( ...) do
+		   str = str .. "&" .. v
+	   end
+	else
+	   for k,v in pairs({ ...}) do
+		   str = str .. "&" .. v
+	   end
 	end
 	print("call!!!!!!!!!!!!!!!!!",str)
 	C_senddata(str,0)

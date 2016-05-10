@@ -47,27 +47,41 @@ local betEndTime = 0
 local finishCircleCnt = 0
 local toNextTime = 10
 local isDoBet = false
+local currentUserPage = 0
+local resetUserTimer = nil
+local userRankList = {}
 local fishList = {
-  [1]={id = 1,name = '大捕获',res = '0',fishType = 0,seqId = 12,multi = 0.0},
-  [2]={id = 2,name = '小捕获',res = '0',fishType = 1,seqId = 6,multi = 0.0},
-  [3]={id = 3,name = '鲨鱼',res = '05',fishType = 2,seqId = 1,multi = 50.0},
-  [4]={id = 4,name = '魔鬼鱼',res = '02',fishType = 2,seqId = 2,multi = 20.0},
-  [5]={id = 5,name = '灯笼鱼',res = '013',fishType = 2,seqId = 3,multi = 10.0},
-  [6]={id = 6,name = '海龟',res = '07',fishType = 2,seqId = 4,multi = 5.0},
-  [7]={id = 7,name = '烛光鱼',res = '011',fishType = 2,seqId = 5,multi = 0.0},
-  [8]={id = 8,name = '珊瑚鱼',res = '01',fishType = 2,seqId = 7,multi = 0.0},
-  [9]={id = 9,name = '海豚',res = '04',fishType = 2,seqId = 8,multi = 0.0},
-  [10]={id = 10,name = '水母',res = '08',fishType = 2,seqId = 9,multi = 0.0},
-  [11]={id = 11,name = '蝴蝶鱼',res = '015',fishType = 2,seqId = 10,multi = 0.0},
-  [12]={id = 12,name = '海星',res = '03',fishType = 2,seqId = 11,multi = 0.0},
-  [13]={id = 13,name = '对虾',res = '012',fishType = 3,seqId = 1,multi = 1.5},
-  [14]={id = 14,name = '螃蟹',res = '010',fishType = 3,seqId = 2,multi = 1.5},
-  [15]={id = 15,name = '对虾',res = '012',fishType = 3,seqId = 3,multi = 1.5},
-  [16]={id = 16,name = '螃蟹',res = '010',fishType = 3,seqId = 4,multi = 1.5},
-  [17]={id = 17,name = '对虾',res = '012',fishType = 3,seqId = 5,multi = 1.5},
-  [18]={id = 18,name = '螃蟹',res = '010',fishType = 3,seqId = 6,multi = 1.5},
+  [1]={id = 1,name = '大捕获',res = '0',fishType = 0,seqId = 12,multi = 0.0,multiEffect = '8,4,10,2'},
+  [2]={id = 2,name = '小捕获',res = '0',fishType = 1,seqId = 6,multi = 0.0,multiEffect = ''},
+  [3]={id = 3,name = '鲨鱼',res = '05',fishType = 2,seqId = 1,multi = 50.0,multiEffect = ''},
+  [4]={id = 4,name = '魔鬼鱼',res = '02',fishType = 2,seqId = 2,multi = 20.0,multiEffect = ''},
+  [5]={id = 5,name = '灯笼鱼',res = '013',fishType = 2,seqId = 3,multi = 10.0,multiEffect = ''},
+  [6]={id = 6,name = '海龟',res = '07',fishType = 2,seqId = 4,multi = 5.0,multiEffect = ''},
+  [7]={id = 7,name = '烛光鱼',res = '011',fishType = 2,seqId = 5,multi = 0.0,multiEffect = ''},
+  [8]={id = 8,name = '珊瑚鱼',res = '01',fishType = 2,seqId = 7,multi = 0.0,multiEffect = ''},
+  [9]={id = 9,name = '海豚',res = '04',fishType = 2,seqId = 8,multi = 0.0,multiEffect = ''},
+  [10]={id = 10,name = '水母',res = '08',fishType = 2,seqId = 9,multi = 0.0,multiEffect = ''},
+  [11]={id = 11,name = '蝴蝶鱼',res = '015',fishType = 2,seqId = 10,multi = 0.0,multiEffect = ''},
+  [12]={id = 12,name = '海星',res = '03',fishType = 2,seqId = 11,multi = 0.0,multiEffect = ''},
+  [13]={id = 13,name = '对虾',res = '012',fishType = 3,seqId = 1,multi = 1.5,multiEffect = ''},
+  [14]={id = 14,name = '螃蟹',res = '010',fishType = 3,seqId = 2,multi = 1.5,multiEffect = ''},
+  [15]={id = 15,name = '对虾',res = '012',fishType = 3,seqId = 3,multi = 1.5,multiEffect = ''},
+  [16]={id = 16,name = '螃蟹',res = '010',fishType = 3,seqId = 4,multi = 1.5,multiEffect = ''},
+  [17]={id = 17,name = '对虾',res = '012',fishType = 3,seqId = 5,multi = 1.5,multiEffect = ''},
+  [18]={id = 18,name = '螃蟹',res = '010',fishType = 3,seqId = 6,multi = 1.5,multiEffect = ''},
 }
-
+local userList = {
+  {id=221,name="user",vip=10},
+  {id=32,name="user",vip=8},
+  {id=311,name="user",vip=7},
+  {id=294,name="user",vip=7},
+  {id=565,name="user",vip=6},
+  {id=61,name="user",vip=5},
+  {id=127,name="user",vip=3},
+  {id=83,name="user",vip=1},
+  {id=92,name="user",vip=1},
+  {id=11,name="user",vip=1},
+}
 function create(_parent, _parentModule)
    thisParent = _parent
    parentModule = _parentModule 
@@ -92,7 +106,10 @@ function create(_parent, _parentModule)
       end
    end 
    -- printTable(historyBet)
-   widget.bottom_bg.rank_list.obj:setItemModel(widget.rank_render.obj)
+   -- widget.bottom_bg.rank_list.obj:setItemModel(widget.rank_render.obj)
+   for k,v in pairs(userList) do
+       table.insert(userRankList,v)
+   end
    initClassicOutSide()
    initView()
    initResult()
@@ -103,18 +120,15 @@ function create(_parent, _parentModule)
    bigList.name = ""
    bigList.exp = 0
    bigList.gold = 0
+   currentUserPage = 0
    widget.bigAward.obj:setVisible(false)
    widget.bigAward.obj:setScale(0)
    widget.history_layout.obj:setVisible(false)
    widget.history_layout.obj:setTouchEnabled(false)
    widget.history_layout.alert.back.obj:setTouchEnabled(false)
-   -- event.listen("OPEN_CASH_ONE",onOpenCashOne)
-   -- event.listen("OPEN_CASH",onOpenCash)
    event.listen("ON_GET_GAME_STATUS",onGetGameStatus)
    event.listen("ON_BET_SUCCEED", onBetSucceed)
    event.listen("ON_BET_FAILED", onBetFailed)
-   -- event.listen("ON_GET_RANK_LIST", initRankView)
-   -- event.listen("ON_BIG_WIN", onBigWin)
    -- setCashGold(0)
    -- if userdata.isFirstGame==1 then
    --    widget.bottom_bg.alert.obj:setVisible(true)
@@ -122,40 +136,90 @@ function create(_parent, _parentModule)
    -- else
    --    widget.bottom_bg.alert.obj:setVisible(false)
    -- end
+   widget.bottom_bg.rank_list.obj:registerEventScript(function(event)
+     -- print("event!!!!!!!!!",event)
+     if event == "SCROLL_BOTTOM" then
+        print("SCROLL_BOTTOM!!!!!!!!!!!!!!!!!!")
+        currentUserPage = currentUserPage + 1
+        if currentUserPage > 5 then
+           return
+        end
+        for k,v in pairs(userList) do
+            table.insert(userRankList,v)
+        end
+        initRankView()
+        performWithDelay(function()
+                         if not this then return end
+                         widget.bottom_bg.rank_list.obj:setBounceEnabled(false)
+                         -- widget.bottom_bg.rank_list.obj:scrollToBottom(0.5,true)
+                         performWithDelay(function()
+                                             if not this then return end  
+                                                widget.bottom_bg.rank_list.obj:setBounceEnabled(true)
+                                             end,0.6)
+                      end,0.15)
+     end
+   end)
    widget.bottom_bg.alert.obj:setVisible(false)
+   -- resetUserTimer = schedule(
+   --       function()
+   --          local ran = math.random(1,2)
+   --          if ran % 2 == 0 then
+   --            print("add!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+   --             table.insert(userRankList,{id=100,name="user",vip=1})
+   --             addRankItem({id=100,name="user",vip=1})
+   --          else
+   --            print("remove!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+   --             removeRankItem(3) 
+   --          end
+   --       end,math.random(1,4))
    return this
 end
 
-function initRankView(rankId,data)
-   print("initRankView!@!!!!!!!!!!!!!############")
-   -- printTable(data)
-   widget.bottom_bg.rank_list.obj:removeAllItems()
-   local cnt = 0
-   for k,v in pairs(data) do
-       widget.bottom_bg.rank_list.obj:pushBackDefaultItem()
-       local obj = tolua.cast(widget.bottom_bg.rank_list.obj:getItem(cnt),"Layout")
-       local rank_img = tool.findChild(obj,"rank_img","ImageView")
-       rank_img:setScale(0.8)
-       tool.loadRemoteImage(eventHash, rank_img, v.charId)
-       -- local vipLv = countLv.getVipLv(v.score)
-       -- if vipLv == 0 then
-       --    vipLv = 1
-       -- end
-       local name = tool.findChild(obj,"name","Label")
-       name:setText(v.charName)
-       local bonus = tool.findChild(obj,"bonus","Label")
-       bonus:setText(v.score)
+function initRankView()
+   local cnt = 1
+   for k,v in pairs(userRankList) do   
+       if cnt > currentUserPage*10 and cnt <= (currentUserPage+1)*10 then
+          addRankItem(v)
+       elseif cnt > (currentUserPage+1)*10 then
+          break
+       end
        cnt = cnt + 1
-       local rank_atlas = tool.findChild(obj,"rank_atlas","LabelAtlas")
-       rank_atlas:setStringValue(cnt)
    end
+end
+
+function addRankItem(item)       
+   local obj = widget.rank_render.obj:clone()
+   obj:setTouchEnabled(true)
+   obj:registerEventScript(function(event)
+      if event == "releaseUp" then
+
+      end 
+   end)
+   local rank_img = tool.findChild(obj,"rank_img","ImageView")
+   rank_img:setScale(0.8)
+   tool.loadRemoteImage(eventHash, rank_img, userdata.UserInfo.uidx)
+   -- local vipLv = countLv.getVipLv(v.score)
+   -- if vipLv == 0 then
+   --    vipLv = 1
+   -- end
+   local name = tool.findChild(obj,"name","Label")
+   name:setText(item.name..(item.id+(currentUserPage-1)*10))
+   local bonus = tool.findChild(obj,"bonus","Label")
+   bonus:setText("VIP"..item.vip)
+   local rank_atlas = tool.findChild(obj,"rank_atlas","LabelAtlas")
+   rank_atlas:setVisible(false)
+   widget.bottom_bg.rank_list.obj:pushBackCustomItem(obj)
+end
+
+function removeRankItem(index)
+   widget.bottom_bg.rank_list.obj:removeItem(index)
 end
 
 function initClassicOutSide()
    classicOutSide = {}
-   for k, v in pairs(template["classic"]) do
-      if v.gameId == 3 then
-         classicOutSide[v.seqId] = v
+   for k, v in pairs(fishList) do
+      if v.fishType == 2 then
+         classicOutSide[v.id] = v
       end
    end
 end
@@ -182,8 +246,8 @@ function onGetGameStatus(gameData)
    if data.type == 100 then
       endNextTimer()
       toNextTime = 10
-      if isInResult then
-         isInResult = false
+      if isDoBet then
+         isDoBet = false 
       end
       betEndTime = 20 - data.time
       widget.bottom_bg.auto_layout.obj:setTouchEnabled(false)
@@ -200,7 +264,7 @@ function onGetGameStatus(gameData)
          function()
             toNextTime = toNextTime - 1
             if isDoBet then
-              return 
+               return 
             end
             widget.bottom_bg.auto_layout.label.obj:setText("等待开始...还剩"..toNextTime.."秒")
             if toNextTime == 0 then
@@ -214,7 +278,9 @@ function onGetGameStatus(gameData)
 end
 
 function onBetSucceed(_data)
-   isBet[_data.betid] = true
+   if not isBet[_data.betid] then
+      isBet[_data.betid] = true
+   end
    if not isDoBet then
       isDoBet = true
    end
@@ -271,6 +337,7 @@ function initView()
    -- )
 
    initCostView()
+   initRankView()
    
    startFishTimer()
    if data.type == 200 then
@@ -341,8 +408,8 @@ function initCostView()
          tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.bottom_bg.list_layout.bg.obj)
       end
    end    
-   local maxListNum = 5
-   local vipLv = 0
+   -- local maxListNum = 5
+   -- local vipLv = 0
    local maxSingleGold = 5000000
    -- if countLv.getVipLv(userdata.UserInfo.vipExp) then
    --    vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
@@ -415,7 +482,7 @@ function initCostView()
          if event == "releaseUp" then
             -- tool.buttonSound("releaseUp","effect_12")
             -- autoFunc()
-            call(11001,20038626,0,"is a message!")
+            -- call(11001,20038626,0,"is a message!")
          end
       end
    )
@@ -703,9 +770,9 @@ function multiEffect(index, arr, callback)
 end
 
 function checkMultiFish(id, callback)
-   local classicTmp = classicOutSide[id["out"]]
+   local classicTmp = classicOutSide[id]
    local arr = splitString(classicTmp.multiEffect, ",")
-   table.insert(arr,1,id["out"])
+   table.insert(arr,1,id)
    if classicTmp.multiEffect ~= "" then
       multiEffect(1, arr, callback)
    else 
@@ -756,19 +823,13 @@ function playCircle(maxNum, name)
                            local resultCnt = 0
                            if data.type == 201 then
                               local resultCnt = name == "inside" and data.GameResult.f[2]-12 or data.GameResult.f[1]
-                              local lastCnt = math.abs(resultCnt-st)
-                              if lastCnt >= slowNum and not canStop then
-                                 canStop = true 
-                              end
-                              if canStop then
-                                 delay = 0.4
-                                 if st == resultCnt then
-                                    finishCircleCnt = finishCircleCnt + 1
-                                    if finishCircleCnt == 2 then
-                                       endEffect() 
-                                    end 
-                                    return
-                                 end
+                              delay = 0.4
+                              if st == resultCnt then
+                                 finishCircleCnt = finishCircleCnt + 1
+                                 if finishCircleCnt == 2 then
+                                    endEffect() 
+                                 end 
+                                 return
                               end
                            end 
                            tool.createEffect(tool.Effect.delay,{time = delay-0.1 > 0.1 and delay-0.1 or 0.1},widget.game_bg[name]["item".._st].effect.obj,
@@ -847,7 +908,7 @@ function checkWinResult()
       message.outside = fishList[data.GameResult.f[1]].name
       message.inside = fishList[data.GameResult.f[2]].name
       chat.addMessage(message)
-      if data.GameResult.u then
+      if data.GameResult.u and #data.GameResult.u > 0 then
          local isInResult = false
          for k,v in pairs(data.GameResult.u) do
              if v.i == userdata.UserInfo.uidx then
@@ -857,10 +918,10 @@ function checkWinResult()
                 end
              else
              end
-                message.type = 1
-                message.name = v.e
-                message.money = v.m
-                chat.addMessage(message)         
+             message.type = 1
+             message.name = v.e
+             message.money = v.m
+             chat.addMessage(message)         
          end
          if not isInResult and isDoBet then
             widget.bottom_bg.auto_layout.label.obj:setText("很遗憾您没有中奖！") 
@@ -1066,7 +1127,7 @@ function changeTouchEnabled(flag)
       end
    end
    for k, v in pairs(betList) do
-      v.obj:setTouchEnabled(flag)
+       v.obj:setTouchEnabled(flag)
    end
    if flag == false then
       if longPressHandler then
@@ -1153,7 +1214,7 @@ function bet(id, needGold)
    --    saveSetting("isFirstGame",userdata.isFirstGame)
    --    widget.bottom_bg.alert.obj:setVisible(false)
    -- end
-   call(9001, id, 1000)
+   call(9001, id, needGold)
 end
 
 function onAutoBet(event1)
@@ -1219,15 +1280,6 @@ function exit()
       event.unListen("ON_GET_GAME_STATUS",onGetGameStatus)
       event.unListen("ON_BET_SUCCEED", onBetSucceed)
       event.unListen("ON_BET_FAILED", onBetFailed)
-      -- event.unListen("OPEN_CASH_ONE",onOpenCashOne)
-      -- event.unListen("OPEN_CASH",onOpenCash)
-      -- event.unListen("ON_GET_GAME_STATUS",onUpdateGameStatus)
-      -- event.unListen("GAME_USER_ACTION_SUCCEED", onGameUserActionSucceed)
-      -- event.unListen("GAME_USER_ACTION_FAILED", onGameUserActionFailed)
-      -- event.unListen("ON_GET_RANK_LIST", initRankView)
-      -- event.unListen("ON_BIG_WIN", onBigWin)
-
-      commonTop.exit()
       if chatView then
          chat.exit()
          chatView = nil
@@ -1267,6 +1319,11 @@ function exit()
       lastOpenId = {inside=0,outside=0}
       cdEffectPlaying = false
       isRepeat = false
+      isBet = {}
+      betEndTime = 0
+      finishCircleCnt = 0
+      toNextTime = 10
+      isDoBet = false
    end
 end
 
@@ -1281,45 +1338,6 @@ end
 
 local maxHistoryNum = 5
 -----------------------------------------------
-function onOpenCash(id, currentEndTime,clickEndTime,prizePool)
-   if this == nil then
-      return
-   end
-   if userdata.isInGame == false then
-      userdata.isInGame = true
-   end
-   data.currentEndTime = currentEndTime / 1000
-   data.clickEndTime = clickEndTime / 1000
-   data.prizePool = prizePool
-   -- print("####################onopencash")
-   -- printTable(id)
-   --id["out"] = 12
-   if totalCashGold > 0 then
-      local cashGold = userdata.UserInfo.giftGold + userdata.UserInfo.gold - lastUserGold
-      if #historyUserGold == maxHistoryNum then
-         historyUserGold[maxHistoryNum] = nil
-      end 
-      table.insert(historyUserGold,1,cashGold)
-      local historyStr = ""
-      for i=1,#historyUserGold do
-          historyStr = historyStr..tostring(historyUserGold[i])..","
-      end
-      saveSetting("fishHistoryGold",historyStr)
-   end
-   lastUserGold = userdata.UserInfo.giftGold + userdata.UserInfo.gold
-   totalCashGold = 0
-   -- playFishEffect(id)
-end
-
-function onOpenCashOne(id,giftGoldGet,goldGet)
-   if this == nil then
-      return
-   end
-   -- print("####################onopencashone")
-   -- print(giftGoldGet,goldGet)
-   winGold = giftGoldGet + goldGet
-   commonTop.unRegisterEvent()
-end
 
 function onUpdateGameStatus(gameData)
    if this == nil then

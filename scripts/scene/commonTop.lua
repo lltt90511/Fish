@@ -22,7 +22,7 @@ function create(_parent,_parentModule)
    this:setPosition(ccp(0,Screen.height/2-widget.obj:getSize().height/2))
 
    tool.setWidgetVal(widget.top_bg.obj,"name",userdata.UserInfo.nickName)
-   
+      
    backList.setBackScene(onBack)
    event.listen("ON_CHANGE_VIP", onChangeVip)
    onChangeVip()
