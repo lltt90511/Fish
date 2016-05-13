@@ -33,28 +33,40 @@ function onEnterGameSucceed(gameData)
    end
 end
 
-function onEnterGameFailed(data)
+function onEnterGameFailed(gameData)
    
 end
 
-function onLeaveGameSucceed(gameid)
-   print("onLeaveGameSucceed",gameid)
-   if gameid > 0 then
+function onLeaveGameSucceed(gameData)
+   print("onLeaveGameSucceed",gameData.gameid)
+   if gameData.gameid > 0 then
       local mainScene = package.loaded["scene.main"]
       mainScene.createSubWidget(nil)
    end
 end
 
-function onLeaveGameFailed(data)
+function onLeaveGameFailed(gameData)
 
 end
 
-function onOpenCashOne(id,giftGoldGet,goldGet)
-   event.pushEvent("OPEN_CASH_ONE",id,giftGoldGet,goldGet)
+function onGetUserListSucceed(gameData)
+   -- body
 end
 
-function onOpenCash(id,currentEndTime,clickEndTime,prizePool)
-   event.pushEvent("OPEN_CASH",id,currentEndTime,clickEndTime,prizePool)
+function onGetUserListSucceed(gameData) 
+   event.pushEvent("ON_GET_USER_LIST_SUCCEED",gameData)
+end
+
+function onGetUserListFailed(gameData) 
+   event.pushEvent("ON_GET_USER_LIST_FAILED",gameData)
+end
+
+function onEnterGameNotice(gameData) 
+   event.pushEvent("ON_ENTER_GAME_NOTICE",gameData)
+end
+
+function onExitGameNotice(gameData) 
+   event.pushEvent("ON_EXIT_GAME_NOTICE",gameData)
 end
 
 function onGetGameStatus(gameData)

@@ -128,4 +128,8 @@
     <Project>loading</Project>
     <GuidesList />
   </GuidesProject>
+  <GuidesProject>
+    <Project>fish_machine1</Project>
+    <GuidesList />
+  </GuidesProject>
 </ArrayOfGuidesProject>

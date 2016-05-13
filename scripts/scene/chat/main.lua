@@ -21,8 +21,8 @@ local systemMessageList = {}
 local isSystemMessagePlaying = false
 local inputWidthChange = 0
 local parentModule = nil
+local fontHeight = 45
 -- payServerUrl = payServerUrl
-
 function create(_width,_height,_gameId,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
    parentModule = _parentModule
@@ -56,7 +56,8 @@ function onSendMessageSucceed(gameData)
       message.type = gameData.qiaoqiao == 0 and 3 or 4
       message.to = gameData.to._nickName
    end
-   message.msg = gameData.con
+   local str = string.gsub(gameData.con,'(%;22|+)','%"',20)
+   message.msg = str
    message.private = gameData.qiaoqiao
    addMessage(message)
 end
@@ -284,7 +285,7 @@ function addMessage(message, time)
       local layout = Layout:create()
       local _richText = RichText:create()
       _richText:ignoreContentAdaptWithSize(false)
-      _richText:setSize(CCSize(WIDTH,36))
+      _richText:setSize(CCSize(WIDTH,fontHeight))
       local num = 1
       local color = ccc3(255,255,255)
       if message.type == 0 then
@@ -308,7 +309,7 @@ function addMessage(message, time)
       print("textWidth=============================================",textWidth)
       if textWidth > WIDTH-10 then     
          _richText:ignoreContentAdaptWithSize(false)
-         _richText:setSize(CCSize(WIDTH-10, 36*math.ceil(textWidth/(WIDTH-10))))
+         _richText:setSize(CCSize(WIDTH-10, fontHeight*math.ceil(textWidth/(WIDTH-10))))
       end
       _richText:setAnchorPoint(ccp(0,0))
       _richText:setPosition(ccp(0,0))
@@ -473,7 +474,7 @@ function exit()
    end
 end
 
-function onExpression(event)
+function onExpression(event)  
    if event == "releaseUp" then
       expVisible = not expVisible
       changeExpressionPanelVisible(expVisible)
@@ -503,7 +504,9 @@ function onSend(event)
          --      call("gameChat",str)
          --      textInput:setText("")
          --   end)
-         call(11001,-1,0,str)
+         local _str = string.gsub(str,'"',';22|',20)
+         print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str,_str)
+         call(11001,-1,0,_str)
          textInput:setText("")
       end
    end

@@ -653,7 +653,7 @@ function createSubWidget(m)
       end)
    else 
       widget.obj:setVisible(true)
-      call("getActivityExist")
+      -- call("getActivityExist")
    end
 end
 

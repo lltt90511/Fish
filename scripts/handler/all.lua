@@ -124,13 +124,22 @@ handlerMap = {
    -- "onGetAllActivityInfo",
    -- "onGetActivityExist",
 
+   -- --network--
+   ["onChangedNetwork"] = "onChangedNetwork",
+
+   -- --nc--
+   ["onConnect"] = "onConnect",
+   ["onClose"] = "onClose",
+
    --login
    [1002] = "onLoginSucceed",
    [1003] = "onLoginFailed",
 
    --change info
-   [2002] = "onChangeInfoSucceed",
-   [2003] = "onChangeInfoFailed",
+   [2002] = "onChangeNameSucceed",
+   [2003] = "onChangeNameFailed",
+   [2102] = "onChangeSexSucceed",
+   [2103] = "onChangeSexFailed",
 
    --change gold
    [3002] = "onChangeGold",
@@ -147,9 +156,17 @@ handlerMap = {
    [6002] = "onEnterGameSucceed",
    [6003] = "onEnterGameFailed",
 
+   --user list
+   [6102] = "onGetUserListSucceed",
+   [6103] = "onGetUserListFailed",
+
    --leave game
    [7002] = "onLeaveGameSucceed",
    [7003] = "onLeaveGameFailed",
+
+   --game notice
+   [7104] = "onEnterGameNotice",
+   [7105] = "onExitGameNotice",
 
    --game status
    [8002] = "onGetGameStatus",
@@ -164,6 +181,12 @@ handlerMap = {
 
    --get chat 
    [12002] = "onGetMessage",
+
+   --upload head image
+   ["onUpload"] = "onUpload",
+   ["onUploadError"] = "onUploadError",
+   [13002] = "onUserChangeImageSucceed",
+   [13003] = "onUserChangeImageFailed",
 }
 
 

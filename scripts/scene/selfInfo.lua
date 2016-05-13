@@ -18,16 +18,15 @@ local eventHash = {}
 
 function create(parent)
     this = tool.loadWidget("cash/self_info",widget,parent,99)
-    boxList = {widget.panel.bg.unKnow,widget.panel.bg.man,widget.panel.bg.female}
+    boxList = {[0]=widget.panel.bg.unKnow,[1]=widget.panel.bg.man,[2]=widget.panel.bg.female}
     for i,v in pairs(boxList) do
-        local id = i
         v.obj:registerEventScript(function (event,data)
             if event == "releaseUp" then
                tool.buttonSound("releaseUp","effect_12")
-              switchSex(id-1,true)
-              if userdata.UserInfo.sex ~= id -1 then
-                 call("changeSex", id -1 )
-              end
+               switchSex(i,true)
+               if userdata.UserInfo.sex ~= i then
+                  call(2101, i)
+               end
             end
         end)
     end
@@ -36,13 +35,13 @@ function create(parent)
     event.listen("ON_CHANGE_VIP",initInfo)
     event.listen("ON_CHANGE_NAME",initInfo)
     event.listen("UPLOAD_PERSONAL_PHOTO", onUploadSucceed)
-    event.listen("HEAD_ICON_CHANGE", onSetDefaultImageSucceed)
+    event.listen("HEAD_ICON_CHANGE", onUserChangeImageSucceed)
     event.listen("ON_GET_QUEST", showDajiang)
-    onSetDefaultImageSucceed()
+    onUserChangeImageSucceed()
     --widget.nameEdit.obj:setPositionX(540)
     widget.nameEdit.obj:setTouchEnabled(true)
     initEditBox()
-    call("getQuestCountList")
+    -- call("getQuestCountList")
    return this
 end
 
@@ -61,7 +60,6 @@ end
 
 function switchSex(id,click)
   print ("switchSex",id)
-  id = id + 1
   for _,v in pairs(boxList) do
       v.obj:setSelectedState(false)
   end
@@ -70,17 +68,17 @@ function switchSex(id,click)
  end
 end
 function initInfo()
-    widget.panel.bg.id.obj:setText(userdata.UserInfo.id+8000000)
+    widget.panel.bg.id.obj:setText(userdata.UserInfo.uidx)
     if type(userdata.UserInfo.phoneNumber) ~=  "userdata" then
        widget.panel.bg.account.obj:setText("已绑定")
        widget.panel.bg.account.obj:setColor(ccc3(255,255,255))
     end
-    widget.panel.bg.name.obj:setText(userdata.UserInfo.name)
-    widget.panel.bg.gold.obj:setText(userdata.UserInfo.gold+userdata.UserInfo.giftGold)
-    local vipLv,now,max = countLv.getVipLv(userdata.UserInfo.vipExp)
-    widget.panel.bg.vipLv.obj:setStringValue(vipLv)
-    widget.panel.bg.vipNum.obj:setText(now.."/"..max)
-    widget.panel.bg.vipBar.obj:setPercent(now/max*100)
+    widget.panel.bg.name.obj:setText(userdata.UserInfo.nickName)
+    widget.panel.bg.gold.obj:setText(userdata.UserInfo.owncash)
+    -- local vipLv,now,max = countLv.getVipLv(userdata.UserInfo.vipExp)
+    widget.panel.bg.vipLv.obj:setStringValue(userdata.UserInfo.vipLv)
+    -- widget.panel.bg.vipNum.obj:setText(now.."/"..max)
+    -- widget.panel.bg.vipBar.obj:setPercent(now/max*100)
     switchSex(userdata.UserInfo.sex)
 end
 
@@ -100,7 +98,7 @@ function exit()
      event.unListen("ON_CHANGE_VIP",initInfo)
      event.unListen("ON_CHANGE_NAME",initInfo)
      event.unListen("UPLOAD_PERSONAL_PHOTO", onUploadSucceed)
-     event.unListen("HEAD_ICON_CHANGE", onSetDefaultImageSucceed)
+     event.unListen("HEAD_ICON_CHANGE", onUserChangeImageSucceed)
      event.unListen("ON_GET_QUEST", showDajiang)
      textInput = nil
      boxList = {}
@@ -120,7 +118,7 @@ function onChangeName(event)
     if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
         widget.nameEdit.obj:setPositionX(540)
-        textInput:setText(userdata.UserInfo.name)
+        textInput:setText(userdata.UserInfo.nickName)
     end
 end
 function onChangeNameCancel(event)
@@ -134,25 +132,26 @@ function onChangeNameCurrent(event)
       tool.buttonSound("releaseUp","effect_12")
          widget.nameEdit.obj:setPositionX(-1000)
          local text = textInput:getText()
-         if text == userdata.UserInfo.name then
+         if text == userdata.UserInfo.nickName then
             alert.create("名字未变化")
          else
-            local _msg = http.urlencode(text)
-            print("_msg",_msg)
-            http.request(payServerUrl.."/ydream/login?type=99&param=".._msg,
-              function(header,body,flag)
-                if flag == false then
-                  alert.create("服务器连接失败")
-                  return 
-                end
-                local tab = cjson.decode(body)
-                printTable(tab)
-                if tab.result == "false" then
-                 alert.create("您输入的内容检测包含屏蔽字")
-                 return
-                end
-                call("changeCharName",tab.param)
-              end)
+            -- local _msg = http.urlencode(text)
+            -- print("_msg",_msg)
+            -- http.request(payServerUrl.."/ydream/login?type=99&param=".._msg,
+            --   function(header,body,flag)
+            --     if flag == false then
+            --       alert.create("服务器连接失败")
+            --       return 
+            --     end
+            --     local tab = cjson.decode(body)
+            --     printTable(tab)
+            --     if tab.result == "false" then
+            --      alert.create("您输入的内容检测包含屏蔽字")
+            --      return
+            --     end
+            --     call("changeCharName",tab.param)
+            --   end)
+            call("2001",text)
         end
     end
 end
@@ -226,35 +225,38 @@ end
 function onUpload(event)
    if event == "releaseUp" then
       print("##########onUploadLocal")
-      local callback=function(t)
-         printTable(t)
-         fileManager.insertUpload({path=t.fullPath,type=1,seconds=0})
-         call("uploadImage")         
-      end
-      luaoc.callStaticMethod("AppController","chooseImage",{width=imageWidth,height=imageHeight,type=1,callback=callback})
-      setTakePhotoFuncCallBack(callback)
-      luaj.callStaticMethod("cc/yongdream/nshx/Util","startPhoto",{"onUploadFromLocal",2,1,imageWidth,imageHeight})   
+      C_upload("http://120.27.156.196:8080/User/WebForm1.aspx","cash/qietu/tymb/xiaopuhuo.png",1,0,0) 
+      -- local callback=function(t)
+      --    printTable(t)
+      --    -- fileManager.insertUpload({path=t.fullPath,type=1,seconds=0})
+      --    -- call("uploadImage")      
+      --    C_upload("http://120.27.156.196:8080/User/WebForm1.aspx",t.fullPath,1,0,0)   
+      -- end
+      -- luaoc.callStaticMethod("AppController","chooseImage",{width=imageWidth,height=imageHeight,type=1,callback=callback})
+      -- setTakePhotoFuncCallBack(callback)
+      -- luaj.callStaticMethod("cc/yongdream/nshx/Util","startPhoto",{"onUploadFromLocal",2,1,imageWidth,imageHeight})   
    end
 end
 
 function onUploadSucceed(data)
    -- local uuid = data.fileName
-   local arr2 = splitString(data.fileName,splitURLChar)
-   local uuid = nil
-   if #arr2 >= 2 then
-      uuid = table.concat(arr2,"/")
-      uuid = splitString(uuid,"")[1]
-   end
-   if uuid then
+   -- local arr2 = splitString(data.fileName,splitURLChar)
+   -- local uuid = nil
+   -- if #arr2 >= 2 then
+   --    uuid = table.concat(arr2,"/")
+   --    uuid = splitString(uuid,"")[1]
+   -- end
+   if data and type(data) == type({}) then
       if data.type == 1 then --头像
-         call("setDefaultImage",uuid)
+         call(13001,data.fileName)
          alert.create("头像上传成功")
       end
    end
 end
 
-function onSetDefaultImageSucceed()
-   tool.loadRemoteImage(eventHash, widget.panel.bg.image.img.obj, userdata.UserInfo.id)
+function onUserChangeImageSucceed(data)
+   print("onUserChangeImageSucceed")
+   -- tool.loadRemoteImage(eventHash, widget.panel.bg.image.img.obj, userdata.UserInfo.uidx)
 end
 
 widget = {

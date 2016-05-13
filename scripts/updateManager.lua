@@ -492,6 +492,11 @@ function main()
    
    if platform == "Windows" or platform == "MAC" then
       downloadServerList()
+      -- finishLoad = true
+      -- bar.update(100)
+      -- -- performWithDelay(function() bar.exit() layer:addChild(jumpBtn()) end,0)
+      -- performWithDelay(function() firstLaunch() finishUpdate() end,0)
+      -- finish()
    end
 end
 

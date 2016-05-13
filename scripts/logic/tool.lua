@@ -1290,6 +1290,9 @@ schedule(function ()
 		RemotePhotoList = {}
 	end
 end,1/30)
+function getUserImage(eventHash,obj,charId,loadendFunc)
+	local userdata =package.loaded['logic.userdata']
+end
 function loadRemoteImage(eventHash,obj,charId,loadendFunc)
 	local userdata =package.loaded['logic.userdata']
 	loadRemoteFile("role/man_head.png","role/girl_head.png",RemoteImageList,"getImageFileList",userdata.CharIdToImageFile,eventHash,charId,obj,loadendFunc)

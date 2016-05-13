@@ -6,22 +6,22 @@ module("handler.file", package.seeall)
 
 function onUpload(t,oldName,jsonTmp,seconds,bytes)
    print("#######################onUpload#####################")
-   print(t,oldName,seconds,bytes)
-   printTable(jsonTmp)
-   local uuid = jsonTmp.url
-   local arr = splitString(jsonTmp.url,'/')
-   jsonTmp.url = table.concat(arr,splitURLChar)
+   print(t,oldName,jsonTmp,seconds,bytes)
+   -- printTable(jsonTmp)
+   -- local uuid = jsonTmp.url
+   -- local arr = splitString(jsonTmp.url,'/')
+   -- jsonTmp.url = table.concat(arr,splitURLChar)
 
-   seconds = math.floor(seconds)
-   if type(jsonTmp) ~= 'table' then
-      return
-   end
+   -- seconds = math.floor(seconds)
+   -- if type(jsonTmp) ~= 'table' then
+   --    return
+   -- end
    local path = fileManager.path
    if t == 1 then--头像
-      C_rename(path.."/"..oldName,path.."/"..jsonTmp.url)
-      fileManager.addFile(jsonTmp.url,bytes)
-      C_ImageToEncode(path.."/"..jsonTmp.url)
-      event.pushEvent("UPLOAD_PERSONAL_PHOTO",{type = 1, fileName = jsonTmp.url})
+      C_rename(path.."/"..oldName,path.."/"..jsonTmp)
+      fileManager.addFile(jsonTmp,bytes)
+      C_ImageToEncode(path.."/"..jsonTmp)
+      event.pushEvent("UPLOAD_PERSONAL_PHOTO",{type = 1, fileName = jsonTmp})
    end
 end
 function onUploadError(type)
@@ -82,17 +82,19 @@ function onPreUploadToRoomFailed(data)
 end
 
 
-function onSetDefaultImageFailed(data)
+function onUserChangeImageFailed(data)
    alert.create(data)
 end
 
-function onSetDefaultImageSucceed(uuid)
-   userdata.UserInfo.imageFile = uuid
-   local arr = splitString(uuid,"/")
-   local fileName = ""
-   if #arr >= 2 then
-      userdata.CharIdToImageFile[userdata.UserInfo.id] = {file=table.concat(arr,splitURLChar),sex=userdata.UserInfo.sex}
-   end
+function onUserChangeImageSucceed(data)
+   -- userdata.UserInfo.imageFile = uuid
+   -- local arr = splitString(uuid,"/")
+   -- local fileName = ""
+   -- if #arr >= 2 then
+   --    userdata.CharIdToImageFile[userdata.UserInfo.id] = {file=table.concat(arr,splitURLChar),sex=userdata.UserInfo.sex}
+   -- end
+   userdata.UserInfo.PicUrl = data.newImg
+   userdata.CharIdToImageFile[userdata.UserInfo.uidx] = {file=data.newImg,sex=userdata.UserInfo.sex}
    event.pushEvent("HEAD_ICON_CHANGE",uuid)
 end
 

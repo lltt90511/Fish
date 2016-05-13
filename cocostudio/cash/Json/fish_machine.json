@@ -10,34 +10,8 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [
-    "qietu/mora/bg.png",
-    "qietu/mora/touxiang_1.png",
-    "qietu/main2/default.jpg",
-    "qietu/mora/yaoqing.png",
-    "qietu/mora/yazhuanniu.png",
-    "qietu/mora/di.png",
-    "qietu/mora/di_2.png",
-    "qietu/mora/shibai.png",
-    "qietu/mora/jiandao_2.png",
-    "qietu/mora/jiandao_1.png",
-    "qietu/mora/shitou_2.png",
-    "qietu/mora/shitou_1.png",
-    "qietu/mora/bu_2.png",
-    "qietu/mora/bu_1.png",
-    "qietu/mora/yazhu_1.png",
-    "qietu/mora/jinbi.png",
-    "qietu/mora/di_1.png",
-    "qietu/tymb/goldIcon.png",
-    "qietu/mora/alert.png",
-    "qietu/mora/shuru.png",
-    "qietu/mora/queding.png",
-    "qietu/tymb/guanbiBt01.png",
-    "qietu/tymb/guanbiBt02.png",
-    "qietu/tymb/changBt01.png",
-    "qietu/tymb/changBt02.png"
-  ],
-  "version": "1.5.0.1",
+  "texturesPng": [],
+  "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",
     "name": null,
@@ -207,7 +181,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -488,7 +462,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -769,7 +743,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -1050,7 +1024,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -1331,7 +1305,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -1612,7 +1586,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -1893,7 +1867,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -2174,7 +2148,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -2455,7 +2429,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -2736,7 +2710,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -3017,7 +2991,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -3298,7 +3272,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -3634,7 +3608,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -3915,7 +3889,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -4196,7 +4170,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -4477,7 +4451,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -4758,7 +4732,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -5039,7 +5013,7 @@
                       "capInsetsY": 0,
                       "fileName": null,
                       "fileNameData": {
-                        "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                        "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                         "plistFile": "",
                         "resourceType": 2
                       },
@@ -7784,7 +7758,7 @@
               "capInsetsY": 0,
               "fileName": null,
               "fileNameData": {
-                "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                 "plistFile": "",
                 "resourceType": 2
               },
@@ -8279,7 +8253,7 @@
               "capInsetsY": 0,
               "fileName": null,
               "fileNameData": {
-                "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                 "plistFile": "",
                 "resourceType": 2
               },
@@ -8698,7 +8672,7 @@
               "capInsetsY": 0,
               "fileName": null,
               "fileNameData": {
-                "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                 "plistFile": "",
                 "resourceType": 2
               },
@@ -9646,7 +9620,7 @@
               "capInsetsY": 0,
               "fileName": null,
               "fileNameData": {
-                "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                 "plistFile": "",
                 "resourceType": 2
               },
@@ -9700,7 +9674,7 @@
               "capInsetsY": 0,
               "fileName": null,
               "fileNameData": {
-                "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                 "plistFile": "",
                 "resourceType": 2
               },

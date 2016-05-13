@@ -155,14 +155,16 @@ function call( funcName, ... )
 	-- end
 	--printTable(t)
 	-- table.insert(t,1,funcName)
+
+	local connection = "^&^"
 	local str = tostring(funcName)--cjson.encode(t)
 	if type(...) == type({}) then
 	   for k,v in pairs( ...) do
-		   str = str .. "&" .. v
+		   str = str .. connection .. v
 	   end
 	else
 	   for k,v in pairs({ ...}) do
-		   str = str .. "&" .. v
+		   str = str .. connection .. v
 	   end
 	end
 	print("call!!!!!!!!!!!!!!!!!",str)
@@ -297,6 +299,7 @@ regListner("onSyncTime",function(time)
    timeDiff = time/1000 - os.time()
 end )
 if isClient then
+	print("C_doTick!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(C_doTick, 0, false)
 end
 

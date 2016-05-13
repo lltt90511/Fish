@@ -8,9 +8,9 @@ function connect()
    local server = serverList[connectId]
    C_connectAsync("120.27.156.196", "51111")
    -- C_connectAsync("10.0.39.11", "51111")
-   setUploadURL(server.uploadURL)
-   setDownloadURL(server.downloadURL)
-   setPayServerUrl(server.payUrl)
+   -- setUploadURL(server.uploadURL)
+   -- setDownloadURL(server.downloadURL)
+   -- setPayServerUrl(server.payUrl)
 end
 
 function stopTimer()
@@ -22,8 +22,8 @@ end
 
 function startTimeHandler()
 	stopTimer()
-	onTick()
-	hurtTimer = schedule(onTick,3)
+	-- onTick()
+	-- hurtTimer = schedule(onTick,3)
 end
 
 function disConnect()
@@ -33,5 +33,5 @@ function disConnect()
 end
 
 function onTick()
-	call("syncTime")
+	-- call("syncTime")
 end

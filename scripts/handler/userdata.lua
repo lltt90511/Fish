@@ -419,3 +419,22 @@ end
 function onGetActivityExist(flag)
 	event.pushEvent("ON_GET_ACTIVITY_EXIST",flag)
 end
+
+----------------------------------------------------
+function onChangeNameSucceed(data)
+	userdata.UserInfo.nickName = data.newName
+	event.pushEvent("ON_CHANGE_NAME")
+	alert.create("修改成功")
+end
+
+function onChangeNameFailed(data)
+	alert.create(data.msg)
+end
+
+function onChangeSexSucceed(data)
+	userdata.UserInfo.sex = data.sex
+end
+
+function onChangeSexFailed(data)
+	alert.create(data.msg)
+end

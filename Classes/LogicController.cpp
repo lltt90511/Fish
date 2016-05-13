@@ -110,7 +110,7 @@ void LogicController::onConvertFinish(const char *path){
 void LogicController::onUpload(int type, char *oldName, const char* str, int seconds,int bytes){
     //printf("%d %s %s %d\n",type,oldName,str, seconds);
     char *cmd = new char[strlen(oldName)+strlen(str)+100];
-    sprintf(cmd, "{\"functionName\":\"onUpload\",\"parameters\":[%d,\"%s\",%s,%d,%d]}", type, oldName, str, seconds,bytes);
+    sprintf(cmd, "{\"functionName\":\"onUpload\",\"parameters\":[%d,\"%s\",\"%s\",%d,%d]}", type, oldName, str, seconds,bytes);
     APC *apc = new APC(0, cmd, strlen(cmd));
     this->pushRpcQueue(apc);
 }
