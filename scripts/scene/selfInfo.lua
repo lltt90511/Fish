@@ -256,7 +256,7 @@ end
 
 function onUserChangeImageSucceed(data)
    print("onUserChangeImageSucceed")
-   -- tool.loadRemoteImage(eventHash, widget.panel.bg.image.img.obj, userdata.UserInfo.uidx)
+   tool.getUserImage(eventHash, widget.panel.bg.image.img.obj, userdata.UserInfo.uidx)
 end
 
 widget = {

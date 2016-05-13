@@ -1292,6 +1292,51 @@ schedule(function ()
 end,1/30)
 function getUserImage(eventHash,obj,charId,loadendFunc)
 	local userdata =package.loaded['logic.userdata']
+	getImageFile("role/man_head.png","role/girl_head.png",RemoteImageList,"getImageFileList",userdata.CharIdToImageFile,eventHash,charId,obj,loadendFunc)
+end
+function getImageFile(defaltMan,defaultGril,list,eventPer,cache,eventHash,charId,obj,loadendFunc)
+	local event = package.loaded['logic.event']	
+	local eventName = eventPer..charId
+	local load = function (body)
+		if  body.file == "" then
+			if body.sex == 1 then
+				obj:loadTexture(defaltMan)
+			else
+				obj:loadTexture(defaultGril)
+			end
+			if loadendFunc then
+				loadendFunc()
+			end
+		elseif fileManager.hash[body.file] == true then
+			if obj then
+				obj:loadTexture(fileManager.path.."/"..body.file)
+				if loadendFunc then
+					loadendFunc()
+				end
+			end
+		else
+			print (body.file)
+			eventHash[body.file] = true
+			event.listen(body.file,
+			   function()
+			   	  event.unListen(body.file)
+			      eventHash[body.file] = nil
+				  if obj then
+					 obj:loadTexture(fileManager.path.."/"..body.file)
+				  end
+					if loadendFunc then
+						loadendFunc()
+					end
+			   end
+			)
+			fileManager.download("",splitString(body.file,"")[1],0,0)
+		end
+	end
+	local body = cache[charId]
+	if body ~= nil then
+		load(body)
+		return 
+	end
 end
 function loadRemoteImage(eventHash,obj,charId,loadendFunc)
 	local userdata =package.loaded['logic.userdata']
