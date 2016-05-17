@@ -19,34 +19,34 @@ function create(_parent,_parentModule)
    parentModule = _parentModule
    this = tool.loadWidget("cash/common_top",widget,nil,nil,true)
    thisParent:addChild(this,10)
-   this:setPosition(ccp(0,Screen.height/2-widget.obj:getSize().height/2))
+   this:setPosition(ccp(0,0))
 
-   tool.setWidgetVal(widget.top_bg.obj,"name",userdata.UserInfo.nickName)
+   tool.setWidgetVal(widget.top.name_bg.obj,"name",userdata.UserInfo.nickName)
       
    backList.setBackScene(onBack)
    event.listen("ON_CHANGE_VIP", onChangeVip)
    onChangeVip()
    event.listen("HEAD_ICON_CHANGE", onSetDefaultImageSucceed)
    onSetDefaultImageSucceed()
-   widget.top_bg.image.obj:setTouchEnabled(true)
-   widget.top_bg.image.obj:registerEventScript(
-      function(event)
-         if event == "releaseUp" then
-            tool.buttonSound("releaseUp","effect_12")
-            if messageNum > 0 then
-               messageNum = 0
-               widget.top_bg.image.pao.obj:setVisible(false)
-            end
-            if not isShowChatHistory and table.maxn(UserChar) > 0 then
-               isShowChatHistory = true
-               local chatHistory = package.loaded['scene.chatHistory']
-               chatHistory.create(thisParent,package.loaded["scene.commonTop"],true)
-            end
-         end
-      end)
+   -- widget.top.head.obj:setTouchEnabled(true)
+   -- widget.top.head.obj:registerEventScript(
+   --    function(event)
+   --       if event == "releaseUp" then
+   --          tool.buttonSound("releaseUp","effect_12")
+   --          if messageNum > 0 then
+   --             messageNum = 0
+   --             widget.top_bg.image.pao.obj:setVisible(false)
+   --          end
+   --          if not isShowChatHistory and table.maxn(UserChar) > 0 then
+   --             isShowChatHistory = true
+   --             local chatHistory = package.loaded['scene.chatHistory']
+   --             chatHistory.create(thisParent,package.loaded["scene.commonTop"],true)
+   --          end
+   --       end
+   --    end)
 
-   initPaoView()
-   event.listen("ON_SET_PAO", setPao)
+   -- initPaoView()
+   -- event.listen("ON_SET_PAO", setPao)
 
    registerEvent()
 end
@@ -77,6 +77,7 @@ end
 
 function onSetDefaultImageSucceed()
    -- tool.loadRemoteImage(eventHash, widget.top_bg.image.obj, userdata.UserInfo.id)
+   tool.getUserImage(eventHash, widget.top.head.icon.obj, userdata.UserInfo.uidx)
 end
 
 function registerEvent()
@@ -93,12 +94,12 @@ function onChangeGold()
       return
    end
    if userdata.goldAction == false then
-      widget.top_bg.gold.obj:setStringValue(userdata.UserInfo.owncash)
+      widget.top.gold_bg.num.obj:setStringValue(userdata.UserInfo.owncash)
    end
 end
 
 function onChangeVip()
-   widget.top_bg.vip.vip_num.obj:setStringValue(userdata.UserInfo.viplevel)
+   widget.top.vip_bg.vip.num.obj:setStringValue(userdata.UserInfo.viplevel)
 end
 
 function onRecharge(event)
@@ -167,19 +168,29 @@ end
 widget = {
    _noSizeChange = true,
    _ignore = true,
-   top_bg = {
+   top = {
       _type = "ImageView",
-      back_btn = {_type = "Button",_func = onBack},
-      recharge_btn = {_type = "Button", _func = onRecharge},
-      gold = {_type = "LabelAtlas"},
-      name = {_type = "Label"},
-      vip = {_type = "ImageView", vip_num = {_type = "LabelAtlas"}},
-      image = {
+      close = {_type = "Button",_func = onBack},
+      get = {_type = "Button", _func = onRecharge},
+      gold_bg = {
          _type = "ImageView",
-         pao = {
+         num = {_type = "LabelAtlas"},
+         add = {_type = "Button",_func = onRecharge},
+      },
+      name_bg = {
+         _type = "ImageView",
+         name = {_type = "Label"},
+      },
+      vip_bg = {
+         _type = "ImageView",
+         vip = {
             _type = "ImageView",
-            num = {_type = "Label"},
-         },
+            num = {_type = "LabelAtlas"},
+         },      
+      },
+      head = {
+         _type = "ImageView",
+         icon = {_type = "ImageView"},
       },
    },
 }

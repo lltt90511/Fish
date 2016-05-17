@@ -1299,6 +1299,7 @@ function getImageFile(defaltMan,defaultGril,list,eventPer,cache,eventHash,charId
 	local eventName = eventPer..charId
 	local load = function (body)
 		if  body.file == "" then
+			print("unfind!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 			if body.sex == 1 then
 				obj:loadTexture(defaltMan)
 			else
@@ -1308,28 +1309,29 @@ function getImageFile(defaltMan,defaultGril,list,eventPer,cache,eventHash,charId
 				loadendFunc()
 			end
 		elseif fileManager.hash[body.file] == true then
+			print("find!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 			if obj then
-				obj:loadTexture(fileManager.path.."/"..body.file)
+				obj:loadTexture(fileManager.path..body.file)
 				if loadendFunc then
 					loadendFunc()
 				end
 			end
 		else
-			print (body.file)
+			print ("body!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",body.file)
 			eventHash[body.file] = true
 			event.listen(body.file,
 			   function()
 			   	  event.unListen(body.file)
 			      eventHash[body.file] = nil
 				  if obj then
-					 obj:loadTexture(fileManager.path.."/"..body.file)
+					 obj:loadTexture(fileManager.path..body.file)
 				  end
 					if loadendFunc then
 						loadendFunc()
 					end
 			   end
 			)
-			fileManager.download("",splitString(body.file,"")[1],0,0)
+			fileManager.download("http://120.27.156.196:8080/Images/",splitString(body.file,"")[1],0,0)
 		end
 	end
 	local body = cache[charId]
@@ -1337,6 +1339,7 @@ function getImageFile(defaltMan,defaultGril,list,eventPer,cache,eventHash,charId
 		load(body)
 		return 
 	end
+	print("nil!@!~!@@@@@@@@@@@@@@@@@@@@@@@@@@@###")
 end
 function loadRemoteImage(eventHash,obj,charId,loadendFunc)
 	local userdata =package.loaded['logic.userdata']

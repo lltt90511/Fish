@@ -275,6 +275,8 @@ end
 
 
 function onSetDefaultImageSucceed()
+  print("onSetDefaultImageSucceed!!!!!!!!!!!!!!!!!!")
+   tool.getUserImage(eventHash, widget.top.image.obj, userdata.UserInfo.uidx)
    -- tool.loadRemoteImage(eventHash, widget.top.image.obj, userdata.UserInfo.id)
 end
 

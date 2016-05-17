@@ -8,6 +8,9 @@ module("handler.login",package.seeall)
 function onLoginSucceed(data)
    printTable(data)
    userdata.UserInfo = data
+   userdata.CharIdToImageFile[data.uidx] = {file=userdata.UserInfo.PicUrl,sex=userdata.UserInfo.sex}
+   print("@!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+   printTable(userdata.CharIdToImageFile)
    firstToMainScene()
    -- if data.isCreateChar == false then
    --    local loginScene = package.loaded["scene.login"]

@@ -182,9 +182,17 @@ handlerMap = {
    --get chat 
    [12002] = "onGetMessage",
 
-   --upload head image
+   --upload head image   
+   ["onUploadImageSucceed"] = "onUploadImageSucceed",
+   ["onUploadImageFailed"] = "onUploadImageFailed",
    ["onUpload"] = "onUpload",
    ["onUploadError"] = "onUploadError",
+   ["onDownload"] = "onDownload",
+   ["onDownloadError"] = "onDownloadError",
+   ["onProgress"] = "onProgress",
+   ["onSetDefaultImageSucceed"] = "onSetDefaultImageSucceed",
+   ["onSetDefaultImageFailed"] = "onSetDefaultImageFailed",
+   ["onGetImageFileList"] = "onGetImageFileList",
    [13002] = "onUserChangeImageSucceed",
    [13003] = "onUserChangeImageFailed",
 }

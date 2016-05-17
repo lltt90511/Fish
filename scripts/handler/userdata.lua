@@ -236,7 +236,7 @@ function onUpdateQuestCount(list,time)
 	event.pushEvent("ON_UPDATE_QUEST")
 end
 
-function onGetRandomGoldSucceed(id,time,cnt,list)
+function onGetRandomGoldSucceed(data)
 	print("onGetRandomGoldSucceed",id,time,cnt)
 	userdata.UserInfo.randomCnt = cnt
 	userdata.UserInfo.lastRandomTime = time
@@ -246,7 +246,7 @@ function onGetRandomGoldSucceed(id,time,cnt,list)
 	event.pushEvent("ON_RANDOM_GOLD",id,list)
 end
 
-function onGetRandomGoldFailed(str)
+function onGetRandomGoldFailed(data)
 	if userdata.isInGame == true then
 	   userdata.isInGame = false	
 	end
@@ -256,6 +256,13 @@ function onGetRandomGoldFailed(str)
     alert.create(str)
 end
 
+function onGetRandomGoldCnt(data)
+	userdata.UserInfo.randomCnt = cnt
+end
+
+function function_name( ... )
+	-- body
+end
 function onGetVIPRewardSucceed(r,s)
    print("onGetVIPRewardSucceed",r,s)
    alert.create("领取成功！")

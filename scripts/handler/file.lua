@@ -34,9 +34,9 @@ end
 
 function checkImageFileLegal(fileName)
    if fileName ~= nil and fileName ~= "" then
-      local arr = splitString(fileName,".jpg")
+      local arr = splitString(fileName,".png")
       if #arr == 2 then
-         local texture = CCTextureCache:sharedTextureCache():addImage(fileManager.path.."/"..fileName)
+         local texture = CCTextureCache:sharedTextureCache():addImage(fileManager.path..fileName)
          if texture == nil then
             return false
          end
@@ -46,7 +46,6 @@ function checkImageFileLegal(fileName)
 end
 
 function onDownload(t,fileName,nowIndex,bytes)
-   print(t,fileName,nowIndex,bytes)
    if checkImageFileLegal(fileName) == false then
       return
    end

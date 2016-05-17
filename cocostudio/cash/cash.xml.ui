@@ -49,7 +49,41 @@
   <ProjectType>UIProject</ProjectType>
   <ResRelativePath />
   <imageFileList />
-  <imagePngList />
+  <imagePngList>
+    <string>qietu/fish1/bottom_bg.png</string>
+    <string>qietu/fish1/bet_bg.png</string>
+    <string>qietu/fish1/bet1.png</string>
+    <string>qietu/fish1/bet2.png</string>
+    <string>qietu/fish1/bet_1.png</string>
+    <string>qietu/fish1/bet_2.png</string>
+    <string>qietu/fish1/bet_3.png</string>
+    <string>qietu/fish1/bet_4.png</string>
+    <string>qietu/fish1/bet_5.png</string>
+    <string>qietu/fish1/bet_6.png</string>
+    <string>qietu/top/vip_bg.png</string>
+    <string>qietu/fish1/point.png</string>
+    <string>qietu/fish1/rebet1.png</string>
+    <string>qietu/fish1/rebet2.png</string>
+    <string>qietu/fish1/line.png</string>
+    <string>qietu/fish1/fish_bg.jpg</string>
+    <string>qietu/fish1/cd_bg.png</string>
+    <string>qietu/fish1/light_2.png</string>
+    <string>qietu/fish1/fish_13.png</string>
+    <string>qietu/fish1/fish_10.png</string>
+    <string>qietu/fish1/fish_1.png</string>
+    <string>qietu/fish1/fish_2.png</string>
+    <string>qietu/fish1/fish_3.png</string>
+    <string>qietu/fish1/fish_4.png</string>
+    <string>qietu/fish1/fish_14.png</string>
+    <string>qietu/fish1/fish_5.png</string>
+    <string>qietu/fish1/fish_6.png</string>
+    <string>qietu/fish1/fish_7.png</string>
+    <string>qietu/fish1/fish_8.png</string>
+    <string>qietu/fish1/fish_9.png</string>
+    <string>qietu/fish1/light_1.png</string>
+    <string>qietu/fish1/fish_11.png</string>
+    <string>qietu/fish1/fish_12.png</string>
+  </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
   <CurrentUIJson>fish_machine1.json</CurrentUIJson>
 </UIProject>
