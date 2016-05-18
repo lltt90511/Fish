@@ -23,7 +23,8 @@ local currentPage = 0
 local maxNum = 5
 local hasExpression = false
 local isToBottom = false
-
+local isPrivate = false
+local check = nil
 function create(_parent,_name,_id,_parentModule)
 	thisParent = _parent
   parentModule = _parentModule
@@ -33,10 +34,11 @@ function create(_parent,_name,_id,_parentModule)
 	targateName = _name
     targateId = _id
     currentPage = 0
-    initView(true)
+    -- initView(true)
     initEditBox()
     initExpression()
     changeExpressionPanelVisible(expVisible)
+    -- widget.bg.check.obj:setSelectedState(isPrivate)
     widget.bg.label_2.obj:setText(_name)
     widget.bg.label_1.obj:setPositionX(widget.bg.label_2.obj:getPositionX()-widget.bg.label_2.obj:getSize().width/2-5)
     widget.bg.label_3.obj:setPositionX(widget.bg.label_2.obj:getPositionX()+widget.bg.label_2.obj:getSize().width/2+5)
@@ -47,23 +49,104 @@ function create(_parent,_name,_id,_parentModule)
     -- widget.bg.list.obj:setInnerContainerSize(CCSize(listInnerSize.width,listInnerSize.height))
     -- widget.bg.list.obj:setSize(CCSize(listSize.width,listSize.height))
 
-    local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-    if vipLv < 6 then
-       widget.bg.inviter.obj:setVisible(false)
-       widget.bg.inviter.obj:setTouchEnabled(false)
-    end
-    widget.bg.list.obj:registerEventScript(function(event)
-         -- print("event!!!!!!!!!",event)
-         if event == "SCROLL_TOP" then
-            print("SCROLL_TOP!!!!!!!!!!!!!!!!!!")
-            if isToBottom then 
-               -- print("isToBottom 2222!!!!!!!!!!!!!!!!!!") 
-                return 
-            end 
-            currentPage = currentPage + 1
-            initView(false)
-         end
-    end)
+    -- local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+    -- if vipLv < 6 then
+    --    widget.bg.inviter.obj:setVisible(false)
+    --    widget.bg.inviter.obj:setTouchEnabled(false)
+    -- end
+    -- widget.bg.list.obj:registerEventScript(function(event)
+    --      -- print("event!!!!!!!!!",event)
+    --      if event == "SCROLL_TOP" then
+    --         print("SCROLL_TOP!!!!!!!!!!!!!!!!!!")
+    --         if isToBottom then 
+    --            -- print("isToBottom 2222!!!!!!!!!!!!!!!!!!") 
+    --             return 
+    --         end 
+    --         currentPage = currentPage + 1
+    --         initView(false)
+    --      end
+    -- end)
+end
+
+function addPrivateMessage(data)
+   if not this then return end
+   local message = {}
+   local flag = false
+   local _id = 0
+   if data.fromId == userdata.UserInfo.uidx then
+      _id = data.fromId
+      flag = false
+   elseif data.toId == userdata.UserInfo.uidx then
+      _id = data.fromId
+      flag = true
+   else
+      return
+   end
+   local func = function()
+      if not this then return end
+      -- print("addMessage@!@!!!!!!!!!!!!!!!!!!")
+      -- printTable(message)
+      local item = nil
+      local posx = 0
+      if flag then
+         item = widget.right.obj:clone()
+      else
+         item = widget.left.obj:clone()
+      end
+      local head = tool.findChild(item,"head","ImageView")
+      local icon = tool.findChild(head,"icon","ImageView")
+      icon:loadTexture("cash/qietu/main2/default.jpg")
+      local image = tool.findChild(head,"image","ImageView")
+      tool.getUserImage(eventHash, icon, _id)
+      local layout = Layout:create()
+      local _richText = RichText:create()
+      _richText:ignoreContentAdaptWithSize(false)
+      local textWidth = addSplitMessage(_richText, data)
+      if hasExpression then
+         _richText:setSize(CCSize(WIDTH,72))
+      else
+         _richText:setSize(CCSize(WIDTH,52))
+      end
+      -- print("textWidth",textWidth)
+      if textWidth > WIDTH then     
+         _richText:ignoreContentAdaptWithSize(false)
+         _richText:setSize(CCSize(WIDTH, _richText:getSize().height*math.ceil(textWidth/WIDTH)))
+      else
+         _richText:setSize(CCSize(textWidth, _richText:getSize().height*math.ceil(textWidth/WIDTH)))
+      end
+      _richText:setAnchorPoint(ccp(0,0))
+      _richText:setPosition(ccp(0,0))
+      layout:setSize(_richText:getSize())
+      layout:addChild(_richText) 
+      if flag then
+         layout:setPosition(ccp(26,-5-_richText:getSize().height))
+      else
+         layout:setPosition(ccp(-26-layout:getSize().width,-5-_richText:getSize().height))
+      end
+      image:addChild(layout)
+      -- print("layout",_richText:getSize().width,_richText:getSize().height,layout:getSize().width,layout:getSize().height)
+      image:setSize(CCSize(layout:getSize().width+40,layout:getSize().height+10))
+      hasExpression = false
+      -- widget.bg.list.obj:pushBackCustomItem(item)
+      if isNew then
+         widget.bg.list.obj:pushBackCustomItem(item)
+      else
+         widget.bg.list.obj:insertCustomItem(item,0)
+      end
+  end 
+  performWithDelay(func,0.1)
+  performWithDelay(function()
+                     if not this then return end
+                     isToBottom = true
+                     widget.bg.list.obj:setBounceEnabled(false)
+                     -- widget.bg.list.obj:scrollToBottom(0.5,true)
+                     widget.bg.list.obj:jumpToBottom()
+                     performWithDelay(function()
+                                         if not this then return end  
+                                         isToBottom = false
+                                         widget.bg.list.obj:setBounceEnabled(true)
+                                      end,0.6)
+                  end,0.15)
 end
 
 function onSendPrivate(data)
@@ -311,6 +394,8 @@ function exit()
     parentModule = nil
     hasExpression = false
     isToBottom = false
+    isPrivate = false
+    check = nil
   end
 end
 
@@ -439,26 +524,32 @@ end
 
 function onSend(event)
    if event == "releaseUp" then
+      tool.buttonSound("releaseUp","effect_12")
       local str = textInput:getText()
       if str ~= "" then
-         local _msg = http.urlencode(str)
-         print("_msg",payServerUrl,payServerUrl.."/ydream/login?type=99&param=",_msg)
-         http.request(payServerUrl.."/ydream/login?type=99&param=".._msg,
-           function(header,body,flag)
-	             if flag == false then
-	               alert.create("服务器连接失败")
-	               return 
-	             end
-	             local tab = cjson.decode(body)
-	             printTable(tab)
-	             if tab.result == "false" then
-	              	alert.create("您输入的内容检测包含屏蔽字")
-	             	textInput:setText(tab.param)
-	              	return
-	             end
-	             call("privateChat",targateId,str)
-	             textInput:setText("")
-           end)
+         -- local _msg = http.urlencode(str)
+         -- print("_msg",payServerUrl,payServerUrl.."/ydream/login?type=99&param=",_msg)
+         -- http.request(payServerUrl.."/ydream/login?type=99&param=".._msg,
+         --   function(header,body,flag)
+	        --      if flag == false then
+	        --        alert.create("服务器连接失败")
+	        --        return 
+	        --      end
+	        --      local tab = cjson.decode(body)
+	        --      printTable(tab)
+	        --      if tab.result == "false" then
+	        --       	alert.create("您输入的内容检测包含屏蔽字")
+	        --      	textInput:setText(tab.param)
+	        --       	return
+	        --      end
+	        --      call("privateChat",targateId,str)
+	        --      textInput:setText("")
+         --   end)
+         local _str = string.gsub(str,'"',';22|',20)
+         print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str,_str)
+         local p = isPrivate and 1 or 0
+         call(11001,targateId,p,str) 
+         textInput:setText("")
       end
    end
 end
@@ -472,6 +563,16 @@ function onInviter(event)
          call("enterGame", 3)
          moraGame.inviterId = targateId
       end
+   end
+end
+
+function onCheck(event,data1,data)
+   if event == "releaseUp" then
+      tool.buttonSound("releaseUp","effect_12")
+      data = tolua.cast(data,"CheckBox")
+      isPrivate = data:getSelectedState()
+      isPrivate = not isPrivate
+      -- data:setSelectedState(isPrivate)
    end
 end
 
@@ -498,7 +599,9 @@ widget = {
         _type = "ImageView",
         scroll_bar = {_type = "ImageView"},
 	  },
-    inviter = {_type = "Button",_func = onInviter},
+    inviter = {_type = "Button"},
+    check = {_type = "CheckBox",_func = onCheck},
+    checkText = {_type = "Label"},
 	},
 	right = {
 		_type = "Layout",

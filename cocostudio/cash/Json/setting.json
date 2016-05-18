@@ -10,21 +10,8 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [
-    "qietu/tymb/siliaoBg.png",
-    "qietu/tymb/guanbiBt01.png",
-    "qietu/tymb/guanbiBt02.png",
-    "qietu/chat/expression.png",
-    "qietu/common/duihuakuangBg3.png",
-    "qietu/chat/send.png",
-    "GUI/image.png",
-    "buleLoading.png",
-    "buleLoadingBg.png",
-    "qietu/tymb/headBg.png",
-    "qietu/tymb/siliaokuang_jiantou.png",
-    "qietu/tymb/siliaokuang.png"
-  ],
-  "version": "1.5.0.1",
+  "texturesPng": [],
+  "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",
     "name": null,

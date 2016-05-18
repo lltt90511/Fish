@@ -537,9 +537,10 @@ function checkWinResult()
              else
              end
              resultMsg.type = 1
-             resultMsg.name = v.e
+             resultMsg.name = v.i == userdata.UserInfo.uidx and "你" or v.e
              resultMsg.money = v.m
              resultMsg.time = os.date("*t",tonumber(os.time())/1000)
+             resultMsg.id = v.i
              chat.addMessage(resultMsg)         
          end
          if not isInResult and isDoBet then
@@ -550,7 +551,7 @@ function checkWinResult()
 end
 
 function initChatView()
-   chatView = chat.create(1,package.loaded["scene.fishMachine.main"])
+   chatView = chat.create(1,this,package.loaded["scene.fishMachine.main"])
    widget.bottom.obj:addChild(chatView,2)
    chatView:setAnchorPoint(ccp(0,0))
    chatView:setPosition(ccp(0,-970))

@@ -9,6 +9,7 @@ local chatPrivate = require"scene.chatPrivate"
 module("scene.chat.main",package.seeall)
 
 this = nil
+local thisParent = nil
 local messageList = {}
 local textInput = nil
 local textRich = nil
@@ -28,9 +29,11 @@ local privateNum = 0
 local messageCnt1 = 0
 local messageCnt2 = 0
 local privateCnt = 0
+local touchData = {}
 -- payServerUrl = payServerUrl
-function create(_gameId,_parentModule)
+function create(_gameId,_parent,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
+   thisParent = _parent
    parentModule = _parentModule
    GAME_ID = _gameId
    WIDTH = Screen.width
@@ -58,7 +61,7 @@ function create(_gameId,_parentModule)
    end)
    event.listen("ON_SEND_MESSAGE_SUCCEED", onSendMessageSucceed)
    event.listen("ON_SEND_MESSAGE_FAILED", onSendMessageFailed)
-   event.listen("ON_GET_MESSAGE", onGetMessage)
+   event.listen("ON_GET_MESSAGE", onSendMessageSucceed)
    event.listen("ON_ENTER_GAME_NOTICE", onEnterGameNotice)
    event.listen("ON_EXIT_GAME_NOTICE", onExitGameNotice)
    event.listen("ON_GET_USER_LIST_SUCCEED", onGetUserListSucceed)
@@ -88,7 +91,7 @@ function onExitGameNotice(_data)
    local index = 0
    for k,v in pairs(userRankList) do
        printTable(v)
-       if tonumber(v._uidx) == tonumber(_data.user._uidx) then
+       if v._uidx == _data.user._uidx then
           break
        end
        print("!!!!!!!!!!!!!!!!!!!",v._uidx,_data.user._uidx,index)
@@ -132,47 +135,23 @@ end
 function onSendMessageSucceed(gameData)
    local message = {}
    message.from = gameData.from._nickName
+   message.fromId = gameData.from._uidx
    if type(gameData.to) == type(-1) and gameData.to == -1 then
+      if message.fromId == userdata.UserInfo.uidx then
+         message.from = "你"
+      end
       message.type = 2
       messageCnt1 = messageCnt1 + 1
    elseif type(gameData.to) == type({}) then
       message.to = gameData.to._nickName
-      if gameData.qiaoqiao then
+      message.toId = gameData.to._uidx
+      if gameData.qiaoqiao > 0 then
          message.type = 5
+      elseif gameData.from._uidx == userdata.UserInfo.uidx or gameData.to._uidx == userdata.UserInfo.uidx then
+         message.type = 4
       else
          message.type = 3
-         if gameData.from._uidx == userdata.UserInfo.uidx then
-            message.from = "你"
-            message.type = 4
-         elseif gameData.to._uidx == userdata.UserInfo.uidx then
-            message.to = "你"
-            message.type = 4
-         end
       end
-      messageCnt2 = messageCnt12 + 1
-      privateCnt = privateCnt + 1
-      widget.tab_bg.tab_2.text.obj:setText("私聊".."("..privateCnt..")")
-   end
-   local str = string.gsub(gameData.con,'(%;22|+)','%"',20)
-   message.msg = str
-   message.private = gameData.qiaoqiao
-   message.time = os.date("*t",tonumber(os.time())/1000)
-   addMessage(message)
-end
-
-function onSendMessageFailed(gameData)
-   alert.create(gameData.msg) 
-end
-
-function onGetMessage(gameData)
-   local message = {}
-   message.from = gameData.from._nickName
-   if type(gameData.to) == type(-1) and gameData.to == -1 then
-      message.type = 2
-      messageCnt1 = messageCnt1 + 1
-   elseif type(gameData.to) == type({}) then
-      message.type = gameData.qiaoqiao == 0 and 3 or 4
-      message.to = gameData.to._nickName
       if gameData.from._uidx == userdata.UserInfo.uidx then
          message.from = "你"
       elseif gameData.to._uidx == userdata.UserInfo.uidx then
@@ -185,8 +164,15 @@ function onGetMessage(gameData)
    local str = string.gsub(gameData.con,'(%;22|+)','%"',20)
    message.msg = str
    message.private = gameData.qiaoqiao
-   message.now = os.date("*t",tonumber(os.time())/1000)
+   message.time = os.date("*t",tonumber(os.time())/1000)
    addMessage(message)
+   if chatPrivate.this then
+      chatPrivate.addPrivateMessage(message)
+   end
+end
+
+function onSendMessageFailed(gameData)
+   alert.create(gameData.msg) 
 end
 
 function initRankView(_list)
@@ -200,7 +186,7 @@ function addRankItem(item,index)
    obj:setTouchEnabled(true)
    obj:registerEventScript(function(event)
       if event == "releaseUp" then
-          
+         chatPrivate.create(thisParent,item._nickName,item._uidx,package.loaded["scene.fishMachine.main"]) 
       end 
    end)
    local head = tool.findChild(obj,"head","ImageView")
@@ -423,10 +409,15 @@ function addSystemMessage(message)
 end
 
 function addMessage(message, time)
+   printTable(message)
    time = time == nil and 0.1 or time
    local list = nil
+   local posx = 0
    local func = function()
       if not this then return end
+      local _label = Label:create()
+      _label:setFontSize(40)
+      _label:setFontName(DEFAULT_FONT)
       local layout = Layout:create()
       local _richText = RichText:create()
       _richText:ignoreContentAdaptWithSize(false)
@@ -435,10 +426,27 @@ function addMessage(message, time)
       local color = ccc3(255,255,255) 
       local nowStr = message.time.min..":"..message.time.sec.." "
       if message.type == 1 then
-         local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_text1) 
-         local _text2 = RichElementText:create(2,ccc3(254,177,23),255,message.name,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_text2)  
+         local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
+         _richText:pushBackElement(_text1)
+         _label:setText(nowStr)        
+         posx = posx + _label:getSize().width  
+         local _text2 = RichElementText:create(2,ccc3(254,177,23),255,message.name,DEFAULT_FONT,40) 
+         _richText:pushBackElement(_text2)   
+         _label:setText(message.name)
+         local _layout = Layout:create()
+         _layout:setSize(CCSize(_label:getSize().width,fontHeight))
+         _layout:setPosition(ccp(posx,0))       
+         _layout:setTouchEnabled(true)
+         _layout:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 if message.id == userdata.UserInfo.uidx then
+                    alert.create("您不能与自己私聊!")
+                    return
+                 end
+                 chatPrivate.create(thisParent,message.name,message.id,package.loaded["scene.fishMachine.main"]) 
+              end 
+         end)
+         layout:addChild(_layout)
          local _text3 = RichElementText:create(3,ccc3(255,255,255),255,"获得",DEFAULT_FONT,40)         
          _richText:pushBackElement(_text3)  
          local _text4 = RichElementText:create(4,ccc3(253,78,62),255,message.money.."金币",DEFAULT_FONT,40)         
@@ -448,37 +456,77 @@ function addMessage(message, time)
       elseif message.type == 2 then
          local _name1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name1) 
+         _label:setText(nowStr)        
+         posx = posx + _label:getSize().width 
          local _name2 = RichElementText:create(2,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_name2) 
+         _richText:pushBackElement(_name2)   
+         _label:setText(message.from)
+         local _layout = Layout:create()
+         _layout:setSize(CCSize(_label:getSize().width,fontHeight))
+         _layout:setPosition(ccp(posx,0))       
+         _layout:setTouchEnabled(true)
+         _layout:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 if message.fromId == userdata.UserInfo.uidx then
+                    alert.create("您不能与自己私聊!")
+                    return
+                 end
+                 chatPrivate.create(thisParent,message.from,message.fromId,package.loaded["scene.fishMachine.main"]) 
+              end 
+         end)
+         layout:addChild(_layout)       
          local _name3 = RichElementText:create(3,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
          _richText:pushBackElement(_name3)
          list = widget.message_bg.listView1.obj 
          num = 3
-      elseif message.type == 3 or message.type == 4 then
+      elseif message.type == 3 or message.type == 4 or message.type == 5 then
+         local say = message.type == 5 and "悄悄对" or "对"
          local _name1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name1) 
+         _label:setText(nowStr)        
+         posx = posx + _label:getSize().width 
          local _name2 = RichElementText:create(2,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name2) 
-         local _name3 = RichElementText:create(3,ccc3(255,255,255),255,"对：",DEFAULT_FONT,40)         
+         _label:setText(message.from)
+         local _layout = Layout:create()
+         _layout:setSize(CCSize(_label:getSize().width,fontHeight))
+         _layout:setPosition(ccp(posx,0))       
+         _layout:setTouchEnabled(true)
+         _layout:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 if message.fromId == userdata.UserInfo.uidx then
+                    alert.create("您不能与自己私聊!")
+                    return
+                 end
+                 chatPrivate.create(thisParent,message.from,message.fromId,package.loaded["scene.fishMachine.main"]) 
+              end 
+         end)
+         layout:addChild(_layout)
+         posx = posx + _label:getSize().width 
+         local _name3 = RichElementText:create(3,ccc3(255,255,255),255,say,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name3) 
+         _label:setText(say)        
+         posx = posx + _label:getSize().width 
          local _name4 = RichElementText:create(4,ccc3(254,177,23),255,message.to,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name4) 
+         _label:setText(message.to)
+         local _layout = Layout:create()
+         _layout:setSize(CCSize(_label:getSize().width,fontHeight))
+         _layout:setPosition(ccp(posx,0))       
+         _layout:setTouchEnabled(true)
+         _layout:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 if message.toId == userdata.UserInfo.uidx then
+                    alert.create("您不能与自己私聊!")
+                    return
+                 end
+                 chatPrivate.create(thisParent,message.to,message.toId,package.loaded["scene.fishMachine.main"]) 
+              end 
+         end)
+         layout:addChild(_layout) 
          local _name5 = RichElementText:create(5,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
          _richText:pushBackElement(_name5) 
          list = message.type == 3 and widget.message_bg.listView1.obj or widget.message_bg.listView2.obj
-         num = 5
-      elseif message.type == 5 then
-         local _name1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_name1) 
-         local _name2 = RichElementText:create(2,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_name2) 
-         local _name3 = RichElementText:create(3,ccc3(255,255,255),255,"悄悄对：",DEFAULT_FONT,40)         
-         _richText:pushBackElement(_name3) 
-         local _name4 = RichElementText:create(4,ccc3(254,177,23),255,message.to,DEFAULT_FONT,40)         
-         _richText:pushBackElement(_name4) 
-         local _name5 = RichElementText:create(5,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
-         _richText:pushBackElement(_name5) 
-         list = widget.message_bg.listView2.obj
          num = 5
       end
         
@@ -611,7 +659,7 @@ function exit()
    if this then
       event.unListen("ON_SEND_MESSAGE_SUCCEED", onSendMessageSucceed)
       event.unListen("ON_SEND_MESSAGE_FAILED", onSendMessageFailed)
-      event.unListen("ON_GET_MESSAGE", onGetMessage)
+      event.unListen("ON_GET_MESSAGE", onSendMessageSucceed)
       event.unListen("ON_ENTER_GAME_NOTICE", onEnterGameNotice)
       event.unListen("ON_EXIT_GAME_NOTICE", onExitGameNotice)
       event.unListen("ON_GET_USER_LIST_SUCCEED", onGetUserListSucceed)
