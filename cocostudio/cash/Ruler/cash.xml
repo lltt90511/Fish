@@ -132,4 +132,8 @@
     <Project>fish_machine1</Project>
     <GuidesList />
   </GuidesProject>
+  <GuidesProject>
+    <Project>exchange</Project>
+    <GuidesList />
+  </GuidesProject>
 </ArrayOfGuidesProject>

@@ -40,6 +40,7 @@
     <string>waitInviterAlert.json</string>
     <string>loading.json</string>
     <string>fish_machine1.json</string>
+    <string>exchange.json</string>
   </JsonList>
   <CanvasSize>
     <Width>1080</Width>
@@ -50,22 +51,48 @@
   <ResRelativePath />
   <imageFileList />
   <imagePngList>
-    <string>qietu/tymb/siliaoBg.png</string>
-    <string>qietu/tymb/guanbiBt01.png</string>
-    <string>qietu/tymb/guanbiBt02.png</string>
-    <string>qietu/chat/expression.png</string>
-    <string>qietu/common/duihuakuangBg3.png</string>
-    <string>qietu/chat/send.png</string>
+    <string>qietu/fish1/bottom_bg.png</string>
+    <string>qietu/fish1/bet_bg.png</string>
+    <string>qietu/fish1/bet1.png</string>
+    <string>qietu/fish1/bet2.png</string>
+    <string>qietu/fish1/bet_1.png</string>
+    <string>qietu/fish1/bet_2.png</string>
+    <string>qietu/fish1/bet_3.png</string>
+    <string>qietu/fish1/bet_4.png</string>
+    <string>qietu/fish1/bet_5.png</string>
+    <string>qietu/fish1/bet_6.png</string>
+    <string>qietu/top/vip_bg.png</string>
+    <string>qietu/fish1/point.png</string>
+    <string>qietu/fish1/rebet1.png</string>
+    <string>qietu/fish1/rebet2.png</string>
+    <string>qietu/fish1/line.png</string>
+    <string>qietu/fish1/fish_bg.jpg</string>
+    <string>qietu/fish1/cd_bg.png</string>
+    <string>qietu/fish1/light_2.png</string>
+    <string>qietu/fish1/fish_13.png</string>
+    <string>qietu/fish1/fish_10.png</string>
+    <string>qietu/fish1/fish_1.png</string>
+    <string>qietu/fish1/fish_2.png</string>
+    <string>qietu/fish1/fish_3.png</string>
+    <string>qietu/fish1/fish_4.png</string>
+    <string>qietu/fish1/fish_14.png</string>
+    <string>qietu/fish1/fish_5.png</string>
+    <string>qietu/fish1/fish_6.png</string>
+    <string>qietu/fish1/fish_7.png</string>
+    <string>qietu/fish1/fish_8.png</string>
+    <string>qietu/fish1/fish_9.png</string>
+    <string>qietu/fish1/light_1.png</string>
+    <string>qietu/fish1/fish_11.png</string>
+    <string>qietu/fish1/fish_12.png</string>
+    <string>qietu/tymb/zhongBt01.png</string>
+    <string>qietu/tymb/zhongBt02.png</string>
+    <string>qietu/effect/fcxx.png</string>
+    <string>qietu/effect/biaopai.png</string>
     <string>GUI/image.png</string>
-    <string>buleLoading.png</string>
-    <string>buleLoadingBg.png</string>
-    <string>qietu/mora/yaoqing.png</string>
-    <string>qietu/tymb/xuanzhong02a.png</string>
-    <string>qietu/tymb/xuanzhong02b.png</string>
-    <string>qietu/tymb/headBg.png</string>
-    <string>qietu/tymb/chat_bg1.png</string>
-    <string>qietu/tymb/chat_bg0.png</string>
+    <string>qietu/effect/star01.png</string>
+    <string>qietu/effect/star02.png</string>
+    <string>qietu/text/xh.png</string>
   </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>chatPrivate.json</CurrentUIJson>
+  <CurrentUIJson>exchange.json</CurrentUIJson>
 </UIProject>

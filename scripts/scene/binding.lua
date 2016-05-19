@@ -14,8 +14,8 @@ local isRegister = true --true是绑定，flase是解除绑定
 
 function create(parent)
    this = tool.loadWidget("cash/binding",widget,parent,99)
-   print("binding create",userdata.UserInfo.phoneNumber)
-   if type(userdata.UserInfo.phoneNumber) ==  "userdata" or userdata.UserInfo.phoneNumber == "" then
+   print("binding create",userdata.UserInfo.uphoneNumber)
+   if type(userdata.UserInfo.uphoneNumber) ==  "userdata" or userdata.UserInfo.uphoneNumber == "" then
       initEditBox1()
    else
       initEditBox2()
@@ -177,7 +177,7 @@ function initEditBox2()
 
    widget.panel.bg.text_3.obj:setVisible(true) 
    widget.panel.bg.input_3.obj:setVisible(true) 
-   widget.panel.bg.input_3.num.obj:setText(userdata.UserInfo.phoneNumber) 
+   widget.panel.bg.input_3.num.obj:setText(userdata.UserInfo.uphoneNumber) 
    widget.panel.bg.label_3.obj:setVisible(true) 
    widget.panel.bg.unRegister.obj:setVisible(false)
    widget.panel.bg.unRegister.obj:setTouchEnabled(false)
@@ -285,7 +285,7 @@ function onSend(event)
       elseif string.len(textInput1:getText()) ~= 11 then
          alert.create("请输入正确的手机号码")
       else
-         call("getPhoneCode",textInput1:getText())
+         call(4001,textInput1:getText())
       end
    end
 end
@@ -294,7 +294,7 @@ function onBinding(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
       if isRegister == true then
-         call("registerPhone",textInput2:getText())
+         call(5001,textInput2:getText(),sendNumber)
       else
          call("unRegisterPhone",textInput2:getText())
       end
@@ -327,7 +327,7 @@ function onGetPhoneCodeSucceed()
       unSchedule(sendTimer)
       sendTimer = nil
    end
-   local time = 5*60
+   local time = 10*60
    sendTimer = schedule(
          function()
             if time > 0 then
@@ -364,7 +364,7 @@ function onRegisterPhoneSucceed(flag)
          exit()
       end)
    else
-       userdata.UserInfo.phoneNumber = sendNumber
+       userdata.UserInfo.uphoneNumber = sendNumber
        if sendTimer then
           unSchedule(sendTimer)
           sendTimer = nil

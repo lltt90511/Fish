@@ -10,20 +10,7 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [
-    "qietu/top/top_bg.png",
-    "qietu/top/head.png",
-    "GUI/image.png",
-    "qietu/top/vip_bg.png",
-    "qietu/top/vip.png",
-    "qietu/top/gold_bg.png",
-    "qietu/top/add1.png",
-    "qietu/top/add2.png",
-    "qietu/top/get1.png",
-    "qietu/top/get2.png",
-    "qietu/top/close1.png",
-    "qietu/top/close2.png"
-  ],
+  "texturesPng": [],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",

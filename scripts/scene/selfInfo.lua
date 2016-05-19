@@ -41,6 +41,9 @@ function create(parent)
     --widget.nameEdit.obj:setPositionX(540)
     widget.nameEdit.obj:setTouchEnabled(true)
     initEditBox()
+    widget.panel.bg.Image_13.obj:setVisible(false)
+    widget.panel.bg.bar.obj:setVisible(false)
+    widget.panel.bg.seven.obj:setVisible(false)
     -- call("getQuestCountList")
    return this
 end
@@ -69,16 +72,16 @@ function switchSex(id,click)
 end
 function initInfo()
     widget.panel.bg.id.obj:setText(userdata.UserInfo.uidx)
-    if type(userdata.UserInfo.phoneNumber) ~=  "userdata" then
+    if type(userdata.UserInfo.uphoneNumber) ~=  "userdata" then
        widget.panel.bg.account.obj:setText("已绑定")
        widget.panel.bg.account.obj:setColor(ccc3(255,255,255))
     end
     widget.panel.bg.name.obj:setText(userdata.UserInfo.nickName)
     widget.panel.bg.gold.obj:setText(userdata.UserInfo.owncash)
     -- local vipLv,now,max = countLv.getVipLv(userdata.UserInfo.vipExp)
-    widget.panel.bg.vipLv.obj:setStringValue(userdata.UserInfo.vipLv)
-    -- widget.panel.bg.vipNum.obj:setText(now.."/"..max)
-    -- widget.panel.bg.vipBar.obj:setPercent(now/max*100)
+    widget.panel.bg.vipLv.obj:setStringValue(userdata.UserInfo.vipLevel)
+    widget.panel.bg.vipNum.obj:setText("0".."/".."1000")
+    widget.panel.bg.vipBar.obj:setPercent(0/1000*100)
     switchSex(userdata.UserInfo.sex)
 end
 
@@ -151,6 +154,11 @@ function onChangeNameCurrent(event)
             --     end
             --     call("changeCharName",tab.param)
             --   end)
+            local s,e = string.find(text,'"')
+            if s ~= nil and e ~= nil then
+                alert.create("用户名不能包含特殊字符")
+                return
+            end
             call("2001",text)
         end
     end
@@ -298,6 +306,7 @@ widget = {
             text_shadow = {_type="Label"},
             _func  = onGoldGet,
          },
+         Image_13 = {_type = "ImageView"},
       },
       
 

@@ -25,6 +25,7 @@ local betOwn = {}
 local historyBet = {}
 local autoCnt = 0
 local winGold = 0
+local starNum = 7
 local lastOpenId = {inside=0,outside=0}
 local classicOutSide = {}
 local chatView = nil
@@ -113,7 +114,7 @@ function create(_parent, _parentModule)
    -- widget.bottom_bg.rank_list.obj:setItemModel(widget.rank_render.obj)
    -- initClassicOutSide()
    initView()
-   -- initResult()
+   initResult()
    initChatView()
    totalCashGold = 0
    lastUserGold = 0--userdata.UserInfo.giftGold + userdata.UserInfo.gold
@@ -170,6 +171,8 @@ function onGetGameStatus(gameData)
          isDoBet = false 
       end
       betEndTime = 20 - data.time
+      local str = string.format("%02d", betEndTime)
+      widget.fish.cd_bg.cd.obj:setText(str) 
       widget.bottom.layout.obj:setTouchEnabled(false)
       widget.bottom.layout.obj:setVisible(false)
    elseif data.type == 200 then
@@ -267,7 +270,10 @@ function initView()
    initCostView()
    
    startFishTimer()
-   if data.type == 200 then
+   if data.type == 100 then
+      local str = string.format("%02d", betEndTime)
+      widget.fish.cd_bg.cd.obj:setText(str) 
+   elseif data.type == 200 then
       widget.fish.cd_bg.cd.obj:setText("00")
       playFishEffect()
    elseif data.type == 201 then
@@ -337,6 +343,98 @@ function initCostView()
        end)
    end
    changeTouchEnabled(true)
+end
+
+function initResult()
+   widget.result.obj:setVisible(false)
+   widget.result.star_l.obj:setScale(0)  
+   widget.result.star_r.obj:setScale(0) 
+   widget.result.number.obj:setScale(0)
+   widget.result.cheng.obj:setScale(0)
+   widget.result.icon.obj:setScale(0)   
+   resultLight = CCSprite:create("cash/qietu/effect/guang.png")
+   resultLight:setPosition(ccp(300,300))
+   resultLight:setScale(2.0)
+   armatureBlend(resultLight)
+   widget.result.obj:addNode(resultLight)
+   resultLight:setVisible(false)
+   for i=1,starNum do 
+       local star = tool.findChild(widget.result.obj,"star_"..i,"ImageView")
+       if star then
+          starAction(star)
+       end
+   end
+end
+
+function doResultAni(id)
+   local fishTmp = nil
+   for k,v in pairs(fishList) do
+       if v.id == id then
+          fishTmp = v
+       end
+   end
+   if not fishTmp then
+      return
+   end
+   AudioEngine.playEffect("effect_05")
+   widget.result.number.obj:setStringValue(fishTmp.multi)
+   if fishTmp.multi < 10 then
+      widget.result.cheng.obj:setPositionX(305)
+      widget.result.number.obj:setPositionX(305)
+   elseif fishTmp.multi < 100 then
+      widget.result.cheng.obj:setPositionX(290)
+      widget.result.number.obj:setPositionX(280)
+   else
+      widget.result.cheng.obj:setPositionX(255)
+      widget.result.number.obj:setPositionX(245)
+   end
+   widget.result.icon.obj:loadTexture("cash/qietu/fish1/fish_"..fishTmp.res..".png")
+   widget.result.obj:setVisible(true)
+   tool.createEnterEffect(widget.result.obj,{x=0,y=-1000,easeOut=true},0.3,function()
+      for i=1,starNum do 
+          local star = tool.findChild(widget.result.obj,"star_"..i,"ImageView")
+          if star then
+             star:setVisible(true)
+          end
+      end  
+      tool.createEffect(tool.Effect.scale,{time=0.1,scale=1.5},widget.result.star_l.obj) 
+      tool.createEffect(tool.Effect.scale,{time=0.1,scale=1.5},widget.result.star_r.obj) 
+      tool.createEffect(tool.Effect.scale,{time=0.1,scale=2.0},widget.result.number.obj) 
+      tool.createEffect(tool.Effect.scale,{time=0.1,scale=1.3},widget.result.cheng.obj) 
+      tool.createEffect(tool.Effect.scale,{time=0.1,scale=2.0},widget.result.icon.obj,function()
+         resultLight:setVisible(true)
+         local action = CCRotateBy:create(0.5,60)
+         action = CCRepeatForever:create(action)
+         resultLight:runAction(action)
+         tool.createEffect(tool.Effect.delay,{time=2},widget.result.icon.obj,function()
+            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.star_l.obj) 
+            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.star_r.obj) 
+            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.number.obj) 
+            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.cheng.obj) 
+            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.icon.obj,function()
+               tool.createEffect(tool.Effect.delay,{time=0.2},widget.result.icon.obj,function() 
+                  for i=1,starNum do 
+                      local star = tool.findChild(widget.result.obj,"star_"..i,"ImageView")
+                      if star then
+                         star:setVisible(false)
+                      end
+                  end               
+                  resultLight:stopAllActions()
+                  resultLight:setVisible(false)
+                  tool.createEffect(tool.Effect.fadeOut,{time=0.15},widget.result.obj)
+                  tool.createExitEffect(widget.result.obj,{x=0,y=-300,easeOut=true},0.15,true,function()
+                     widget.result.obj:setVisible(false)
+                     widget.result.obj:setOpacity(255)
+                     -- if isBig == true then
+                     --    showBigAward()
+                     -- end
+                     startFishTimer()
+                  end)
+               end)
+            end)
+         end)
+      end)    
+   end)
 end
 
 function armatureBlend(armature)
@@ -486,7 +584,8 @@ function playFishEffect()
    end
    endFishTimer()
    isPlaying = true
-   
+   changeTouchEnabled(false)
+
    playCircle(6, "inside")
    playCircle(12, "outside")
 end
@@ -505,10 +604,12 @@ function endEffect()
    end
    checkWinResult()
    changeTouchEnabled(true)
-   -- if lastOpenId.outside == 2 or lastOpenId.outside == 4 or lastOpenId.outside == 8 or lastOpenId.outside == 10 or lastOpenId.outside == 6 or lastOpenId.outside == 12 then
-   --    doResultAni(lastOpenId.outside)
-   -- end
-   startFishTimer()  
+   if lastOpenId.outside >= 1 and lastOpenId.outside <= 6 then
+      doResultAni(lastOpenId.outside)
+   else
+      -- startFishTimer() 
+      doResultAni(lastOpenId.outside)
+   end 
    commonTop.registerEvent()
 
    betOwn = {}
@@ -591,8 +692,10 @@ end
 function changeTouchEnabled(flag)
    widget.bottom.bet_gold.obj:setBright(flag)
    widget.bottom.bet_gold.obj:setTouchEnabled(flag)
-   widget.bottom.rebet.obj:setBright(flag)
-   widget.bottom.rebet.obj:setTouchEnabled(flag)
+   if not isRepeat then
+      widget.bottom.rebet.obj:setBright(flag)
+      widget.bottom.rebet.obj:setTouchEnabled(flag)
+   end
    if flag == false then
       local posY = widget.bottom.bet_layout.bg.obj:getPositionY()
       if posY == 0 then
@@ -655,8 +758,8 @@ function onRepeatBet(event1)
             end
          end
       end
-      widget.bottom_bg.repeat_btn.obj:setBright(false)
-      widget.bottom_bg.repeat_btn.obj:setTouchEnabled(false)
+      widget.bottom.rebet.obj:setBright(false)
+      widget.bottom.rebet.obj:setTouchEnabled(false)
    end
 end
 
@@ -908,7 +1011,7 @@ widget = {
         num = {_type = "Label"},
         point = {_type = "ImageView"},
       },
-      rebet = {_type = "Button",_func=onRebet},
+      rebet = {_type = "Button",_func=onRepeatBet},
       bet_layout = {
         _type = "Layout",
         bg = {
@@ -1017,6 +1120,22 @@ widget = {
         light = {_type = "ImageView"},
         fish = {_type = "ImageView"},
       },
+   },
+   result = {
+      _type = "Layout",
+      star_l = {_type = "ImageView"},
+      star_r = {_type = "ImageView"},
+      pai = {_type = "ImageView"},
+      icon = {_type = "ImageView"},
+      star_1 = {_type = "ImageView"},
+      star_2 = {_type = "ImageView"},
+      star_3 = {_type = "ImageView"},
+      star_4 = {_type = "ImageView"},
+      star_5 = {_type = "ImageView"},
+      star_6 = {_type = "ImageView"},
+      star_7 = {_type = "ImageView"},
+      number = {_type = "LabelAtlas"},
+      cheng = {_type = "ImageView"},
    },
 }
                                

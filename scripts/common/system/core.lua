@@ -119,8 +119,13 @@ function L_onRPC( str )
 		return
 	end
 	local funcName = t.functionName
-	local parameters = t.p or t.parameters
-	print("Server : "..funcName,"parametersNum:"..#parameters,parameters)
+	local parameters = nil
+	if t.p or t.parameters then
+	   parameters = t.p or t.parameters
+	else
+	   parameters = {}
+    end
+	print("Server : "..funcName,"parametersNum:"..#parameters)
 	printTable(parameters)
 	local func = map[tostring(funcName)]
 	if func  then
@@ -158,15 +163,17 @@ function call( funcName, ... )
 
 	local connection = "^&^"
 	local str = tostring(funcName)--cjson.encode(t)
-	if type(...) == type({}) then
-	   for k,v in pairs( ...) do
-		   str = str .. connection .. v
-	   end
-	else
-	   for k,v in pairs({ ...}) do
-		   str = str .. connection .. v
-	   end
-	end
+	if ... then
+		if type(...) == type({}) then
+		   for k,v in pairs( ...) do
+			   str = str .. connection .. v
+		   end
+		else
+		   for k,v in pairs({ ...}) do
+			   str = str .. connection .. v
+		   end
+		end
+    end
 	print("call!!!!!!!!!!!!!!!!!",str)
 	C_senddata(str,0)
 end

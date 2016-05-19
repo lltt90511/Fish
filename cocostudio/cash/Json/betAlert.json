@@ -10,17 +10,8 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [
-    "qietu/mora/alert.png",
-    "qietu/mora/tongyi.png",
-    "qietu/mora/jujue.png",
-    "qietu/mora/touxiang_2.png",
-    "qietu/main2/default.jpg",
-    "qietu/mora/yazhu_1.png",
-    "qietu/mora/jinbi.png",
-    "qietu/mora/yaoqingniwan.png"
-  ],
-  "version": "1.5.0.1",
+  "texturesPng": [],
+  "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",
     "name": null,

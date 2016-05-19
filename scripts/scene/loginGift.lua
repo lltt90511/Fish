@@ -40,8 +40,8 @@ function initList()
   local y = sy
   getEd = 0
   local today = timeToDayStart(getSyncedTime()) 
-  local last = userdata.UserInfo.lastDailyGiftTime/1000
-  local get = userdata.UserInfo.dailyGiftCnt
+  local last = 0--userdata.UserInfo.lastDailyGiftTime/1000
+  local get = 0--userdata.UserInfo.dailyGiftCnt
   local yes = today -24*3600
   if last < yes then
      getEd = 1
@@ -52,18 +52,18 @@ function initList()
       end
       getEd = get
   end
-  local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-  local currentVip = template['vipExp'][vipLv]
-  if currentVip == nil then
-      currentVip = {daily = 100}
-    end
-    local multi = currentVip.daily
-    local nextMulti = currentVip.daily
-    local nextLv = vipLv
-    if  template['vipExp'][vipLv+1] then
-      nextMulti =  template['vipExp'][vipLv+1].daily
-      nextLv = vipLv + 1
-    end
+  -- local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+  -- local currentVip = template['vipExp'][vipLv]
+  -- if currentVip == nil then
+  --     currentVip = {daily = 100}
+  --   end
+  --   local multi = currentVip.daily
+  --   local nextMulti = currentVip.daily
+  --   local nextLv = vipLv
+  --   if  template['vipExp'][vipLv+1] then
+  --     nextMulti =  template['vipExp'][vipLv+1].daily
+  --     nextLv = vipLv + 1
+  --   end
     --print ("getEd....."..getEd.."...."..userdata.UserInfo.dailyGiftCnt)
     for i=1,#tpl do
         local obj = cloneObj:clone()
@@ -81,7 +81,8 @@ function initList()
         local lab_gold = tool.findChild(obj,"gold","Label")
         local lab_day = tool.findChild(obj,"day","Label")
         local check = tool.findChild(obj,"check","CheckBox")
-        lab_gold:setText(tpl[i].gold*multi/100)
+        check:setTouchEnabled(false)
+        lab_gold:setText(tpl[i].gold)
         lab_day:setText(tpl[i].name)
         if i < getEd then
             -- widgetList.check.obj:setSelectedState(true)
@@ -98,9 +99,11 @@ function initList()
         -- table.insert(giftTmpList,widgetList)
         table.insert(giftTmpList,obj)
     end
-    widget.panel.bg.bottom.bg.gold.obj:setText(tpl[getEd].gold*nextMulti/100)
-    widget.panel.bg.bottom.bg.get.text.obj:setText("VIP"..(nextLv).."领取")
-    widget.panel.bg.bottom.bg.get.text_shadow.obj:setText("VIP"..(nextLv).."领取")
+    widget.panel.bg.bottom.obj:setVisible(false)
+    widget.panel.bg.bottom.bg.get.obj:setTouchEnabled(false)
+    -- widget.panel.bg.bottom.bg.gold.obj:setText(tpl[getEd].gold*nextMulti/100)
+    -- widget.panel.bg.bottom.bg.get.text.obj:setText("VIP"..(nextLv).."领取")
+    -- widget.panel.bg.bottom.bg.get.text_shadow.obj:setText("VIP"..(nextLv).."领取")
   
 end
 function exit()
@@ -120,10 +123,7 @@ function onGoldActionFinish()
     end)
 end
 
-function onGetDailyGift(dailyGiftCnt,lastDailyGiftTime,gold)
-  if gold ~= nil then
-      --alerty...
-  end
+function onGetDailyGift(data)
   if isGet == false then
      isGet = true
   end
@@ -151,7 +151,7 @@ function onBack(event)
      local tmp = giftTmpList[getEd]
      userdata.goldPos = {x=540+tmp:getPositionX(),y=1077+tmp:getPositionY()}
      print("onBack",540+tmp:getPositionX(),1077+tmp:getPositionY())
-     call("getDailyGift")
+     call(15001)
   end
 end
 

@@ -14,34 +14,34 @@ reconnectAlert = function ()
            local sceneManager = require"logic.sceneManager"
            sceneManager.change(sceneManager.SceneType.starScene)
          else
-           --  if UserSetting.uuid ~= nil and UserSetting.uuid ~= "" then
+            if UserSetting.uuid ~= nil and UserSetting.uuid ~= "" then
+               print("login uuid", UserSetting.uuid)
+               nc.connect()
+               call(1001, "2", UserSetting.uuid)
+            else
+               if userdata.deviceId then
+                  print("login deviceId", userdata.deviceId)
+                  nc.connect()
+                  call(1001, "1", userdata.deviceId)
+               end
+           end
+           -- if getPlatform() == "sgj" or getPlatform() == "ipay_chongqin" then
+           --   if UserSetting.uuid ~= nil and UserSetting.uuid ~= "" then
            --     print("login uuid", UserSetting.uuid)
            --     nc.connect()
            --     call("login", 0, UserSetting.uuid)
-           --  else
+           --   else
            --     if userdata.deviceId then
-           --        print("login deviceId", userdata.deviceId)
-           --        nc.connect()
-           --        call("login", 0, userdata.deviceId)
+           --       print("login deviceId", userdata.deviceId)
+           --       nc.connect()
+           --       call("login", 0, userdata.deviceId)
            --     end
+           --   end
+           -- elseif getPlatform() == "xmw" then
+           --   nc.disConnect()
+           --   saveSetting("uuid","")
+           --   sdkLogin()
            -- end
-           if getPlatform() == "sgj" or getPlatform() == "ipay_chongqin" then
-             if UserSetting.uuid ~= nil and UserSetting.uuid ~= "" then
-               print("login uuid", UserSetting.uuid)
-               nc.connect()
-               call("login", 0, UserSetting.uuid)
-             else
-               if userdata.deviceId then
-                 print("login deviceId", userdata.deviceId)
-                 nc.connect()
-                 call("login", 0, userdata.deviceId)
-               end
-             end
-           elseif getPlatform() == "xmw" then
-             nc.disConnect()
-             saveSetting("uuid","")
-             sdkLogin()
-           end
          end
       end, nil, "重试", "取消")
 end

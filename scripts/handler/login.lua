@@ -62,9 +62,9 @@ end
 function firstToMainScene()
    local daily = false
    -- print (timeToDayStart(getSyncedTime()) , userdata.UserInfo.lastDailyGiftTime/1000 )
-   -- if timeToDayStart(getSyncedTime()) > userdata.UserInfo.lastDailyGiftTime/1000 then
-   --    daily = true
-   -- end
+   if timeToDayStart(getSyncedTime()) > userdata.UserInfo.lastLq then
+      daily = true
+   end
    local main = package.loaded['scene.main']
    main.daily = daily
    local sceneManager = package.loaded["logic.sceneManager"]
@@ -79,7 +79,9 @@ function firstToMainScene()
    http.request(payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.uidx,nil)
 end
 function onLoginFailed(data)
-
+   if data and data.msg then
+      alert.create(data.msg)
+   end
 end
 
 function onSetInitNameSucceed(data)

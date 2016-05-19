@@ -16,3 +16,7 @@ end
 function onGetMessage(gameData)
    event.pushEvent("ON_GET_MESSAGE",gameData)
 end
+
+function onGetprivateMessage(gameData)
+   event.pushEvent("ON_SEND_MESSAGE_SUCCEED",gameData)
+end

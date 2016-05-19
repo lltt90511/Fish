@@ -149,8 +149,8 @@ handlerMap = {
    [4003] = "onGetPhoneCodeFailed",
 
    --bind phone
-   [5002] = "onBindPhoneSucceed",
-   [5003] = "onBindPhoneFailed",
+   [5002] = "onRegisterPhoneSucceed",
+   [5003] = "onRegisterPhoneFailed",
 
    --enter game
    [6002] = "onEnterGameSucceed",
@@ -178,7 +178,7 @@ handlerMap = {
    --send chat
    [11002] = "onSendMessageSucceed",
    [11003] = "onSendMessageFailed",
-
+   [11004] = "onGetprivateMessage",
    --get chat 
    [12002] = "onGetMessage",
 
@@ -195,6 +195,19 @@ handlerMap = {
    ["onGetImageFileList"] = "onGetImageFileList",
    [13002] = "onUserChangeImageSucceed",
    [13003] = "onUserChangeImageFailed",
+
+   --lottery random--
+   [14002] = "onGetRandomGoldSucceed",
+   [14003] = "onGetRandomGoldFailed",
+   [14004] = "onGetRandomGoldCnt",
+
+   -- daily gift--
+   [15002] = "onGetDailyGiftSucceed",
+   [15003] = "onGetDailyGiftFailed",
+
+   --free gold--
+   [16002] = "onGetFreeGoldSucceed",
+   [16003] = "onGetFreeGoldFailed",
 }
 
 

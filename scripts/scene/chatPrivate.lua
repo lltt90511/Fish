@@ -548,6 +548,7 @@ function onSend(event)
          local _str = string.gsub(str,'"',';22|',20)
          print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str,_str)
          local p = isPrivate and 1 or 0
+         print("sned!!!!!!!!!!!!!!!!!!",p,targateId)
          call(11001,targateId,p,str) 
          textInput:setText("")
       end

@@ -57,7 +57,6 @@ function create()
    this = tool.loadWidget("cash/main_scene",widget)
    widget.top.image.obj:setTouchEnabled(true)
    widget.top.image.obj:registerEventScript(onSelfInfo)
-   widget.bottom.huodong.pao.obj:setVisible(false)
    initView()
    initMiddle()
    addLight()
@@ -260,10 +259,14 @@ function initView()
    end
    -- freeGoldTimer = schedule(scheduleFunc,1)
    -- scheduleFunc()
-   setMailPaoNum()
+   -- setMailPaoNum()
    -- call("getQuestCountList")
    -- call("getPrivateCharList")
    -- call("getActivityExist")
+   widget.bottom.huodong.pao.obj:setVisible(false)
+   widget.top_btn_list.youjian.pao.obj:setVisible(false)
+   widget.top_btn_list.choujiang.pao.obj:setVisible(false)
+   widget.top_btn_list.jiangli.pao.obj:setVisible(false)
 end
 
 function cleanEvent()
@@ -662,70 +665,75 @@ end
 function onYoujian(event)
    if event == "releaseUp" and currenScene ~= smail then
       tool.buttonSound("releaseUp","effect_12")
-      if currenScene then
-        currenScene.exit()
-        currenScene = nil
-      end
-      currenScene = smail
-      switchBottomBright(nil)
-      smail.create(widget.obj)
+      alert.create("敬请期待")
+      -- if currenScene then
+      --   currenScene.exit()
+      --   currenScene = nil
+      -- end
+      -- currenScene = smail
+      -- switchBottomBright(nil)
+      -- smail.create(widget.obj)
    end
 end
 
 function onJiangli(event)
    if event == "releaseUp" and currenScene ~= reward then
       tool.buttonSound("releaseUp","effect_12")
-      if currenScene then
-        currenScene.exit()
-        currenScene = nil
-      end
-      -- if isFirstToReward == true then
-      --    isFirstToReward = false
+      alert.create("敬请期待")
+      -- if currenScene then
+      --   currenScene.exit()
+      --   currenScene = nil
       -- end
-      currenScene = reward
-      switchBottomBright(nil)
-      reward.create(widget.obj)
-      -- widget.top_btn_list.jiangli.pao.obj:setVisible(false)
+      -- -- if isFirstToReward == true then
+      -- --    isFirstToReward = false
+      -- -- end
+      -- currenScene = reward
+      -- switchBottomBright(nil)
+      -- reward.create(widget.obj)
+      -- -- widget.top_btn_list.jiangli.pao.obj:setVisible(false)
    end
 end
 
 function onchoujiang(event)
    if event == "releaseUp" and currenScene ~= lottery then
       tool.buttonSound("releaseUp","effect_12")
-      if currenScene then
-        currenScene.exit()
-        currenScene = nil
-      end
-      currenScene = lottery
-      switchBottomBright(nil)
-      lottery.create(widget.obj)
-      widget.top_btn_list.choujiang.pao.obj:setVisible(false)
+      alert.create("敬请期待")
+      -- if currenScene then
+      --   currenScene.exit()
+      --   currenScene = nil
+      -- end
+      -- currenScene = lottery
+      -- switchBottomBright(nil)
+      -- lottery.create(widget.obj)
+      -- widget.top_btn_list.choujiang.pao.obj:setVisible(false)
    end
 end
 
 function onVIP(event)
    if event == "releaseUp" and currenScene ~= vip then
       tool.buttonSound("releaseUp","effect_12")
-      if currenScene then
-        currenScene.exit()
-        currenScene = nil
-      end
-      currenScene = vip
-      switchBottomBright(nil)
-      vip.create(widget.obj)
+      alert.create("敬请期待")
+      -- if currenScene then
+      --   currenScene.exit()
+      --   currenScene = nil
+      -- end
+      -- currenScene = vip
+      -- switchBottomBright(nil)
+      -- vip.create(widget.obj)
    end
 end
 
 function onTree(event)
    if event == "releaseUp" and currenScene ~= tree then
       tool.buttonSound("releaseUp","effect_12")
-      if currenScene then
-        currenScene.exit()
-        currenScene = nil
-      end
-      currenScene = tree
-      switchBottomBright(nil)
-      tree.create(widget.obj)
+      alert.create("敬请期待")
+      -- if currenScene then
+      --   currenScene.exit()
+      --   currenScene = nil
+      -- end
+      -- currenScene = tree
+      -- switchBottomBright(nil)
+      -- tree.create(widget.obj)
    end
 end
 
@@ -808,38 +816,40 @@ end
 function onHuodong(event)
    if event == "releaseUp" and currenScene ~= activity  then
       tool.buttonSound("releaseUp","effect_12")
-     if currenScene then
-        currenScene.exit()
-        currenScene = nil
-      end
-      currenScene = activity
-      switchBottomBright("huodong")
-      activity.create(widget.obj)
+      alert.create("敬请期待")
+     --  if currenScene then
+     --    currenScene.exit()
+     --    currenScene = nil
+     --  end
+     --  currenScene = activity
+     --  switchBottomBright("huodong")
+     --  activity.create(widget.obj)
    end
 end
 
 function onPaihang(event)
    if event == "releaseUp" and currenScene ~= rank then
       tool.buttonSound("releaseUp","effect_12")
-      local goRank = function()
-        if currenScene then
-          currenScene.exit()
-          currenScene = nil
-        end
-        currenScene = rank
-        switchBottomBright("paihang")
-        rank.create(widget.obj)
-      end
-      if platform == "IOS" then
-        if UserSetting and UserSetting["rank"] and UserSetting["rank"] == "1" then
-          goRank()
-        else
-          alert.create("进入排行需要上传个人信息至服务器",nil,goRank,nil,"确定","取消")
-          saveSetting("rank", "1")
-        end
-      else
-        goRank()
-      end
+      alert.create("敬请期待")
+      -- local goRank = function()
+      --   if currenScene then
+      --     currenScene.exit()
+      --     currenScene = nil
+      --   end
+      --   currenScene = rank
+      --   switchBottomBright("paihang")
+      --   rank.create(widget.obj)
+      -- end
+      -- if platform == "IOS" then
+      --   if UserSetting and UserSetting["rank"] and UserSetting["rank"] == "1" then
+      --     goRank()
+      --   else
+      --     alert.create("进入排行需要上传个人信息至服务器",nil,goRank,nil,"确定","取消")
+      --     saveSetting("rank", "1")
+      --   end
+      -- else
+      --   goRank()
+      -- end
    end
 end
 shezhiScene = {
@@ -1021,6 +1031,11 @@ function  switchSetting( ... )
     parent.obj:setVisible(true)
      for i=1,settingMax do
         local btn = parent['btn'..i]
+        if i == 5 then
+           btn.obj:setVisible(false)
+           btn.obj:setTouchEnabled(false)
+           return
+        end
         tool.setPosition(btn.obj,parent['btn1'].pos)
         tool.createEffect(tool.Effect.move,{time=0.2,x=btn.pos.x,y=btn.pos.y,easeIn=true},btn.obj,function ()
             btn.obj:setTouchEnabled(true)

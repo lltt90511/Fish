@@ -65,11 +65,20 @@ end
 function onGetRankListFailed(str)
 	print("onGetRankListFailed",str)
 end
-function onGetDailyGift(...)
+
+function onGetDailyGiftSucceed(data)
     AudioEngine.playEffect("effect_07")
 	local daily = package.loaded['scene.loginGift']
-	daily.onGetDailyGift(...)
+	userdata.UserInfo.owncash = data.owncash
+	userdata.UserInfo.lastLq = data.lqTime
+	userdata.UserInfo.dayNum = data.dayNum
+	daily.onGetDailyGift(data)
+end
 
+function onGetDailyGiftFailed(data)
+    if data and data.msg then
+       alert.create(data.msg)
+    end
 end
 
 function onGetGiftList(list)
@@ -131,36 +140,40 @@ function onGetTreeGiftSucceed(time,gold,get)
 	-- alert.create("领取成功！")
 end
 
-function onGetPhoneCodeSucceed(time)
-	userdata.UserInfo.lastPhoneCodeTime = time
+function onGetPhoneCodeSucceed()
+	-- userdata.UserInfo.lastPhoneCodeTime = time
 	event.pushEvent("ON_GET_PHONE")
 end
 
-function onGetPhoneCodeFailed(str)
+function onGetPhoneCodeFailed(data)
     alert.create(str)
 end
 
-function onRegisterPhoneSucceed(relogin,uuid)
-	print("onRegisterPhoneSucceed!!!!!!!!!!!!!!!!!!!!!!!!",relogin,uuid)
+function onRegisterPhoneSucceed(data)
+	print("onRegisterPhoneSucceed!!!!!!!!!!!!!!!!!!!!!!!!")
 	if type(uuid) == "string" then
 		print(uuid)
 	end
 	local flag = false
-	if relogin == false then
-		alert.create("绑定成功！")
-		flag = true
-	else
-		alert.create("该手机已经绑定了账号，登陆该账号？",nil,
-		function ()
-			call("login", 0, uuid)--记录下
-			saveSetting("uuid", uuid)
-		end)
+	if data and type(data) ~= "userdata" then
+		if data.n and data.n == "1" then
+			alert.create("绑定成功！")
+			flag = true
+		else
+			alert.create("该手机已经绑定了账号，登陆该账号？",nil,
+			function ()
+				call(1001, "2", data.n)--记录下
+				saveSetting("uuid", data.n)
+			end)
+		end
 	end
     event.pushEvent("ON_REGISTER_PHONE",flag)
 end
 
-function onRegisterPhoneFailed(str)
-    alert.create(str)
+function onRegisterPhoneFailed(data)
+	if data and type(data) ~= "userdata" and type(data.n) == type(0) and data.n == -1 then
+       alert.create("输入的验证码有误")
+	end
 end
 
 function onUnregisterPhoneFailed(str)

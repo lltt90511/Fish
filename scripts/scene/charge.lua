@@ -246,7 +246,7 @@ function getCharge(rank,endCall,name)
 		local info = {}
 		local t = tpl[i]
 		if t ~= nil and pt == t.platform and t.id ~=2 and t.id ~= 12 then
-			if t.limit == -1 or (userdata.UserInfo.chargeMap[i] == nil or userdata.UserInfo.chargeMap[i] < t.limit) then
+			-- if t.limit == -1 or (userdata.UserInfo.chargeMap[i] == nil or userdata.UserInfo.chargeMap[i] < t.limit) then
 				info.id = t.id
 				if name == "alipay" or t.alipay == 0 then
 					local tip = t.name
@@ -260,16 +260,16 @@ function getCharge(rank,endCall,name)
 					info.tip = tip
 					info.gift = ""
 
-					if userdata.UserInfo.lastChargeTime/1000 < timeToDayStart(getSyncedTime()) then
+					-- if userdata.UserInfo.lastChargeTime/1000 < timeToDayStart(getSyncedTime()) then
 						info.gift = info.gift .. "首充+"..(t.goldGet/10000).."万,"
 						gold = gold + t.goldGet
-					else
-						local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-						if vipLv > 0 then
-						   info.gift = info.gift.."VIP加成+"..(t.goldGet*vipLv*0.1/10000).."万,"
-						   gold = gold + t.goldGet*vipLv*0.1
-						end
-					end
+					-- else
+					-- 	local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+					-- 	if vipLv > 0 then
+					-- 	   info.gift = info.gift.."VIP加成+"..(t.goldGet*vipLv*0.1/10000).."万,"
+					-- 	   gold = gold + t.goldGet*vipLv*0.1
+					-- 	end
+					-- end
 					-- if name == "alipay" then
 					-- 	info.gift = info.gift .. "支付宝+"..(t.specialAdd/10000).."万"
 					-- else
@@ -285,7 +285,7 @@ function getCharge(rank,endCall,name)
 					info.productId = t.productId
 					table.insert(rank.list,info)
 				end
-			end
+			-- end
 		end
 	end
 	if endCall then

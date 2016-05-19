@@ -76,7 +76,7 @@ function onEnterGameNotice(_data)
    if _data.user._uidx == userdata.UserInfo.uidx then
       return
    end
-   if _data.index > #userRankList then
+   if _data.index >= #userRankList then
       return
    end
    table.insert(userRankList,_data.index,_data.user)
@@ -186,6 +186,10 @@ function addRankItem(item,index)
    obj:setTouchEnabled(true)
    obj:registerEventScript(function(event)
       if event == "releaseUp" then
+         if item._uidx == userdata.UserInfo.uidx then
+            alert.create("您不能与自己私聊")
+            return
+         end
          chatPrivate.create(thisParent,item._nickName,item._uidx,package.loaded["scene.fishMachine.main"]) 
       end 
    end)
