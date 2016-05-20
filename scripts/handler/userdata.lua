@@ -7,10 +7,10 @@ local waitInviterAlert = require"scene.waitInviterAlert"
 
 module("handler.userdata", package.seeall)
 
-function onChangeGold(giftGold, gold)
-   print("onChangeGold",giftGold,gold)
-   userdata.UserInfo.giftGold = giftGold
-   userdata.UserInfo.gold = gold
+function onChangeGold(data)
+   print("onChangeGold",data.owncash,data.owncharm)
+   userdata.UserInfo.owncash = data.owncash
+   userdata.UserInfo.owncharm = data.owncharm
    event.pushEvent("ON_CHANGE_GOLD")
    -- print("onChangeGold",userdata.isLottery,userdata.goldAction)
    if userdata.isLottery == true then
@@ -70,9 +70,10 @@ function onGetDailyGiftSucceed(data)
     AudioEngine.playEffect("effect_07")
 	local daily = package.loaded['scene.loginGift']
 	userdata.UserInfo.owncash = data.owncash
-	userdata.UserInfo.lastLq = data.lqTime
+	userdata.UserInfo.daylastLq = data.lqTime
 	userdata.UserInfo.dayNum = data.dayNum
 	daily.onGetDailyGift(data)
+	event.pushEvent("ON_GET_FREE_GOLD")
 end
 
 function onGetDailyGiftFailed(data)
@@ -180,20 +181,21 @@ function onUnregisterPhoneFailed(str)
     alert.create(str)
 end
 
-function onGetFreeGoldSucceed(cnt,time)
+function onGetFreeGoldSucceed(data)
     AudioEngine.playEffect("effect_07")
-	print("onGetFreeGoldSucceed",cnt,time)
-	userdata.UserInfo.freeGoldCnt = cnt
-	userdata.UserInfo.lastFreeGoldTime = time
+	print("onGetFreeGoldSucceed",data.minNum,data.minlastLq)
+	userdata.UserInfo.owncash = data.owncash
+	userdata.UserInfo.minNum = data.minNum
+	userdata.UserInfo.minlastLq = data.minlqTime - 8*3600
 	event.pushEvent("ON_GET_FREE_GOLD")
 	-- alert.create("领取成功！")
 end
 
-function onGetFreeGoldFailed(str)
+function onGetFreeGoldFailed(data)
 	if goldAction == true then
 	   goldAction = false	 
 	end
-    alert.create(str)
+    alert.create(data.msg)
 end
 
 function onUnregisterPhone()
@@ -457,4 +459,31 @@ end
 
 function onChangeSexFailed(data)
 	alert.create(data.msg)
+end
+
+function onExchangeSucceed(data)
+	if data and type(data) == type({}) then
+		userdata.UserInfo.owncharm = data.beans
+		userdata.UserInfo.owncash = data.cash
+		alert.create(data.msg)
+	end
+    event.pushEvent("ON_CHANGE_GOLD")
+end
+
+function onExchangeFailed(data)
+	if data and type(data) == type({}) and data.msg then
+		alert.create(data.msg)
+	end
+end
+
+function onGetCharmSucceed(data)
+	if data and type(data) == type({}) then
+		userdata.UserInfo.owncharm = data.owncharm
+		userdata.UserInfo.owncash = data.owncash
+	end
+    event.pushEvent("ON_CHANGE_GOLD")
+end
+
+function onGetCharmFailed(data)
+	
 end

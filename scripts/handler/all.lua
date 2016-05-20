@@ -208,6 +208,14 @@ handlerMap = {
    --free gold--
    [16002] = "onGetFreeGoldSucceed",
    [16003] = "onGetFreeGoldFailed",
+
+   --exchange--
+   [17002] = "onExchangeSucceed",
+   [17003] = "onExchangeFailed",
+
+   --exchange--
+   [18002] = "onGetCharmSucceed",
+   [18003] = "onGetCharmFailed",
 }
 
 

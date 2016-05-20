@@ -29,7 +29,7 @@ local privateNum = 0
 local messageCnt1 = 0
 local messageCnt2 = 0
 local privateCnt = 0
-local touchData = {}
+
 -- payServerUrl = payServerUrl
 function create(_gameId,_parent,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
@@ -76,18 +76,16 @@ function onEnterGameNotice(_data)
    if _data.user._uidx == userdata.UserInfo.uidx then
       return
    end
-   if _data.index >= #userRankList then
+   if _data.index > #userRankList then
       return
    end
-   table.insert(userRankList,_data.index,_data.user)
+   table.insert(userRankList,_data.index+1,_data.user)
    addRankItem(_data.user,_data.index)
    widget.tab_bg.tab_3.text.obj:setText("观众("..#userRankList..")")
 end
 
 function onExitGameNotice(_data)
    print("onExitGameNotice")
-   printTable(_data)
-   printTable(userRankList)
    local index = 0
    for k,v in pairs(userRankList) do
        printTable(v)
@@ -110,9 +108,6 @@ function onGetUserListSucceed(_data)
    if not _data.users or (_data.users and #_data.users==0) then
       currentUserPage = currentUserPage - 1
       return
-   end
-   for k,v in pairs(_data.users) do
-       table.insert(userRankList,v)
    end
    print("userRankList!!!!!!!!!!!!!!!!!!!!!!!",#userRankList)
    initRankView(_data.users)
@@ -159,7 +154,9 @@ function onSendMessageSucceed(gameData)
       end
       messageCnt2 = messageCnt2 + 1
       privateCnt = privateCnt + 1
-      widget.tab_bg.tab_2.text.obj:setText("私聊".."("..privateCnt..")")
+      if currentTabCnt ~= 2 and message.type ~= 3 then
+         widget.tab_bg.tab_2.text.obj:setText("私聊".."("..privateCnt..")")
+      end
    end
    local str = string.gsub(gameData.con,'(%;22|+)','%"',20)
    message.msg = str
@@ -177,6 +174,7 @@ end
 
 function initRankView(_list)
    for k,v in pairs(_list) do   
+       table.insert(userRankList,v)
        addRankItem(v)
    end
 end
@@ -335,7 +333,7 @@ function addSplitMessage(richText, msg, cnt)
    local color = ccc3(255,255,255)
    if msg.type == 1 then
       local textLabel = Label:create()
-      textLabel:setText(msg.time.min..":"..msg.time.sec.." "..msg.name.."获得"..msg.money.."金币")
+      textLabel:setText(msg.time.min..":"..msg.time.sec.." "..msg.name.."获得"..msg.msg)
       textLabel:setFontSize(40)
       textLabel:setFontName(DEFAULT_FONT)
       totalWidth = textLabel:getContentSize().width
@@ -453,7 +451,7 @@ function addMessage(message, time)
          layout:addChild(_layout)
          local _text3 = RichElementText:create(3,ccc3(255,255,255),255,"获得",DEFAULT_FONT,40)         
          _richText:pushBackElement(_text3)  
-         local _text4 = RichElementText:create(4,ccc3(253,78,62),255,message.money.."金币",DEFAULT_FONT,40)         
+         local _text4 = RichElementText:create(4,ccc3(253,78,62),255,message.msg,DEFAULT_FONT,40)         
          _richText:pushBackElement(_text4) 
          list = widget.message_bg.listView1.obj 
          num = 4
@@ -679,9 +677,17 @@ function exit()
       messageList = {}
       textInput = nil
       textRich = nil
-      WIDTH = nil
+      WIDTH = 0
       GAME_ID = nil
       inputWidthChange = 0
+      userRankList = {}
+      messageList = {}
+      currentUserPage = 0
+      currentTabCnt = 1
+      privateNum = 0
+      messageCnt1 = 0
+      messageCnt2 = 0
+      privateCnt = 0
    end
 end
 

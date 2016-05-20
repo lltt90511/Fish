@@ -7,6 +7,7 @@ local commonTop = require"scene.commonTop"
 local backList = require"scene.backList"
 local countLv = require "logic.countLv"
 local http = require"logic.http"
+local exchange = require"scene.exchange"
 
 module("scene.fishMachine.main", package.seeall)
 
@@ -16,8 +17,9 @@ parentModule = nil
 local data = {}
 local autoArr = {50,10,5}
 local autoIndex = 1
-local singleArr = {1000,5000,10000,50000,100000}
-local singleIndex = 5
+local singleArr = {"花束","千纸鹤","水晶鞋","兰博基尼"}
+local singleGoldArr = {100,1000,10000,100000}
+local singleIndex = 1
 local fishTimer = nil
 local nextTimer = nil
 local isPlaying = false
@@ -42,10 +44,8 @@ local finishCircleCnt = 0
 local toNextTime = 10
 local isDoBet = false
 local currentUserPage = 0
-local resetUserTimer = nil
 local userRankList = {}
 local totalUserNum = 0
-local betCost = {}
 local resultName = {inside="",outside=""}
 -- local fishList = {
 --   [1]={id = 1,name = '大捕获',res = '13',fishType = 0,seqId = 1,multi = 0.0,multiEffect = '8,4,10,2'},
@@ -299,7 +299,7 @@ function initView()
                           end
                           if ev == "releaseUp" then
                              tool.buttonSound("releaseUp","effect_12")
-                             bet(arr[i], singleArr[singleIndex])
+                             bet(arr[i], singleGoldArr[singleIndex])
                           end
       end)
    end
@@ -313,7 +313,7 @@ end
 
 function initCostView()
    widget.bottom.bet_layout.obj:setTouchEnabled(false)
-   widget.bottom.bet_gold.num.obj:setText("单注："..singleArr[singleIndex])
+   widget.bottom.bet_gold.num.obj:setText(singleArr[singleIndex])
    widget.bottom.bet_layout.bg.obj:setPosition(ccp(0,max_list_y))
    local pushOrPullfunc = function()
       local posY = widget.bottom.bet_layout.bg.obj:getPositionY()
@@ -329,7 +329,7 @@ function initCostView()
              pushOrPullfunc()
           end
    end)
-   for i = 1, 5 do 
+   for i = 1, 4 do 
       widget.bottom.bet_layout.bg["label_"..i].obj:setTouchEnabled(true)
       widget.bottom.bet_layout.bg["label_"..i].obj:registerEventScript(function(event)
           if event == "releaseUp" then
@@ -337,7 +337,7 @@ function initCostView()
              singleIndex = i
              userdata.lastFishSingleIndex = singleIndex
              saveSetting("fishIndex",singleIndex)
-             widget.bottom.bet_gold.num.obj:setText("单注："..singleArr[singleIndex])
+             widget.bottom.bet_gold.num.obj:setText(singleArr[singleIndex])
              pushOrPullfunc()
           end
        end)
@@ -633,15 +633,15 @@ function checkWinResult()
              if v.i == userdata.UserInfo.uidx then
                 isInResult = true
                 if v.m > 0 then
-                   widget.bottom.layout.text.obj:setText("恭喜您获得"..v.m.."金币！")
+                   widget.bottom.layout.text.obj:setText("恭喜您中奖了")
                 end
              else
              end
              resultMsg.type = 1
              resultMsg.name = v.i == userdata.UserInfo.uidx and "你" or v.e
-             resultMsg.money = v.m
              resultMsg.time = os.date("*t",tonumber(os.time())/1000)
              resultMsg.id = v.i
+             resultMsg.msg = getWinStr(v.m)
              chat.addMessage(resultMsg)         
          end
          if not isInResult and isDoBet then
@@ -649,6 +649,27 @@ function checkWinResult()
          end
       end
    end
+end
+
+function getWinStr(money)
+   local str = ""
+   local car = math.floor(money/singleGoldArr[4])
+   local shoe = math.floor((money%singleGoldArr[4])/singleGoldArr[3])
+   local origami = math.floor(((money%singleGoldArr[4])%singleGoldArr[3])/singleGoldArr[2])
+   local flower = math.floor((((money%singleGoldArr[4])%singleGoldArr[3])%singleGoldArr[2])/singleGoldArr[1])
+   if car > 0 then
+      str = str..car.."辆"..singleArr[4]
+   end
+   if shoe > 0 then
+      str = str..shoe.."双"..singleArr[3]
+   end
+   if origami > 0 then
+      str = str..origami.."只"..singleArr[2]
+   end
+   if flower > 0 then
+      str = str..flower.."朵"..singleArr[1]
+   end
+   return str
 end
 
 function initChatView()
@@ -839,6 +860,14 @@ function onAlertBack(event)
    end
 end
 
+function onExchange(event)
+   if event == "releaseUp" then
+      tool.buttonSound("releaseUp","effect_12")
+      call(18001)
+      exchange.create(this)
+   end
+end
+
 function cleanEvent()
    for k, v in pairs(eventHash) do
       event.unListen(k)
@@ -873,7 +902,8 @@ function exit()
       tool.cleanWidgetRef(widget)
       data = nil
       endFishTimer()
-      singleIndex = 3
+      endNextTimer()
+      singleIndex = 1
       betOwn = {}
       winGold = 0
       isPlaying = false
@@ -889,6 +919,17 @@ function exit()
       finishCircleCnt = 0
       toNextTime = 10
       isDoBet = false
+      userRankList = {}
+      userRankList = nil
+      starNum = 7
+      classicOutSide = {}
+      totalCashGold = 0
+      lastUserGold = 0
+      historyUserGold = {}
+      max_list_y = -350
+      isDoBet = false
+      currentUserPage = 0
+      totalUserNum = 0
    end
 end
 
@@ -1019,8 +1060,7 @@ widget = {
           label_1 = {_type = "Label",line={_type = "ImageView"}},
           label_2 = {_type = "Label",line={_type = "ImageView"}},
           label_3 = {_type = "Label",line={_type = "ImageView"}},
-          label_4 = {_type = "Label",line={_type = "ImageView"}},
-          label_5 = {_type = "Label"},
+          label_4 = {_type = "Label"},
         },
       },
    },
@@ -1119,6 +1159,12 @@ widget = {
         _type = "ImageView",
         light = {_type = "ImageView"},
         fish = {_type = "ImageView"},
+      },
+      exchange = {
+        _type = "Button",
+        _func = onExchange,
+        text = {_type = "Label"},
+        text_shadow = {_type = "Label"},
       },
    },
    result = {

@@ -190,15 +190,15 @@ function initView()
    -- chongzhiAction()
    switchBottomBright("dating")
    scheduleFunc = function()
-        setLotteryPaoNum()
-        local tmp = template['freeGold'][userdata.UserInfo.freeGoldCnt+1]
-        if not tmp or userdata.UserInfo.freeGoldCnt > #template['freeGold'] then
+        -- setLotteryPaoNum()
+        local tmp = template['freeGold'][userdata.UserInfo.minNum+1]
+        if not tmp or userdata.UserInfo.minNum > #template['freeGold'] then
            tmp = template['freeGold'][6]
         end
         local currentTime = getSyncedTime()
-        local time = currentTime - userdata.UserInfo.lastFreeGoldTime/1000
+        local time = currentTime - userdata.UserInfo.minlastLq
         -- print("time",currentTime,userdata.UserInfo.lastFreeGoldTime,tmp.time*60,time)
-        if userdata.UserInfo.lastFreeGoldTime == 0 then
+        if userdata.UserInfo.minlastLq == 0 then
            if isFreeGoldAction == false then
               isFreeGoldAction = true
               widget.top.btn_lingqu.Image_10.obj:setVisible(true)
@@ -208,7 +208,7 @@ function initView()
         else
            if time > tmp.time*60 then
               if time - tmp.time*60 > 20*60 then
-                 userdata.UserInfo.freeGoldCnt = 0
+                 userdata.UserInfo.minNum = 0
               end
                  -- userdata.UserInfo.lastFreeGoldTime = currentTime*1000
                  -- if isFreeGoldAction == true then
@@ -236,7 +236,7 @@ function initView()
                  isFreeGoldAction = false
                  widget.top.btn_lingqu.Image_10.obj:setScale(1)
               end
-              local nextTime = userdata.UserInfo.lastFreeGoldTime/1000 + tmp.time*60
+              local nextTime = userdata.UserInfo.minlastLq + tmp.time*60
               -- print("time2",userdata.UserInfo.lastFreeGoldTime,nextTime,currentTime,tmp.time)
               min = math.floor((nextTime-currentTime)/60)
               sec = math.floor((nextTime-currentTime)%60)
@@ -257,8 +257,8 @@ function initView()
       unSchedule(freeGoldTimer)
       freeGoldTimer = nil
    end
-   -- freeGoldTimer = schedule(scheduleFunc,1)
-   -- scheduleFunc()
+   freeGoldTimer = schedule(scheduleFunc,1)
+   scheduleFunc()
    -- setMailPaoNum()
    -- call("getQuestCountList")
    -- call("getPrivateCharList")

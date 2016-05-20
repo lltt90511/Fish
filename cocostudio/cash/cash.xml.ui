@@ -94,5 +94,5 @@
     <string>qietu/text/xh.png</string>
   </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>exchange.json</CurrentUIJson>
+  <CurrentUIJson>fish_machine1.json</CurrentUIJson>
 </UIProject>

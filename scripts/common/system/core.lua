@@ -222,7 +222,7 @@ function performWithDelay(func,time)
 end
 timeDiff = 0
 function getSyncedTime()
-	return os.time() + timeDiff
+	return os.time()
 end
 function setAutoLockScreen(flag)
 	--luaoc.callStaticMethod("AppController","setAutoLockScreen",{flag=flag})
@@ -280,6 +280,8 @@ function timeToDayStart(t)
 		return 0
 	end
    local tRec = os.date("*t",t)
+   print("timeToDayStart!!!!!!!!!!!!!!!!!")
+   printTable(tRec)
    tRec.hour = 0
    tRec.min = 0
    tRec.sec = 0

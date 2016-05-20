@@ -40,8 +40,8 @@ function initList()
   local y = sy
   getEd = 0
   local today = timeToDayStart(getSyncedTime()) 
-  local last = 0--userdata.UserInfo.lastDailyGiftTime/1000
-  local get = 0--userdata.UserInfo.dailyGiftCnt
+  local last = userdata.UserInfo.daylastLq
+  local get = userdata.UserInfo.dayNum
   local yes = today -24*3600
   if last < yes then
      getEd = 1

@@ -36,17 +36,17 @@ function create(_parent)
 end
 
 function initView()
-    local tmp = template['freeGold'][userdata.UserInfo.freeGoldCnt+1]
-    if not tmp or userdata.UserInfo.freeGoldCnt > #template['freeGold'] then
+    local tmp = template['freeGold'][userdata.UserInfo.minNum+1]
+    if not tmp or userdata.UserInfo.minNum > #template['freeGold'] then
        tmp = template['freeGold'][6]
     end
-    local nextTmp = template['freeGold'][userdata.UserInfo.freeGoldCnt+2]
-    if not nextTmp or userdata.UserInfo.freeGoldCnt > #template['freeGold'] then
+    local nextTmp = template['freeGold'][userdata.UserInfo.minNum+2]
+    if not nextTmp or userdata.UserInfo.minNum > #template['freeGold'] then
        nextTmp = template['freeGold'][6]
     end
-    -- print("initView",getSyncedTime(),userdata.UserInfo.lastFreeGoldTime/1000,tmp.time)
+    print("initView",getSyncedTime(),userdata.UserInfo.minlastLq,tmp.time)
     local isShowTime = false
-    if getSyncedTime() - userdata.UserInfo.lastFreeGoldTime/1000 < tmp.time*60 then
+    if getSyncedTime() - userdata.UserInfo.minlastLq < tmp.time*60 then
        isShowTime = true
     end
     widget.alert.btn_1.obj:setTouchEnabled(not isShowTime)
@@ -56,7 +56,7 @@ function initView()
     local goldNum = 0
     nextGoldNum = 0
     local vipGoldNum = 0
-    local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+    local vipLv = userdata.UserInfo.viplevel
     if vipLv == 0 then
        goldNum = tmp.normal
        nextGoldNum = nextTmp.normal
@@ -68,7 +68,7 @@ function initView()
        widget.alert.btn_1.text.obj:setText("VIP领取")
        widget.alert.btn_1.text_shadow.obj:setText("VIP领取")
     end  
-    local nextVip = template['vipExp'][vipLv+1]
+    local nextVip = nil
     if nextVip then
        local tmp = template['charge'][nextVip.lv]
        local gold = tmp.goldGet + tmp.giftGet
@@ -155,7 +155,7 @@ function onBtn1(event)
       tool.buttonSound("releaseUp","effect_12")
       userdata.goldAction = true
       userdata.goldPos = {x = 335,y = 1160}
-      call("getFreeGold")
+      call(16001)
       umengBonusCoin(nextGoldNum, 1)
    end
 end

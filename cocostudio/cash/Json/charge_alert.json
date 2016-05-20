@@ -10,7 +10,14 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [],
+  "texturesPng": [
+    "qietu/mora/alert.png",
+    "qietu/tymb/guanbiBt01.png",
+    "qietu/tymb/guanbiBt02.png",
+    "qietu/mora/queding.png",
+    "qietu/tymb/xuanzhong02a.png",
+    "qietu/tymb/xuanzhong02b.png"
+  ],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",

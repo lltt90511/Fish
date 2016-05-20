@@ -233,16 +233,16 @@ end
 function onUpload(event)
    if event == "releaseUp" then
       print("##########onUploadLocal")
-      C_upload("http://120.27.156.196:8080/User/WebForm1.aspx","cash/qietu/tymb/xiaopuhuo.png",1,0,0) 
-      -- local callback=function(t)
-      --    printTable(t)
-      --    -- fileManager.insertUpload({path=t.fullPath,type=1,seconds=0})
-      --    -- call("uploadImage")      
-      --    C_upload("http://120.27.156.196:8080/User/WebForm1.aspx",t.fullPath,1,0,0)   
-      -- end
-      -- luaoc.callStaticMethod("AppController","chooseImage",{width=imageWidth,height=imageHeight,type=1,callback=callback})
-      -- setTakePhotoFuncCallBack(callback)
-      -- luaj.callStaticMethod("cc/yongdream/nshx/Util","startPhoto",{"onUploadFromLocal",2,1,imageWidth,imageHeight})   
+      -- C_upload("http://120.27.156.196:8080/User/WebForm1.aspx","cash/qietu/tymb/xiaopuhuo.png",1,0,0) 
+      local callback=function(t)
+         printTable(t)
+         -- fileManager.insertUpload({path=t.fullPath,type=1,seconds=0})
+         -- call("uploadImage")      
+         C_upload("http://120.27.156.196:8080/User/WebForm1.aspx",t.fullPath,1,0,0)   
+      end
+      luaoc.callStaticMethod("AppController","chooseImage",{width=imageWidth,height=imageHeight,type=1,callback=callback})
+      setTakePhotoFuncCallBack(callback)
+      luaj.callStaticMethod("cc/yongdream/nshx/Util","startPhoto",{"onUploadFromLocal",2,1,imageWidth,imageHeight})   
    end
 end
 

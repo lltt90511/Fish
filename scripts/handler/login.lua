@@ -7,6 +7,8 @@ payServerUrl = payServerUrl
 module("handler.login",package.seeall)
 function onLoginSucceed(data)
    printTable(data)
+   data.daylastLq = data.daylastLq - 8*3600
+   data.minlastLq = data.minlastLq - 8*3600
    userdata.UserInfo = data
    userdata.CharIdToImageFile[data.uidx] = {file=userdata.UserInfo.PicUrl,sex=userdata.UserInfo.sex}
    print("@!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
@@ -61,8 +63,7 @@ end
 
 function firstToMainScene()
    local daily = false
-   -- print (timeToDayStart(getSyncedTime()) , userdata.UserInfo.lastDailyGiftTime/1000 )
-   if timeToDayStart(getSyncedTime()) > userdata.UserInfo.lastLq then
+   if timeToDayStart(getSyncedTime()) > userdata.UserInfo.daylastLq then
       daily = true
    end
    local main = package.loaded['scene.main']
