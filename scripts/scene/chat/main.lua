@@ -21,7 +21,7 @@ local systemMessageList = {}
 local isSystemMessagePlaying = false
 local inputWidthChange = 0
 local parentModule = nil
-local fontHeight = 45
+local fontHeight = 72
 local currentUserPage = 0
 local userRankList = {}
 local currentTabCnt = 1
@@ -415,8 +415,14 @@ function addMessage(message, time)
    time = time == nil and 0.1 or time
    local list = nil
    local posx = 0
+   local isDelete = false
    local func = function()
       if not this then return end
+       table.insert(messageList,message)
+       if #messageList >= 50 then
+           table.remove(messageList,1)
+           isDelete = true
+       end
       local _label = Label:create()
       _label:setFontSize(40)
       _label:setFontName(DEFAULT_FONT)
@@ -542,11 +548,15 @@ function addMessage(message, time)
       _richText:setPosition(ccp(0,0))
       layout:setSize(_richText:getSize())
       layout:addChild(_richText)   
-      if message.type >= 4 then
-         widget.message_bg.listView2.obj:pushBackCustomItem(layout)
-      else
-         widget.message_bg.listView1.obj:pushBackCustomItem(layout)
+      -- if message.type >= 4 then
+      --    widget.message_bg.listView2.obj:pushBackCustomItem(layout)
+      -- else
+      --    widget.message_bg.listView1.obj:pushBackCustomItem(layout)
+      -- end
+      if isDelete then
+         list:removeItem(0)
       end
+      list:pushBackCustomItem(layout)
    end
    performWithDelay(func,time)
    performWithDelay(function()    

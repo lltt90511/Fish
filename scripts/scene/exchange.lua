@@ -24,11 +24,11 @@ end
 function onChangeGold()
    widget.alert.panel_1.text_2.obj:setText(userdata.UserInfo.owncharm.."点")
    widget.alert.panel_1.text_3.obj:setText(userdata.UserInfo.owncash.."金币")
+   widget.alert.panel_1.text_3.obj:setPosition(ccp(widget.alert.panel_1.text_2.obj:getPositionX()+widget.alert.panel_1.text_2.obj:getSize().width+30,widget.alert.panel_1.text_3.obj:getPositionY()))
 end
 
 function initView()
    onChangeGold()
-   widget.alert.panel_1.text_3.obj:setPosition(ccp(widget.alert.panel_1.text_2.obj:getPositionX()+widget.alert.panel_1.text_2.obj:getSize().width+30,widget.alert.panel_1.text_3.obj:getPositionY()))
    widget.alert.panel_1.obj:setTouchEnabled(false)
    widget.alert.panel_2.obj:setTouchEnabled(false)
    for i=1,checkNum do
