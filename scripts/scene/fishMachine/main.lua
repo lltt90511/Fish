@@ -17,7 +17,7 @@ parentModule = nil
 local data = {}
 local autoArr = {50,10,5}
 local autoIndex = 1
-local singleArr = {"花束","千纸鹤","水晶鞋","兰博基尼"}
+local singleArr = {"玫瑰","千纸鹤","水晶鞋","兰博基尼"}
 local singleGoldArr = {100,1000,10000,100000}
 local singleIndex = 1
 local fishTimer = nil
@@ -47,26 +47,6 @@ local currentUserPage = 0
 local userRankList = {}
 local totalUserNum = 0
 local resultName = {inside="",outside=""}
--- local fishList = {
---   [1]={id = 1,name = '大捕获',res = '13',fishType = 0,seqId = 1,multi = 0.0,multiEffect = '8,4,10,2'},
---   [2]={id = 2,name = '小捕获',res = '14',fishType = 0,seqId = 7,multi = 0.0,multiEffect = ''},
---   [3]={id = 3,name = '鲨鱼',res = '1',fishType = 0,seqId = 3,multi = 50.0,multiEffect = ''},
---   [4]={id = 4,name = '魔鬼鱼',res = '3',fishType = 0,seqId = 5,multi = 20.0,multiEffect = ''},
---   [5]={id = 5,name = '灯笼鱼',res = '6',fishType = 0,seqId = 9,multi = 10.0,multiEffect = ''},
---   [6]={id = 6,name = '海龟',res = '8',fishType = 0,seqId = 11,multi = 5.0,multiEffect = ''},
---   [7]={id = 7,name = '烛光鱼',res = '2',fishType = 0,seqId = 4,multi = 0.0,multiEffect = ''},
---   [8]={id = 8,name = '珊瑚鱼',res = '10',fishType = 0,seqId = 2,multi = 0.0,multiEffect = ''},
---   [9]={id = 9,name = '海豚',res = '7',fishType = 0,seqId = 10,multi = 0.0,multiEffect = ''},
---   [10]={id = 10,name = '水母',res = '4',fishType = 0,seqId = 6,multi = 0.0,multiEffect = ''},
---   [11]={id = 11,name = '蝴蝶鱼',res = '5',fishType = 0,seqId = 8,multi = 0.0,multiEffect = ''},
---   [12]={id = 12,name = '海星',res = '9',fishType = 0,seqId = 12,multi = 0.0,multiEffect = ''},
---   [13]={id = 13,name = '对虾',res = '11',fishType = 1,seqId = 1,multi = 1.5,multiEffect = ''},
---   [14]={id = 14,name = '螃蟹',res = '12',fishType = 1,seqId = 2,multi = 1.5,multiEffect = ''},
---   [15]={id = 15,name = '对虾',res = '11',fishType = 1,seqId = 3,multi = 1.5,multiEffect = ''},
---   [16]={id = 16,name = '螃蟹',res = '12',fishType = 1,seqId = 4,multi = 1.5,multiEffect = ''},
---   [17]={id = 17,name = '对虾',res = '11',fishType = 1,seqId = 5,multi = 1.5,multiEffect = ''},
---   [18]={id = 18,name = '螃蟹',res = '12',fishType = 1,seqId = 6,multi = 1.5,multiEffect = ''},
--- }
 local fishList = {
   [1]={id = 1,name = '大捕获',res = '13',fishType = 0,seqId = 1,multi = 0.0,multiEffect = '8,4,10,2'},
   [2]={id = 8,name = '珊瑚鱼',res = '10',fishType = 0,seqId = 2,multi = 0.0,multiEffect = ''},
@@ -113,6 +93,7 @@ function create(_parent, _parentModule)
    -- printTable(historyBet)
    -- widget.bottom_bg.rank_list.obj:setItemModel(widget.rank_render.obj)
    -- initClassicOutSide()
+   lastOpenId = {inside=1,outside=1}
    initView()
    initResult()
    initChatView()
@@ -165,6 +146,7 @@ end
 function onGetGameStatus(gameData)
    onUpdateGameData(gameData)
    if data.type == 100 then
+      changeTouchEnabled(true)
       endNextTimer()
       toNextTime = 10
       if isDoBet then
@@ -176,6 +158,7 @@ function onGetGameStatus(gameData)
       widget.bottom.layout.obj:setTouchEnabled(false)
       widget.bottom.layout.obj:setVisible(false)
    elseif data.type == 200 then
+      widget.fish.cd_bg.cd.obj:setColor(ccc3(204,255,255))
       widget.bottom.layout.obj:setTouchEnabled(true)
       widget.bottom.layout.obj:setVisible(true)
       widget.bottom.layout.text.obj:setText("开奖中......")
@@ -256,6 +239,7 @@ function initView()
          widget.fish["panel_inside_"..v.seqId].fish.obj:loadTexture("cash/qietu/fish1/fish_"..v.res..".png")
       end
    end 
+   changeTouchEnabled(false)
    widget.bottom.layout.obj:setVisible(false)
    widget.bottom.layout.obj:setTouchEnabled(false)
    -- local light = CCSprite:create("cash/qietu/effect/guang.png")
@@ -266,18 +250,49 @@ function initView()
    -- local action = CCRotateBy:create(0.5,60)
    -- action = CCRepeatForever:create(action)
    -- light:runAction(action)
+   widget.bottom["btn_"..singleIndex].obj:setTouchEnabled(false)
+   widget.bottom["btn_"..singleIndex].obj:setBackGroundColor(ccc3(255,0,0))
+   for i=1,#singleArr do
+       if widget.bottom["btn_"..i].obj then
+          widget.bottom["btn_"..i].text.obj:setText(singleArr[i])
+          widget.bottom["btn_"..i].obj:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 singleIndex = i
+                 userdata.lastFishSingleIndex = singleIndex
+                 saveSetting("fishIndex",singleIndex)
+                 for j=1,#singleArr do
+                     if widget.bottom["btn_"..j].obj then
+                        print("on widget!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",j,singleIndex)
+                        if j == singleIndex then
+                           widget.bottom["btn_"..j].obj:setTouchEnabled(false)
+                           widget.bottom["btn_"..j].obj:setBackGroundColor(ccc3(255,0,0))
+                        else
+                           widget.bottom["btn_"..j].obj:setTouchEnabled(true)
+                           widget.bottom["btn_"..j].obj:setBackGroundColor(ccc3(0,0,0))
+                        end
+                     end
+                 end
+              end
+          end)
+       end
+   end
 
    initCostView()
    
    startFishTimer()
    if data.type == 100 then
       local str = string.format("%02d", betEndTime)
-      widget.fish.cd_bg.cd.obj:setText(str) 
+      widget.fish.cd_bg.cd.obj:setText(str)
+      changeTouchEnabled(true) 
    elseif data.type == 200 then
       widget.fish.cd_bg.cd.obj:setText("00")
       playFishEffect()
+      widget.bottom.rebet.obj:setBright(false)
+      widget.bottom.rebet.obj:setTouchEnabled(false)
    elseif data.type == 201 then
       widget.fish.cd_bg.cd.obj:setText("00")
+      widget.bottom.rebet.obj:setBright(false)
+      widget.bottom.rebet.obj:setTouchEnabled(false)
       widget.bottom.layout.obj:setTouchEnabled(true)
       widget.bottom.layout.obj:setVisible(true)
       widget.bottom.layout.text.obj:setText("开奖中，请稍后...")
@@ -291,8 +306,17 @@ function initView()
    for i = 1,#arr do
       isBet[arr[i]] = {bool=false,id=i}
       local typeTmp = fishList[arr[i]]
-      widget.bottom.bet_bg["bet_"..i].layout.obj:setVisible(false)
-      widget.bottom.bet_bg["bet_"..i].layout.obj:setTouchEnabled(false)
+      local hasBet = false
+      if data.type == 100 then
+         for k,v in pairs(data.info) do
+             if v.id == arr[i] then
+                hasBet = true
+                break
+             end
+         end
+      end
+      widget.bottom.bet_bg["bet_"..i].layout.obj:setVisible(hasBet)
+      widget.bottom.bet_bg["bet_"..i].layout.obj:setTouchEnabled(hasBet)
       widget.bottom.bet_bg["bet_"..i].obj:registerEventScript(function(ev,data)
                           if isBet[arr[i]].bool then
                              return
@@ -312,6 +336,7 @@ function initView()
 end
 
 function initCostView()
+   widget.bottom.bet_gold.obj:setTouchEnabled(false)
    widget.bottom.bet_layout.obj:setTouchEnabled(false)
    widget.bottom.bet_gold.num.obj:setText(singleArr[singleIndex])
    widget.bottom.bet_layout.bg.obj:setPosition(ccp(0,max_list_y))
@@ -322,26 +347,26 @@ function initCostView()
       elseif posY == 0 then
          tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.bottom.bet_layout.bg.obj)
       end
-   end    
-   widget.bottom.bet_gold.obj:registerEventScript(function(event)
-          if event == "releaseUp" then
-             tool.buttonSound("releaseUp","effect_12")
-             pushOrPullfunc()
-          end
-   end)
-   for i = 1, 4 do 
-      widget.bottom.bet_layout.bg["label_"..i].obj:setTouchEnabled(true)
-      widget.bottom.bet_layout.bg["label_"..i].obj:registerEventScript(function(event)
-          if event == "releaseUp" then
-             tool.buttonSound("releaseUp","effect_12")
-             singleIndex = i
-             userdata.lastFishSingleIndex = singleIndex
-             saveSetting("fishIndex",singleIndex)
-             widget.bottom.bet_gold.num.obj:setText(singleArr[singleIndex])
-             pushOrPullfunc()
-          end
-       end)
-   end
+   end       -- widget.bottom.bet_gold.obj:registerEventScript(function(event)
+   --        if event == "releaseUp" then
+   --           tool.buttonSound("releaseUp","effect_12")
+   --           pushOrPullfunc()
+   --        end
+   -- end)
+   -- for i = 1, 4 do 
+   --    widget.bottom.bet_layout.bg["label_"..i].obj:setTouchEnabled(true)
+   --    widget.bottom.bet_layout.bg["label_"..i].obj:registerEventScript(function(event)
+   --        if event == "releaseUp" then
+   --           tool.buttonSound("releaseUp","effect_12")
+   --           singleIndex = i
+   --           userdata.lastFishSingleIndex = singleIndex
+   --           saveSetting("fishIndex",singleIndex)
+   --           widget.bottom.bet_gold.num.obj:setText(singleArr[singleIndex])
+   --           pushOrPullfunc()
+   --        end
+   --     end)
+   -- end
+
    changeTouchEnabled(true)
 end
 
@@ -523,11 +548,11 @@ end
 function playCircle(maxNum, name)
    local st = lastOpenId[name]
    local delay = name == "inside" and 0.2 or 0.2
-   if widget.fish["panel_"..name.."_"..st] ~= nil then
-      widget.fish["panel_"..name.."_"..st].light.obj:setVisible(false)
-   end
-   st = st >= maxNum and 1 or st + 1
-   local slowNum = name == "inside" and 2 or 4
+   -- if widget.fish["panel_"..name.."_"..st] ~= nil then
+   --    widget.fish["panel_"..name.."_"..st].light.obj:setVisible(false)
+   -- end
+   -- st = st >= maxNum and 1 or st + 1
+   -- local slowNum = name == "inside" and 2 or 4
 
    local func = nil
    local cnt = 0
@@ -577,11 +602,11 @@ end
 function playFishEffect()
    -- printTable(id)
    AudioEngine.playEffect("effect_02")
-   for i = 1, 12 do
-      if i ~= lastOpenId.outside then
-         widget.fish["panel_outside_"..i].light.obj:setVisible(false)
-      end
-   end
+   -- for i = 1, 12 do
+   --    if i ~= lastOpenId.outside then
+   --       widget.fish["panel_outside_"..i].light.obj:setVisible(false)
+   --    end
+   -- end
    endFishTimer()
    isPlaying = true
    changeTouchEnabled(false)
@@ -592,8 +617,14 @@ end
 
 function endEffect()
    userdata.isInGame = false
-   lastOpenId.outside = data.GameResult.f[1]
-   lastOpenId.inside = data.GameResult.f[2]
+   for i=1,12 do
+       if data.GameResult.f[1] == fishList[i].id then
+          lastOpenId.outside = i
+       end
+   end
+   lastOpenId.inside = data.GameResult.f[2] - 12
+   widget.fish["panel_outside_"..lastOpenId.outside].light.obj:setVisible(false)
+   widget.fish["panel_inside_"..lastOpenId.inside].light.obj:setVisible(false)
    isPlaying = false
    winGold = 0
    finishCircleCnt = 0
@@ -602,13 +633,17 @@ function endEffect()
        widget.bottom.bet_bg["bet_"..v.id].layout.obj:setVisible(false)
        widget.bottom.bet_bg["bet_"..v.id].layout.obj:setTouchEnabled(false)
    end
+   for i=1,#singleArr do
+       if widget.bottom["btn_"..i].obj then
+          widget.bottom["btn_"..i].obj:setTouchEnabled(true)
+          widget.bottom["btn_"..i].obj:setColor(ccc3(0,0,0))
+       end
+   end
    checkWinResult()
-   changeTouchEnabled(true)
-   if lastOpenId.outside >= 1 and lastOpenId.outside <= 6 then
-      doResultAni(lastOpenId.outside)
+   if fishList[lastOpenId.outside].id >= 1 and fishList[lastOpenId.outside].id <= 6 then
+      doResultAni(fishList[lastOpenId.outside].id)
    else
-      -- startFishTimer() 
-      doResultAni(lastOpenId.outside)
+      startFishTimer() 
    end 
    commonTop.registerEvent()
 
@@ -626,6 +661,8 @@ function checkWinResult()
       message.outside = resultName["outside"]
       message.inside = resultName["inside"]
       chat.addSystemMessage(message)
+      chat.setMessage(message,1) 
+      chat.setMessage(message,3) 
       if data.GameResult.u and #data.GameResult.u > 0 then
          local isInResult = false
          for k,v in pairs(data.GameResult.u) do
@@ -639,10 +676,11 @@ function checkWinResult()
              end
              resultMsg.type = 1
              resultMsg.name = v.i == userdata.UserInfo.uidx and "你" or v.e
-             resultMsg.time = os.date("*t",tonumber(os.time())/1000)
+             resultMsg.time = os.date("*t",tonumber(os.time()))
              resultMsg.id = v.i
              resultMsg.msg = getWinStr(v.m)
-             chat.addMessage(resultMsg)         
+             chat.setMessage(resultMsg,1) 
+             chat.setMessage(resultMsg,3)           
          end
          if not isInResult and isDoBet then
             widget.bottom.layout.text.obj:setText("很遗憾您没有中奖！") 
@@ -690,6 +728,10 @@ function startFishTimer()
                betEndTime = betEndTime - 1
                local str = string.format("%02d", betEndTime)
                widget.fish.cd_bg.cd.obj:setText(str)  
+               if betEndTime < 5 then
+                  widget.fish.cd_bg.cd.obj:setColor(ccc3(255,0,0))
+                  tool.createEffect(tool.Effect.blink,{time=0.5,f=1},widget.fish.cd_bg.cd.obj)
+               end
                changeTouchEnabled(betEndTime > 0 and true or false)
             end
          end,1)
@@ -711,19 +753,19 @@ function endNextTimer()
 end
 
 function changeTouchEnabled(flag)
-   widget.bottom.bet_gold.obj:setBright(flag)
-   widget.bottom.bet_gold.obj:setTouchEnabled(flag)
+   -- widget.bottom.bet_gold.obj:setBright(flag)
+   -- widget.bottom.bet_gold.obj:setTouchEnabled(flag)
    if not isRepeat then
       widget.bottom.rebet.obj:setBright(flag)
       widget.bottom.rebet.obj:setTouchEnabled(flag)
    end
-   if flag == false then
-      local posY = widget.bottom.bet_layout.bg.obj:getPositionY()
-      if posY == 0 then
-         widget.bottom.bet_layout.obj:setTouchEnabled(false)
-         tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeOut=true},widget.bottom.bet_layout.bg.obj)
-      end
-   end
+   -- if flag == false then
+   --    local posY = widget.bottom.bet_layout.bg.obj:getPositionY()
+   --    if posY == 0 then
+   --       widget.bottom.bet_layout.obj:setTouchEnabled(false)
+   --       tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeOut=true},widget.bottom.bet_layout.bg.obj)
+   --    end
+   -- end
    for k, v in pairs(isBet) do
        widget.bottom.bet_bg["bet_"..v.id].obj:setTouchEnabled(flag)
    end
@@ -785,10 +827,10 @@ function onRepeatBet(event1)
 end
 
 function bet(id, needGold)
-   -- if userdata.UserInfo.owncash < needGold then
-   --    alert.create("余额不足！")
-   --    return
-   -- end
+   if userdata.UserInfo.owncash < needGold then
+      alert.create("余额不足！")
+      return
+   end
    -- if not isBet[id] then
    --    isBet[id] = true
    -- end
@@ -1062,6 +1104,22 @@ widget = {
           label_3 = {_type = "Label",line={_type = "ImageView"}},
           label_4 = {_type = "Label"},
         },
+      },
+      btn_1 = {
+        _type = "Layout",
+        text = {_type = "Label"},
+      },
+      btn_2 = {
+        _type = "Layout",
+        text = {_type = "Label"},
+      },
+      btn_3 = {
+        _type = "Layout",
+        text = {_type = "Label"},
+      },
+      btn_4 = {
+        _type = "Layout",
+        text = {_type = "Label"},
       },
    },
    fish = {

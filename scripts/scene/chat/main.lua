@@ -5,6 +5,7 @@ local countLv = require "logic.countLv"
 local http = require"logic.http"
 local scrollList = require"widget.scrollList"
 local chatPrivate = require"scene.chatPrivate"
+local userAlert = require"scene.userAlert"
 
 module("scene.chat.main",package.seeall)
 
@@ -29,7 +30,11 @@ local privateNum = 0
 local messageCnt1 = 0
 local messageCnt2 = 0
 local privateCnt = 0
-
+local userAllCnt = 0
+local isPrivate = 0
+local targetId = -1
+local targetName = ""
+local max_list_y = -150
 -- payServerUrl = payServerUrl
 function create(_gameId,_parent,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
@@ -43,15 +48,17 @@ function create(_gameId,_parent,_parentModule)
    messageCnt1 = 0
    messageCnt2 = 0
    privateCnt = 0
-   messageList = {}
+   messageList[1] = {}
+   messageList[2] = {}
+   messageList[3] = {}
+   messageList[4] = {}
    initEditBox()
    initListView()
    changeExpressionPanelVisible(expVisible)
-   resetTab()
-   -- event.listen("USER_MESSAGE", onUserMessage)
-   -- event.listen("SYSTEM_MESSAGE", onSystemMessage)
-   -- event.listen("SYSTEM_CONTEXT", onSystemContext)
-   widget.message_bg.listView3.obj:registerEventScript(function(event)
+   resetTabStatus()
+   resetPanelSay()
+
+   widget.message_bg.listView4.obj:registerEventScript(function(event)
      -- print("event!!!!!!!!!",event)
      if event == "SCROLL_BOTTOM" then
         print("SCROLL_BOTTOM!!!!!!!!!!!!!!!!!!")
@@ -81,7 +88,17 @@ function onEnterGameNotice(_data)
    end
    table.insert(userRankList,_data.index+1,_data.user)
    addRankItem(_data.user,_data.index)
-   widget.tab_bg.tab_3.text.obj:setText("观众("..#userRankList..")")
+   userAllCnt = userAllCnt + 1
+   widget.tab_bg.tab_4.text.obj:setText("观众("..userAllCnt..")")
+   local message = {}
+   message.type = -1
+   message.name = _data.user._nickName
+   message.id = _data.user._uidx
+   message.grade = _data.user._uGrade
+   message.pic = _data.user._picUrl
+   message.sex = _data.user._sex
+   setMessage(message,1)
+   setMessage(message,3)
 end
 
 function onExitGameNotice(_data)
@@ -96,7 +113,7 @@ function onExitGameNotice(_data)
        index = index + 1
    end
    print("index!!!!!!!!!!!!!!!!!!!!!!!!",index,#userRankList)
-   if index < #userRankList then
+   if index <= #userRankList then
       table.remove(userRankList,index)
       removeRankItem(index)
    end   
@@ -106,21 +123,24 @@ function onGetUserListSucceed(_data)
    print("onGetUserListSucceed")
    printTable(_data)
    if not _data.users or (_data.users and #_data.users==0) then
-      currentUserPage = currentUserPage - 1
+      if currentUserPage > 1 then
+         currentUserPage = currentUserPage - 1
+      end
       return
    end
    print("userRankList!!!!!!!!!!!!!!!!!!!!!!!",#userRankList)
+   userAllCnt = _data.Count
    initRankView(_data.users)
    performWithDelay(function()
                     if not this then return end
-                    widget.message_bg.listView3.obj:setBounceEnabled(false)
+                    widget.message_bg.listView4.obj:setBounceEnabled(false)
                    -- widget.bottom_bg.rank_list.obj:scrollToBottom(0.5,true)
                     performWithDelay(function()
                                        if not this then return end  
-                                          widget.message_bg.listView3.obj:setBounceEnabled(true)
+                                          widget.message_bg.listView4.obj:setBounceEnabled(true)
                                        end,0.6)
                                      end,0.15)
-   widget.tab_bg.tab_3.text.obj:setText("观众("..#userRankList..")")
+   widget.tab_bg.tab_4.text.obj:setText("观众("..userAllCnt..")")
 end
 
 function onGetUserListFailed(_data)
@@ -131,6 +151,9 @@ function onSendMessageSucceed(gameData)
    local message = {}
    message.from = gameData.from._nickName
    message.fromId = gameData.from._uidx
+   message.fromGrade = gameData.from._uGrade
+   message.fromSex = gameData.from._sex
+   message.fromPic = gameData.from._picUrl
    if type(gameData.to) == type(-1) and gameData.to == -1 then
       if message.fromId == userdata.UserInfo.uidx then
          message.from = "你"
@@ -140,6 +163,9 @@ function onSendMessageSucceed(gameData)
    elseif type(gameData.to) == type({}) then
       message.to = gameData.to._nickName
       message.toId = gameData.to._uidx
+      message.toGrade = gameData.to._uGrade
+      message.toSex = gameData.to._sex
+      message.toPic = gameData.to._picUrl
       if gameData.qiaoqiao > 0 then
          message.type = 5
       elseif gameData.from._uidx == userdata.UserInfo.uidx or gameData.to._uidx == userdata.UserInfo.uidx then
@@ -161,8 +187,14 @@ function onSendMessageSucceed(gameData)
    local str = string.gsub(gameData.con,'(%;22|+)','%"',20)
    message.msg = str
    message.private = gameData.qiaoqiao
-   message.time = os.date("*t",tonumber(os.time())/1000)
-   addMessage(message)
+   message.time = os.date("*t",tonumber(os.time()))
+   if message.type == 2 then
+      setMessage(message,1)
+   elseif message.type == 3 then
+      setMessage(message,1)
+   elseif message.type == 4 or message.type == 5 then
+      setMessage(message,2)
+   end
    if chatPrivate.this then
       chatPrivate.addPrivateMessage(message)
    end
@@ -188,27 +220,36 @@ function addRankItem(item,index)
             alert.create("您不能与自己私聊")
             return
          end
-         chatPrivate.create(thisParent,item._nickName,item._uidx,package.loaded["scene.fishMachine.main"]) 
+         local user = {}
+         user.grade = item._uGrade
+         user.id = item._uidx
+         user.name = item._nickName 
+         user.sex = item._sex
+         user.pic = item._picUrl
+         userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
       end 
    end)
-   local head = tool.findChild(obj,"head","ImageView")
-   userdata.CharIdToImageFile[item._uidx] = {file=item._picUrl,sex=item._sex}
-   tool.getUserImage(eventHash, head, item._uidx)
+   local grade = tool.findChild(obj,"grade","ImageView")
+   grade:loadTexture("cash/qietu/user/v"..item._uGrade..".png")
+   local id = tool.findChild(obj,"id","Label")
+   id:setText(item._uidx)
+   id:setPosition(ccp(grade:getPositionX()+grade:getSize().width+10,id:getPositionX()))
+   -- userdata.CharIdToImageFile[item._uidx] = {file=item._picUrl,sex=item._sex}
+   -- tool.getUserImage(eventHash, head, item._uidx)
    -- tool.loadRemoteImage(eventHash, rank_img, userdata.UserInfo.uidx)
    local name = tool.findChild(obj,"name","Label")
    name:setText(item._nickName)
-   local vip = tool.findChild(obj,"vip","Label")
-   vip:setText("VIP"..item._vip)
    if index and type(index) == type(0) then
-      widget.message_bg.listView3.obj:insertCustomItem(obj,index)
+      widget.message_bg.listView4.obj:insertCustomItem(obj,index)
    else
-      widget.message_bg.listView3.obj:pushBackCustomItem(obj)
+      widget.message_bg.listView4.obj:pushBackCustomItem(obj)
    end
 end
 
 function removeRankItem(index)
-   widget.message_bg.listView3.obj:removeItem(index)
-   widget.tab_bg.tab_3.text.obj:setText("观众("..#userRankList..")")
+   userAllCnt = userAllCnt - 1
+   widget.message_bg.listView4.obj:removeItem(index)
+   widget.tab_bg.tab_4.text.obj:setText("观众("..userAllCnt..")")
 end
 
 function initEditBox()
@@ -233,6 +274,7 @@ function initEditBox()
    local function editBoxTextEventHandler(strEventName, pSender)
       print(textInput:getText())
       print(strEventName)
+      print("editBoxTextEventHandler!!!!!!!!!!!")
       local str = textInput:getText()
       if str == "" then
          return 
@@ -282,6 +324,9 @@ function initListView()
    widget.message_bg.listView3.obj:setVisible(false)
    widget.message_bg.listView3.obj:setTouchEnabled(false)
    widget.message_bg.listView3.obj:removeAllItems()
+   widget.message_bg.listView4.obj:setVisible(false)
+   widget.message_bg.listView4.obj:setTouchEnabled(false)
+   widget.message_bg.listView4.obj:removeAllItems()
 end
 
 function initExpression()
@@ -331,55 +376,98 @@ function addSplitMessage(richText, msg, cnt)
    local totalWidth = 0
    local args = {}
    local color = ccc3(255,255,255)
-   if msg.type == 1 then
+   if msg.type == -1 then
+      local textLabel = Label:create()
+      textLabel:setFontSize(40)
+      textLabel:setFontName(DEFAULT_FONT)
+      if msg.grade < 11 then
+         textLabel:setText("欢迎"..msg.name.."进入房间")
+      elseif msg.grade < 17 then
+         textLabel:setText("欢迎"..msg.name.."莅临指导")
+      elseif msg.grade < 25 then
+         textLabel:setText("热烈欢迎"..msg.name.."屈尊降临")
+      elseif msg.grade < 27 then
+         textLabel:setText("全体起立，恭候"..msg.name.."大驾光临")
+        elseif msg.grade == 27 then
+         textLabel:setText("全体起立，恭候"..msg.name.."创世之神降临凡间")
+      elseif msg.grade == 28 then
+         textLabel:setText("全体起立，恭候"..msg.name.."宇宙霸主降临凡间")
+      end
+      totalWidth = textLabel:getContentSize().width
+      if msg.grade < 23 then
+         totalWidth = totalWidth + 47
+      else
+         totalWidth = totalWidth + 61
+      end
+   elseif msg.type == 0 then
+      local textLabel = Label:create()
+      textLabel:setText("第【"..msg.cnt.."】轮游戏，选中的海洋生物是"..msg.inside.."和"..msg.outside)
+      textLabel:setFontSize(40)
+      textLabel:setFontName(DEFAULT_FONT)
+      totalWidth = textLabel:getContentSize().width
+   elseif msg.type == 1 then
       local textLabel = Label:create()
       textLabel:setText(msg.time.min..":"..msg.time.sec.." "..msg.name.."获得"..msg.msg)
       textLabel:setFontSize(40)
       textLabel:setFontName(DEFAULT_FONT)
       totalWidth = textLabel:getContentSize().width
    else
-     local pattern = '(%;(%d+))'
-     local last_end = 1
-     local s,e,cap = string.find(msg.msg,pattern, 1)
-     if s == nil then
-        table.insert(args,msg.msg)
-     elseif s > 1 then
-        table.insert(args,string.sub(msg.msg,1,s-1))
-     end
-     while s do
-        if s ~= 1 or cap ~= '' then         
-           table.insert(args,cap)
-        end
-        last_end = e + 1
-        s,e,cap = string.find(msg.msg,pattern,last_end)
-        if s == nil then
-           table.insert(args,string.sub(msg.msg,last_end))
-        elseif s > last_end then
-           table.insert(args, string.sub(msg.msg,last_end,s-1))
-        end
-     end
-     printTable(args)
-     for i = 1, #args do
-        local path = isExpression(args[i])
-        if path ~= nil then
-           print("path!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",path,i)
-           local _image = RichElementImage:create(i+cnt, color, 255, "expression/expression_a_0"..path..".png");
-           richText:pushBackElement(_image)
-           
-           totalWidth = totalWidth + 36
-        else
-           print("not expression!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",i)
-           local _msg = RichElementText:create(i+cnt,color,255,args[i],DEFAULT_FONT,40) 
-           richText:pushBackElement(_msg)
-           
-           local msg = Label:create()
-           msg:setText(args[i])
-           msg:setFontSize(40)
-           msg:setFontName(DEFAULT_FONT)
-           
-           totalWidth = totalWidth + msg:getContentSize().width
-        end
-     end
+       local pattern = '(%;(%d+))'
+       local last_end = 1
+       local s,e,cap = string.find(msg.msg,pattern, 1)
+       if s == nil then
+          table.insert(args,msg.msg)
+       elseif s > 1 then
+          table.insert(args,string.sub(msg.msg,1,s-1))
+       end
+       while s do
+          if s ~= 1 or cap ~= '' then         
+             table.insert(args,cap)
+          end
+          last_end = e + 1
+          s,e,cap = string.find(msg.msg,pattern,last_end)
+          if s == nil then
+             table.insert(args,string.sub(msg.msg,last_end))
+          elseif s > last_end then
+             table.insert(args, string.sub(msg.msg,last_end,s-1))
+          end
+       end
+       printTable(args)
+       for i = 1, #args do
+          local path = isExpression(args[i])
+          if path ~= nil then
+             print("path!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",path,i)
+             local _image = RichElementImage:create(i+cnt, color, 255, "expression/expression_a_0"..path..".png");
+             richText:pushBackElement(_image)
+             
+             totalWidth = totalWidth + 36
+          else
+             print("not expression!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",i)
+             local _msg = RichElementText:create(i+cnt,color,255,args[i],DEFAULT_FONT,40) 
+             richText:pushBackElement(_msg)
+             
+             local msg = Label:create()
+             msg:setText(args[i])
+             msg:setFontSize(40)
+             msg:setFontName(DEFAULT_FONT)
+             
+             totalWidth = totalWidth + msg:getContentSize().width
+          end
+       end
+       if msg.fromGrade then
+          if msg.fromGrade < 23 then
+             totalWidth = totalWidth + 47
+          else
+             totalWidth = totalWidth + 61
+          end
+       end
+       if msg.toGrade then
+          if msg.toGrade < 23 then
+             totalWidth = totalWidth + 47
+          else
+             totalWidth = totalWidth + 61
+          end
+       end
    end
 
    return totalWidth
@@ -392,7 +480,7 @@ function addSystemMessage(message)
     textLabel:setFontName(DEFAULT_FONT)
     local _richText = RichText:create()
     _richText:ignoreContentAdaptWithSize(false)
-    _richText:setSize(CCSize(textLabel:getSize().width,fontHeight))
+    _richText:setSize(CCSize(textLabel:getSize().width,52))
     local _text1 = RichElementText:create(1,ccc3(255,252,204),255,"第【"..message.cnt.."】轮游戏，选中的海洋生物是",DEFAULT_FONT,40)         
     _richText:pushBackElement(_text1) 
     local _text2 = RichElementText:create(2,ccc3(253,78,62),255,message.inside,DEFAULT_FONT,40)         
@@ -410,19 +498,12 @@ function addSystemMessage(message)
           end)
 end
 
-function addMessage(message, time)
+function addMessage(message, list, time)
    printTable(message)
    time = time == nil and 0.1 or time
-   local list = nil
    local posx = 0
-   local isDelete = false
    local func = function()
       if not this then return end
-       table.insert(messageList,message)
-       if #messageList >= 50 then
-           table.remove(messageList,1)
-           isDelete = true
-       end
       local _label = Label:create()
       _label:setFontSize(40)
       _label:setFontName(DEFAULT_FONT)
@@ -432,41 +513,117 @@ function addMessage(message, time)
       _richText:setSize(CCSize(WIDTH,fontHeight))
       local num = 1
       local color = ccc3(255,255,255) 
-      local nowStr = message.time.min..":"..message.time.sec.." "
-      if message.type == 1 then
+      local nowStr = ""
+      if message and message.time then
+         nowStr = message.time.hour..":"..message.time.min..":"..message.time.sec.." "
+      end
+      if message.type == -1 then
+         local _welcome = ""
+         local _room = ""
+         if message.grade < 11 then
+            _welcome = "欢迎"
+            _room = "进入房间"
+         elseif message.grade < 17 then
+            _welcome = "欢迎"
+            _room = "莅临指导"
+         elseif message.grade < 25 then
+            _welcome = "热烈欢迎"
+            _room = "屈尊降临"
+         elseif message.grade < 27 then
+            _welcome = "全体起立，恭候"
+            _room = "大驾光临"
+         elseif message.grade == 27 then
+            _welcome = "全体起立，恭候"
+            _room = "创世之神降临凡间"
+         elseif message.grade == 28 then
+            _welcome = "全体起立，恭候"
+            _room = "宇宙霸主降临凡间"
+         end
+        local _text1 = RichElementText:create(1,ccc3(255,252,204),255,_welcome,DEFAULT_FONT,40)         
+        _richText:pushBackElement(_text1) 
+        _label:setText(_welcome)        
+        posx = posx + _label:getSize().width 
+        local _image = RichElementImage:create(2, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.grade..".png");
+        _richText:pushBackElement(_image)
+        if message.grade < 23 then
+           posx = posx + 47
+        else
+           posx = posx + 61
+        end
+        local _text2 = RichElementText:create(3,ccc3(253,78,62),255,message.name,DEFAULT_FONT,40)         
+        _richText:pushBackElement(_text2) 
+        _label:setText(message.name)
+        local _layout = Layout:create()
+        _layout:setSize(CCSize(_label:getSize().width,fontHeight))
+        _layout:setPosition(ccp(posx,0))       
+        _layout:setTouchEnabled(true)
+        _layout:registerEventScript(function(event)
+            if event == "releaseUp" then
+               if message.id == userdata.UserInfo.uidx then
+                  alert.create("您不能与自己私聊!")
+                  return
+               end
+               local user = {}
+               user.grade = message.grade
+               user.id = message.id
+               user.name = message.name 
+               user.sex = message.sex
+               user.pic = message.pic
+               userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
+            end 
+        end)
+        layout:addChild(_layout)
+        local _text3 = RichElementText:create(4,ccc3(255,252,204),255,_room,DEFAULT_FONT,40)         
+        _richText:pushBackElement(_text3) 
+      elseif message.type == 0 then
+          local _text1 = RichElementText:create(1,ccc3(255,252,204),255,"第【"..message.cnt.."】轮游戏，选中的海洋生物是",DEFAULT_FONT,40)         
+          _richText:pushBackElement(_text1) 
+          local _text2 = RichElementText:create(2,ccc3(253,78,62),255,message.inside,DEFAULT_FONT,40)         
+          _richText:pushBackElement(_text2) 
+          local _text3 = RichElementText:create(3,ccc3(255,252,204),255,"和",DEFAULT_FONT,40)         
+          _richText:pushBackElement(_text3) 
+          local _text4 = RichElementText:create(4,ccc3(253,78,62),255,message.outside,DEFAULT_FONT,40)         
+          _richText:pushBackElement(_text4) 
+      elseif message.type == 1 then
          local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
          _richText:pushBackElement(_text1)
          _label:setText(nowStr)        
-         posx = posx + _label:getSize().width  
+         posx = posx + _label:getSize().width 
          local _text2 = RichElementText:create(2,ccc3(254,177,23),255,message.name,DEFAULT_FONT,40) 
          _richText:pushBackElement(_text2)   
          _label:setText(message.name)
          local _layout = Layout:create()
          _layout:setSize(CCSize(_label:getSize().width,fontHeight))
          _layout:setPosition(ccp(posx,0))       
-         _layout:setTouchEnabled(true)
-         _layout:registerEventScript(function(event)
-              if event == "releaseUp" then
-                 if message.id == userdata.UserInfo.uidx then
-                    alert.create("您不能与自己私聊!")
-                    return
-                 end
-                 chatPrivate.create(thisParent,message.name,message.id,package.loaded["scene.fishMachine.main"]) 
-              end 
-         end)
+         -- _layout:setTouchEnabled(true)
+         -- _layout:registerEventScript(function(event)
+         --      if event == "releaseUp" then
+         --         if message.id == userdata.UserInfo.uidx then
+         --            alert.create("您不能与自己私聊!")
+         --            return
+         --         end
+         --         userAlert.create(thisParent,message.grade,message.id,message.name) 
+         --      end 
+         -- end)
          layout:addChild(_layout)
          local _text3 = RichElementText:create(3,ccc3(255,255,255),255,"获得",DEFAULT_FONT,40)         
          _richText:pushBackElement(_text3)  
          local _text4 = RichElementText:create(4,ccc3(253,78,62),255,message.msg,DEFAULT_FONT,40)         
          _richText:pushBackElement(_text4) 
-         list = widget.message_bg.listView1.obj 
          num = 4
       elseif message.type == 2 then
          local _name1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name1) 
          _label:setText(nowStr)        
          posx = posx + _label:getSize().width 
-         local _name2 = RichElementText:create(2,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
+         local _image = RichElementImage:create(2, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.fromGrade..".png");
+         _richText:pushBackElement(_image) 
+         if message.fromGrade < 23 then
+            posx = posx + 47
+         else
+            posx = posx + 61
+         end
+         local _name2 = RichElementText:create(3,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name2)   
          _label:setText(message.from)
          local _layout = Layout:create()
@@ -479,21 +636,33 @@ function addMessage(message, time)
                     alert.create("您不能与自己私聊!")
                     return
                  end
-                 chatPrivate.create(thisParent,message.from,message.fromId,package.loaded["scene.fishMachine.main"]) 
+                 local user = {}
+                 user.grade = message.fromGrade
+                 user.id = message.fromId
+                 user.name = message.from 
+                 user.sex = message.fromSex
+                 user.pic = message.fromPic
+                 userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
               end 
          end)
          layout:addChild(_layout)       
-         local _name3 = RichElementText:create(3,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
+         local _name3 = RichElementText:create(4,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
          _richText:pushBackElement(_name3)
-         list = widget.message_bg.listView1.obj 
-         num = 3
+         num = 4
       elseif message.type == 3 or message.type == 4 or message.type == 5 then
          local say = message.type == 5 and "悄悄对" or "对"
          local _name1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name1) 
          _label:setText(nowStr)        
          posx = posx + _label:getSize().width 
-         local _name2 = RichElementText:create(2,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
+         local _image1 = RichElementImage:create(2, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.fromGrade..".png");
+         _richText:pushBackElement(_image1) 
+         if message.fromGrade < 23 then
+            posx = posx + 47
+         else
+            posx = posx + 61
+         end
+         local _name2 = RichElementText:create(3,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name2) 
          _label:setText(message.from)
          local _layout = Layout:create()
@@ -506,16 +675,29 @@ function addMessage(message, time)
                     alert.create("您不能与自己私聊!")
                     return
                  end
-                 chatPrivate.create(thisParent,message.from,message.fromId,package.loaded["scene.fishMachine.main"]) 
+                 local user = {}
+                 user.grade = message.fromGrade
+                 user.id = message.fromId
+                 user.name = message.from 
+                 user.sex = message.fromSex
+                 user.pic = message.fromPic
+                 userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
               end 
          end)
          layout:addChild(_layout)
          posx = posx + _label:getSize().width 
-         local _name3 = RichElementText:create(3,ccc3(255,255,255),255,say,DEFAULT_FONT,40)         
+         local _name3 = RichElementText:create(4,ccc3(255,255,255),255,say,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name3) 
          _label:setText(say)        
          posx = posx + _label:getSize().width 
-         local _name4 = RichElementText:create(4,ccc3(254,177,23),255,message.to,DEFAULT_FONT,40)         
+         local _image2 = RichElementImage:create(5, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.fromGrade..".png");
+         _richText:pushBackElement(_image2) 
+         if message.fromGrade < 23 then
+            posx = posx + 47
+         else
+            posx = posx + 61
+         end
+         local _name4 = RichElementText:create(6,ccc3(254,177,23),255,message.to,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name4) 
          _label:setText(message.to)
          local _layout = Layout:create()
@@ -528,14 +710,19 @@ function addMessage(message, time)
                     alert.create("您不能与自己私聊!")
                     return
                  end
-                 chatPrivate.create(thisParent,message.to,message.toId,package.loaded["scene.fishMachine.main"]) 
+                 local user = {}
+                 user.grade = message.toGrade
+                 user.id = message.toId
+                 user.name = message.to 
+                 user.sex = message.toSex
+                 user.pic = message.toPic
+                 userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
               end 
          end)
          layout:addChild(_layout) 
-         local _name5 = RichElementText:create(5,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
+         local _name5 = RichElementText:create(7,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
          _richText:pushBackElement(_name5) 
-         list = message.type == 3 and widget.message_bg.listView1.obj or widget.message_bg.listView2.obj
-         num = 5
+         num = 7
       end
         
       local textWidth = addSplitMessage(_richText, message, num)
@@ -548,37 +735,30 @@ function addMessage(message, time)
       _richText:setPosition(ccp(0,0))
       layout:setSize(_richText:getSize())
       layout:addChild(_richText)   
-      -- if message.type >= 4 then
-      --    widget.message_bg.listView2.obj:pushBackCustomItem(layout)
-      -- else
-      --    widget.message_bg.listView1.obj:pushBackCustomItem(layout)
-      -- end
-      if isDelete then
-         list:removeItem(0)
-      end
+      print("addMessage!!!!!!!!!!!!!!!!!!!!!!!!!!!!",message.type)
       list:pushBackCustomItem(layout)
+      performWithDelay(function()    
+                           if not this then return end                   
+                           list:setBounceEnabled(false)
+                           list:scrollToBottom(0.5,true)  
+                           performWithDelay(function()
+                                               if not this then return end  
+                                               list:setBounceEnabled(true)
+                                            end,0.6)
+                        end,0.15)
    end
-   performWithDelay(func,time)
-   performWithDelay(function()    
-                       if not this then return end                   
-                       list:setBounceEnabled(false)
-                       list:scrollToBottom(0.5,true)  
-                       performWithDelay(function()
-                                           if not this then return end  
-                                           list:setBounceEnabled(true)
-                                        end,0.6)
-                    end,0.15)
+   func()
+   -- performWithDelay(func,time)
 end
 
-function onUserMessage(data)
-   -- printTable(data)
-   table.insert(messageList,data)
-   if #messageList >= 50 then
-       table.remove(messageList,1)
-       widget.list.obj:removeItem(0)
+function setMessage(message,id)
+   local list = widget.message_bg["listView"..id].obj
+   table.insert(messageList[id],message)
+   if #messageList[id] >= 50 then
+      table.remove(messageList[id],1)
+      list:removeItem(0)
    end
-   data.time = os.date("*t",tonumber(os.time())/1000)
-   addMessage(data)
+   addMessage(message,list)
 end
 
 function playSystemMessageEffect(flag)
@@ -667,6 +847,23 @@ function changeExpressionPanelVisible(flag)
    widget.message_bg.scroll_bg.obj:setVisible(flag)
 end
 
+function resetPanelSay()
+    widget.say.text.obj:setText("所有人")
+end
+
+function setPanelSay(_id,_name,_private)
+    targetId = _id
+    targetName = _name
+    isPrivate = _private
+    widget.say.text.obj:setText(targetName)
+    widget.panel_say.bg.label_1.obj:setText(targetName)
+    if isPrivate == 1 then
+       widget.check.obj:setSelectedState(true)
+    elseif isPrivate == 0 then
+       widget.check.obj:setSelectedState(false)
+    end
+end
+
 function exit()
    if this then
       event.unListen("ON_SEND_MESSAGE_SUCCEED", onSendMessageSucceed)
@@ -698,6 +895,11 @@ function exit()
       messageCnt1 = 0
       messageCnt2 = 0
       privateCnt = 0
+      userAllCnt = 0
+      isPrivate = 0
+      targetId = -1
+      targetName = ""
+      max_list_y = -150
    end
 end
 
@@ -733,7 +935,7 @@ function onSend(event)
          --   end)
          local _str = string.gsub(str,'"',';22|',20)
          print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str,_str)
-         call(11001,-1,0,_str)
+         call(11001,targetId,isPrivate,_str)
          textInput:setText("")
       end
    end
@@ -742,7 +944,7 @@ end
 function onTab1(event)
    if event == "releaseUp" then
       currentTabCnt = 1
-      resetTab()
+      resetTabStatus()
    end
 end
 
@@ -751,64 +953,81 @@ function onTab2(event)
       currentTabCnt = 2
       privateCnt = 0
       widget.tab_bg.tab_2.text.obj:setText("私聊")
-      resetTab()
+      resetTabStatus()
    end
 end
 
 function onTab3(event)
    if event == "releaseUp" then
       currentTabCnt = 3
-      resetTab()
+      resetTabStatus()
    end
 end
 
-function resetTab()
-   -- widget.tab_bg.tab_1.obj:setBright((currentTabCnt==1 and false) or true)
-   -- widget.tab_bg.tab_1.obj:setTouchEnabled((currentTabCnt==1 and false) or true)
-   -- widget.message_bg.listView1.obj:setVisible((currentTabCnt==1 and true) or false)
-   -- widget.message_bg.listView1.obj:setTouchEnabled((currentTabCnt==1 and true) or false)
-   -- widget.tab_bg.tab_2.obj:setBright((currentTabCnt==2 and false) or true)
-   -- widget.tab_bg.tab_2.obj:setTouchEnabled((currentTabCnt==2 and false) or true)
-   -- widget.message_bg.listView2.obj:setVisible((currentTabCnt==2 and true) or false)
-   -- widget.message_bg.listView2.obj:setTouchEnabled((currentTabCnt==2 and true) or false)
-   -- widget.tab_bg.tab_3.obj:setBright((currentTabCnt==3 and false) or true)
-   -- widget.tab_bg.tab_3.obj:setTouchEnabled((currentTabCnt==3 and false) or true)
-   -- widget.message_bg.listView3.obj:setVisible((currentTabCnt==3 and true) or false)
-   -- widget.message_bg.listView3.obj:setTouchEnabled((currentTabCnt==3 and true) or false)
-  if currentTabCnt == 1 then
-     resetTab1(false)
-     resetTab2(true)
-     resetTab3(true)
-   elseif currentTabCnt == 2 then
-     resetTab1(true)
-     resetTab2(false)
-     resetTab3(true)
-   elseif currentTabCnt == 3 then
-     resetTab1(true)
-     resetTab2(true)
-     resetTab3(false)
+function onTab4(event)
+   if event == "releaseUp" then
+      currentTabCnt = 4
+      resetTabStatus()
    end
 end
 
-function resetTab1(flag)
-   widget.tab_bg.tab_1.obj:setBright(flag)
-   widget.tab_bg.tab_1.obj:setTouchEnabled(flag)
-   widget.message_bg.listView1.obj:setVisible(not flag)
-   widget.message_bg.listView1.obj:setTouchEnabled(not flag)
+function resetTabStatus()
+   resetTab(1)
+   resetTab(2)
+   resetTab(3)
+   resetTab(4)
+   resetListOrder()
 end
 
-function resetTab2(flag)
-   widget.tab_bg.tab_2.obj:setBright(flag)
-   widget.tab_bg.tab_2.obj:setTouchEnabled(flag)
-   widget.message_bg.listView2.obj:setVisible(not flag)
-   widget.message_bg.listView2.obj:setTouchEnabled(not flag)
+function resetTab(tag)
+   local flag = true
+   if tag == currentTabCnt then
+      flag = false
+   end
+   print("resetTab!!!!!!!!!!!!!!",tag,currentTabCnt,flag)
+   widget.tab_bg["tab_"..tag].obj:setBright(flag)
+   widget.tab_bg["tab_"..tag].obj:setTouchEnabled(flag)
+   widget.message_bg["listView"..tag].obj:setVisible(not flag)
+   widget.message_bg["listView"..tag].obj:setTouchEnabled(not flag)
 end
 
-function resetTab3(flag)
-   widget.tab_bg.tab_3.obj:setBright(flag)
-   widget.tab_bg.tab_3.obj:setTouchEnabled(flag)
-   widget.message_bg.listView3.obj:setVisible(not flag)
-   widget.message_bg.listView3.obj:setTouchEnabled(not flag)
+function resetListOrder()
+   for i=1,4 do
+       if i == currentTabCnt then
+          widget.message_bg["listView"..i].obj:setZOrder(10)
+        else
+          widget.message_bg["listView"..i].obj:setZOrder(0)
+       end
+   end   
+end
+
+function onSay(event)
+   if event == "releaseUp" then
+      if targetId == -1 and targetName == "" then
+         return
+      end
+      tool.buttonSound("releaseUp","effect_12")
+      local posY = widget.panel_say.bg.obj:getPositionY()
+      if posY == max_list_y then
+         tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=0,easeOut=true},widget.panel_say.bg.obj)
+      elseif posY == 0 then
+         tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
+      end
+   end
+end
+
+function onCheck(event,data1,data)
+   if event == "releaseUp" then
+      if targetId == -1 and targetName == "" then
+         return
+      end
+      tool.buttonSound("releaseUp","effect_12")
+      data = tolua.cast(data,"CheckBox")
+      local p = data:getSelectedState()
+      p = not p
+      isPrivate = p and 1 or 0
+      -- data:setSelectedState(isPrivate)
+   end
 end
 
 widget = {
@@ -827,6 +1046,10 @@ widget = {
       _type = "Button",_func = onTab3,
       text = {_type = "Label"},
     },
+    tab_4 = {
+      _type = "Button",_func = onTab4,
+      text = {_type = "Label"},
+    },
   },
   system_bg = {_type = "Layout"},
   message_bg = {
@@ -834,6 +1057,7 @@ widget = {
     listView1 = {_type = "ListView"},
     listView2 = {_type = "ListView"},
     listView3 = {_type = "ListView"},
+    listView4 = {_type = "ListView"},
     scroll = {_type = "ScrollView",
              exp_tmp = {_type = "ImageView",
                         _anchorx = 0,
@@ -850,9 +1074,27 @@ widget = {
   send = {_type = "Button",_func = onSend},
   user = {
     _type = "Layout",
-    head = {_type = "ImageView"},
+    grade = {_type = "ImageView"},
     name = {_type = "Label"},
-    vip = {_type = "Label"},
+    id = {_type = "Label"},
     line = {_type = "ImageView"},
   },
+  say = {
+    _type = "Button",
+    _func = onSay,
+    text = {_type = "Label"},
+  },
+  panel_say = {
+    _type = "Layout",
+    bg = {
+      _type = "Layout",
+      label_1 = {
+        _type = "Label",
+        line = {_type = "ImageView"},
+      },
+      label_2 = {_type = "Label"},
+    },
+  },
+  check = {_type = "CheckBox",_func = onCheck},
+  checkText = {_type = "Label"},
 }

@@ -136,4 +136,8 @@
     <Project>exchange</Project>
     <GuidesList />
   </GuidesProject>
+  <GuidesProject>
+    <Project>userAlert</Project>
+    <GuidesList />
+  </GuidesProject>
 </ArrayOfGuidesProject>

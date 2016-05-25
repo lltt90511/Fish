@@ -17,6 +17,7 @@ function create(_parent)
    thisParent = _parent
    this = tool.loadWidget("cash/exchange",widget,thisParent,99)
    initView()
+   widget.alert.obj:registerEventScript(onBack)
    event.listen("ON_CHANGE_GOLD",onChangeGold)
    return this
 end
@@ -147,6 +148,7 @@ end
 widget = {
 _ignore = true,
   alert = {
+    _type = "ImageView",
     back = {_type="Button",_func=onBack},
     panel_1 = {
        btn_right = {_type="Button",_func=onRight},

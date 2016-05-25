@@ -487,3 +487,27 @@ end
 function onGetCharmFailed(data)
 	
 end
+
+function onUserOperateSucceed(data)
+	if data and data.msg then
+	   alert.create(data.msg)
+	end
+end
+
+function onUserOperateFailed(data)
+	if data and data.msg then
+	   alert.create(data.msg)
+	end
+end
+
+function onSetPrivateSucceed(data)
+	if data and data.msg then
+	   alert.create(data.msg)
+	end
+end
+
+function onSetPrivateFailed(data)
+	if data and data.msg then
+	   alert.create(data.msg)
+	end
+end

@@ -216,6 +216,13 @@ handlerMap = {
    --exchange--
    [18002] = "onGetCharmSucceed",
    [18003] = "onGetCharmFailed",
+
+   -- user action--
+   [19002] = "onUserOperateSucceed",
+   [19003] = "onUserOperateFailed",
+
+   [20002] = "onSetPrivateSucceed",
+   [20003] = "onSetPrivateFailed",
 }
 
 
