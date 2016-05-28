@@ -46,7 +46,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 	
-    <application android:label="富豪大冒险"
+    <application android:label="海底大捕获"
         		 android:allowBackup="true"
                  android:icon="@drawable/icon"
                  android:name="cc.yongdream.nshx.MyApplication">
@@ -59,7 +59,7 @@
             </intent-filter>
         </receiver>
         <activity android:name="cc.yongdream.nshx.mainActivity"
-                  android:label="富豪大冒险"
+                  android:label="海底大捕获"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                   android:configChanges="screenSize|orientation|keyboard|navigation|layoutDirection"

@@ -10,7 +10,21 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [],
+  "texturesPng": [
+    "qietu/tymb/daBox.png",
+    "qietu/tymb/guanbiBt01.png",
+    "qietu/tymb/guanbiBt02.png",
+    "qietu/tymb/mbText02.png",
+    "qietu/tymb/tmBox.png",
+    "qietu/text/textA07.png",
+    "qietu/text/textA08.png",
+    "qietu/tymb/tuidongBar02.png",
+    "qietu/tymb/tuidongBar01.png",
+    "qietu/tymb/tuidongBt.png",
+    "qietu/tymb/ctBt.png",
+    "qietu/tymb/xuanzhong02a.png",
+    "qietu/tymb/xuanzhong02b.png"
+  ],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",

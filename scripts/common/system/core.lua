@@ -112,8 +112,8 @@ function L_onRPC( str )
 	print("l_onRPC!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str)
 	local t = cjson.decode(str)
-	print("atttttttttttttttttttttttttttttttttttttttt")
-	printTable(t)
+	-- print("atttttttttttttttttttttttttttttttttttttttt")
+	-- printTable(t)
 	if t[1] then
 		t = t[1]
 		return
@@ -126,7 +126,7 @@ function L_onRPC( str )
 	   parameters = {}
     end
 	print("Server : "..funcName,"parametersNum:"..#parameters)
-	printTable(parameters)
+	-- printTable(parameters)
 	local func = map[tostring(funcName)]
 	if func  then
 		xpcall(function()

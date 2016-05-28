@@ -42,7 +42,7 @@ end
 
 function uploadGuide(actionId)
 	print("uploadGuide", lgServerUrl, cId, actionId)
-	umengEvent(actionId)
+	-- umengEvent(actionId)
 	if lgServerUrl == nil or lgServerUrl == "" then
 		print("lgServerUrl got nil")
 		return

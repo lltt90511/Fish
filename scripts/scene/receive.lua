@@ -156,7 +156,7 @@ function onBtn1(event)
       userdata.goldAction = true
       userdata.goldPos = {x = 335,y = 1160}
       call(16001)
-      umengBonusCoin(nextGoldNum, 1)
+      -- umengBonusCoin(nextGoldNum, 1)
    end
 end
 

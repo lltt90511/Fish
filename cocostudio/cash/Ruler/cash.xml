@@ -57,10 +57,6 @@
     <GuidesList />
   </GuidesProject>
   <GuidesProject>
-    <Project>fish_machine</Project>
-    <GuidesList />
-  </GuidesProject>
-  <GuidesProject>
     <Project>about</Project>
     <GuidesList />
   </GuidesProject>
@@ -129,7 +125,7 @@
     <GuidesList />
   </GuidesProject>
   <GuidesProject>
-    <Project>fish_machine1</Project>
+    <Project>fish_machine</Project>
     <GuidesList />
   </GuidesProject>
   <GuidesProject>
@@ -138,6 +134,14 @@
   </GuidesProject>
   <GuidesProject>
     <Project>userAlert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>chargeAlert</Project>
+    <GuidesList />
+  </GuidesProject>
+  <GuidesProject>
+    <Project>cash_36</Project>
     <GuidesList />
   </GuidesProject>
 </ArrayOfGuidesProject>

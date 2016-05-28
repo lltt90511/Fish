@@ -26,7 +26,7 @@
     "qietu/tymb/changBt02.png",
     "qietu/tymb/mbText06.png"
   ],
-  "version": "1.5.0.1",
+  "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",
     "name": null,
@@ -655,7 +655,7 @@
                               "ignoreSize": true,
                               "layoutParameter": null,
                               "opacity": 255,
-                              "positionPercentX": 4.10744434E-08,
+                              "positionPercentX": 0,
                               "positionPercentY": -0.0219780225,
                               "positionType": 0,
                               "rotation": 0,

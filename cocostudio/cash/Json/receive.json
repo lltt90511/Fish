@@ -10,7 +10,16 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [],
+  "texturesPng": [
+    "qietu/tymb/xiaoBox.png",
+    "qietu/tymb/guanbiBt01.png",
+    "qietu/tymb/guanbiBt02.png",
+    "qietu/tymb/nrBar01.png",
+    "qietu/main2/jinbiIcon.png",
+    "qietu/tymb/changBt01.png",
+    "qietu/tymb/changBt02.png",
+    "qietu/tymb/hfengexian.png"
+  ],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",

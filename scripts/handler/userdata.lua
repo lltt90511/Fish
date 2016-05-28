@@ -33,7 +33,7 @@ function onChargeSucceed(time,id,cnt)
 	if id and id ~= "" then
 		local tpl = template['charge'][id]
 		if tpl then
-			umengPay(tpl.rmb, 2, tpl.goldGet)
+			-- umengPay(tpl.rmb, 2, tpl.goldGet)
 		end
   		event.pushEvent("CHARGE_SUCCESS",id,time)
 	end
@@ -275,9 +275,6 @@ function onGetRandomGoldCnt(data)
 	userdata.UserInfo.randomCnt = cnt
 end
 
-function function_name( ... )
-	-- body
-end
 function onGetVIPRewardSucceed(r,s)
    print("onGetVIPRewardSucceed",r,s)
    alert.create("领取成功！")
@@ -478,10 +475,13 @@ end
 
 function onGetCharmSucceed(data)
 	if data and type(data) == type({}) then
-		userdata.UserInfo.owncharm = data.owncharm
-		userdata.UserInfo.owncash = data.owncash
+	   userdata.UserInfo.owncharm = data.owncharm
+	   userdata.UserInfo.owncash = data.owncash
 	end
     event.pushEvent("ON_CHANGE_GOLD")
+    if data.msg ~= "" then
+	   alert.create(data.msg)
+    end
 end
 
 function onGetCharmFailed(data)
@@ -510,4 +510,18 @@ function onSetPrivateFailed(data)
 	if data and data.msg then
 	   alert.create(data.msg)
 	end
+end
+
+function onGetChargeIdSucceed(data)
+    event.pushEvent("ON_GET_CHARGEID_SUCCEED",data)
+end
+
+function onGetChargeIdFailed(data)
+	if data and data.msg then
+	   alert.create(data.msg)
+	end
+end
+
+function onSystemContext(data)
+    event.pushEvent("ON_SYSTEM_CONTEXT",data)
 end

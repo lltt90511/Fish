@@ -17,7 +17,7 @@
     "qietu/tymb/xuanzhong02a.png",
     "qietu/tymb/xuanzhong02b.png"
   ],
-  "version": "1.5.0.1",
+  "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",
     "name": null,

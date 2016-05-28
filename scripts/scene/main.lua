@@ -10,7 +10,7 @@ local countLv = require "logic.countLv"
 local rank = require"scene.rank"
 local dailyScene = require "scene.loginGift"
 local smail = require "scene.mail"
-local charge = require "scene.charge"
+local charge = require "scene.chargeAlert"
 local activity = require "scene.activity"
 local service = require "scene.service"
 local about = require "scene.about"
@@ -111,24 +111,31 @@ function create()
    activityAni(widget.bottom.shezhi.pao.obj)
    activityAni(widget.bottom.setting_panel.btn2.pao.obj)
    event.listen("ON_CHANGE_GOLD",onChangeGold)
-   event.listen("ON_CHANGE_VIP",initTop)
+   -- event.listen("ON_CHANGE_VIP",initTop)
    event.listen("ON_CHANGE_NAME",initTop)
    event.listen("ON_BACK",resetBright)
-   event.listen("ON_GET_QUEST",setRewardPaoNum)
-   event.listen("ON_FINISH_QUEST",setRewardPaoNum)
-   event.listen("ON_UPDATE_QUEST",setRewardPaoNum)
-   event.listen("ON_UPDATE_MAIL",setMailPaoNum)
+   -- event.listen("ON_GET_QUEST",setRewardPaoNum)
+   -- event.listen("ON_FINISH_QUEST",setRewardPaoNum)
+   -- event.listen("ON_UPDATE_QUEST",setRewardPaoNum)
+   -- event.listen("ON_UPDATE_MAIL",setMailPaoNum)
    event.listen("ON_GOLD_ACTION",onGoldAction)
    event.listen("HEAD_ICON_CHANGE", onSetDefaultImageSucceed)
-   event.listen("SYSTEM_CONTEXT", onSystemContext)
-   event.listen("ON_GET_ACTIVITY_EXIST", onGetActivityExist)
+   event.listen("ON_SYSTEM_CONTEXT", onSystemContext)
+   -- event.listen("ON_GET_ACTIVITY_EXIST", onGetActivityExist)
    onSetDefaultImageSucceed()
 
    if platform == "IOS" then
      widget.top_btn_list.kefu.obj:setVisible(false)
      widget.top_btn_list.kefu.obj:setTouchEnabled(false)
    end
-
+   widget.top_btn_list.kefu.obj:setTouchEnabled(false)
+   widget.top_btn_list.youjian.obj:setTouchEnabled(false)
+   widget.top_btn_list.jiangli.obj:setTouchEnabled(false)
+   widget.top_btn_list.choujiang.obj:setTouchEnabled(false)
+   widget.top_btn_list.yaoqianshu.obj:setTouchEnabled(false)
+   widget.top_btn_list.VIP.obj:setTouchEnabled(false)
+   widget.bottom.huodong.obj:setTouchEnabled(false)
+   widget.bottom.paihang.obj:setTouchEnabled(false)
    return this
 end
 
@@ -142,10 +149,35 @@ function onGetActivityExist(flag)
 end
 
 function onSystemContext(data)
-   print("onSystemContext",data)
-   table.insert(systemMessageList,data)
+   print("onSystemContext")
+   printTable(data)
+   for k,v in pairs(data.msg) do
+       table.insert(systemMessageList,v) 
+   end
+   -- table.insert(systemMessageList,data)
    printTable(systemMessageList)
    playSystemMessageEffect()
+end
+
+function getWinStr(money)
+    local str = ""
+    local car = math.floor(money/100000)
+    local shoe = math.floor((money%100000)/10000)
+    local origami = math.floor(((money%100000)%10000)/1000)
+    local flower = math.floor((((money%100000)%10000)%1000)/100)
+    if car > 0 then
+       str = str..car.."辆兰博基尼"
+    end
+    if shoe > 0 then
+      str = str..shoe.."双水晶鞋"
+    end
+    if origami > 0 then
+      str = str..origami.."只千纸鹤"
+    end
+    if flower > 0 then
+      str = str..flower.."朵玫瑰"
+    end
+    return str
 end
 
 function playSystemMessageEffect()
@@ -155,18 +187,36 @@ function playSystemMessageEffect()
    end
    local func = nil
    func = function()
-      if userdata.isInGame == true then
-         tool.createEffect(tool.Effect.delay,{time=1.0},widget.obj,function()
-            func()
-         end)
-      else
+      -- if userdata.isInGame == true then
+      --    tool.createEffect(tool.Effect.delay,{time=1.0},widget.obj,function()
+      --       func()
+      --    end)
+      -- else
           if type(systemMessageList) == type({}) and #systemMessageList == 0 then
              isSystemMessagePlaying = false
              return
           end
           isSystemMessagePlaying = true
           local data = table.remove(systemMessageList,1)
-          local layout = tool.getRichTextWithColor(data,40) 
+          local layout = Layout:create()
+          local richText = RichText:create() 
+          local _text1 = RichElementText:create(1,ccc3(254,177,23),255,data.name,DEFAULT_FONT,40) 
+          richText:pushBackElement(_text1)     
+          local _text2 = RichElementText:create(2,ccc3(255,255,255),255,"获得",DEFAULT_FONT,40)         
+          richText:pushBackElement(_text2)  
+          local msg = getWinStr(data.money)
+          local _text3 = RichElementText:create(3,ccc3(253,78,62),255,msg,DEFAULT_FONT,40)         
+          richText:pushBackElement(_text3)   
+          local label = Label:create()
+          label:setText(data.name.."获得"..msg)
+          label:setFontSize(40)
+          label:setFontName(DEFAULT_FONT) 
+          richText:ignoreContentAdaptWithSize(false)
+          richText:setSize(CCSize(label:getSize().width,label:getSize().height))
+          richText:setAnchorPoint(ccp(0,0))
+          richText:setPosition(ccp(0,0))
+          layout:setSize(CCSize(label:getSize().width,label:getSize().height))
+          layout:addChild(richText)
           layout:setPosition(ccp(widget.top.text.obj:getSize().width,12))
           widget.top.text.obj:addChild(layout)
           local size = layout:getSize()
@@ -177,7 +227,7 @@ function playSystemMessageEffect()
                  func()
               end)
       -- end)
-      end
+      -- end
    end
    func()
 end
@@ -558,17 +608,17 @@ function exit()
     print("main exit!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~~~~~~~~~~~~")
       cleanEvent()
       event.unListen("ON_CHANGE_GOLD",onChangeGold)
-      event.unListen("ON_CHANGE_VIP",initTop)
+      -- event.unListen("ON_CHANGE_VIP",initTop)
       event.unListen("ON_CHANGE_NAME",initTop)
       event.unListen("ON_BACK",resetBright)
-      event.unListen("ON_GET_QUEST",setRewardPaoNum)
-      event.unListen("ON_FINISH_QUEST",setRewardPaoNum)
+      -- event.unListen("ON_GET_QUEST",setRewardPaoNum)
+      -- event.unListen("ON_FINISH_QUEST",setRewardPaoNum)
       event.unListen("HEAD_ICON_CHANGE", onSetDefaultImageSucceed)
-      event.unListen("ON_UPDATE_QUEST",setRewardPaoNum) 
-      event.unListen("ON_UPDATE_MAIL",setMailPaoNum)
+      -- event.unListen("ON_UPDATE_QUEST",setRewardPaoNum) 
+      -- event.unListen("ON_UPDATE_MAIL",setMailPaoNum)
       event.unListen("ON_GOLD_ACTION",onGoldAction)
-      event.unListen("SYSTEM_CONTEXT", onSystemContext)
-      event.unListen("ON_GET_ACTIVITY_EXIST", onGetActivityExist)
+      event.unListen("ON_SYSTEM_CONTEXT", onSystemContext)
+      -- event.unListen("ON_GET_ACTIVITY_EXIST", onGetActivityExist)
       if subWidget ~= nil then          
          subWidget.exit()
          subWidget = nil
@@ -665,7 +715,7 @@ end
 function onYoujian(event)
    if event == "releaseUp" and currenScene ~= smail then
       tool.buttonSound("releaseUp","effect_12")
-      alert.create("敬请期待")
+      -- alert.create("敬请期待")
       -- if currenScene then
       --   currenScene.exit()
       --   currenScene = nil
@@ -679,7 +729,7 @@ end
 function onJiangli(event)
    if event == "releaseUp" and currenScene ~= reward then
       tool.buttonSound("releaseUp","effect_12")
-      alert.create("敬请期待")
+      -- alert.create("敬请期待")
       -- if currenScene then
       --   currenScene.exit()
       --   currenScene = nil
@@ -697,7 +747,7 @@ end
 function onchoujiang(event)
    if event == "releaseUp" and currenScene ~= lottery then
       tool.buttonSound("releaseUp","effect_12")
-      alert.create("敬请期待")
+      -- alert.create("敬请期待")
       -- if currenScene then
       --   currenScene.exit()
       --   currenScene = nil
@@ -712,7 +762,7 @@ end
 function onVIP(event)
    if event == "releaseUp" and currenScene ~= vip then
       tool.buttonSound("releaseUp","effect_12")
-      alert.create("敬请期待")
+      -- alert.create("敬请期待")
       -- if currenScene then
       --   currenScene.exit()
       --   currenScene = nil
@@ -726,7 +776,7 @@ end
 function onTree(event)
    if event == "releaseUp" and currenScene ~= tree then
       tool.buttonSound("releaseUp","effect_12")
-      alert.create("敬请期待")
+      -- alert.create("敬请期待")
       -- if currenScene then
       --   currenScene.exit()
       --   currenScene = nil
@@ -809,14 +859,14 @@ function onShangcheng(event)
       end
       currenScene = charge
       switchBottomBright("shangcheng")
-      charge.create(widget.obj)
+      charge.create(widget.obj,1)
    end
 end
 
 function onHuodong(event)
    if event == "releaseUp" and currenScene ~= activity  then
       tool.buttonSound("releaseUp","effect_12")
-      alert.create("敬请期待")
+      -- alert.create("敬请期待")
      --  if currenScene then
      --    currenScene.exit()
      --    currenScene = nil
@@ -830,7 +880,7 @@ end
 function onPaihang(event)
    if event == "releaseUp" and currenScene ~= rank then
       tool.buttonSound("releaseUp","effect_12")
-      alert.create("敬请期待")
+      -- alert.create("敬请期待")
       -- local goRank = function()
       --   if currenScene then
       --     currenScene.exit()

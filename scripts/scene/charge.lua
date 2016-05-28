@@ -55,6 +55,7 @@ function create(parent,rankList,isInGame)
    scroll.setIsOutDisplayEnabled(true)
    onSwitchRankList()
    event.listen("CHARGE_SUCCESS", onChargeSuccess)
+   event.listen("ON_GET_CHARGEID_SUCCEED", onGetChargeIdSucceed)
    return this
 end
 
@@ -65,6 +66,12 @@ function onChargeSuccess(id,time)
 	onSwitchRankList()
 end
 
+function onGetChargeIdSucceed(data)
+	local res = {orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx}
+	local params = cjson.encode(res)
+	luaj.callStaticMethod("com/java/platform/NdkPlatform","iapPay",{params})
+end
+
 function cleanScene()
 	cleanRank()
 end
@@ -73,7 +80,7 @@ function initScene()
 	-- init 
 	widget.panel.bg.tab.obj:setVisible(false)
 	widget.panel.bg.tab.obj:setTouchEnabled(false)
-		local x = widget.panel.bg.tab.obj:getPositionX()
+	local x = widget.panel.bg.tab.obj:getPositionX()
 	local diffX = widget.panel.bg.tab.obj:getSize().width*0.9
 	tabList = {}
 	local i = 0
@@ -148,12 +155,13 @@ function chargeRender(rank,info)
 		if event == "releaseUp" then
 			tool.buttonSound("releaseUp","effect_12")
 			-- call("charge",info.id)
-			buyItem = info
+			-- buyItem = info
 			if platform == "Android" then
-				getOrderId(info.id)
+				getOrderId(1)
 			elseif platform == "IOS" then
 				appstoreBuy(info.productId)
 			end
+			-- http.request("",onHttpCallBack)
 		end
 	end)
 	return obj
@@ -181,25 +189,26 @@ end
 
 function getOrderId(productId)
 	widget.obj:setTouchEnabled(false)
-	local uId = 0
-	if userdata.sdkPlatformInfo and userdata.sdkPlatformInfo.uId then
-		uId = userdata.sdkPlatformInfo.uId
-	end
-	local channelType = 0
-	if chltype then
-		channelType = chltype
-		print("channelType:",channelType)
-	end
-	local url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId
-	if getPlatform() == "sgj" then
-		url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId
-	elseif getPlatform() == "xmw" then
-		url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId.."&appSrc=xmw".."&userId="..uId.."&access_token="..userdata.sdkPlatformInfo.uToken
-	elseif getPlatform() == "ipay_chongqin" then
-		url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId
-	end
-	print("url",url)
-	http.request(url,onGetOrderId)
+	-- local uId = 0
+	-- if userdata.sdkPlatformInfo and userdata.sdkPlatformInfo.uId then
+	-- 	uId = userdata.sdkPlatformInfo.uId
+	-- end
+	-- local channelType = 0
+	-- if chltype then
+	-- 	channelType = chltype
+	-- 	print("channelType:",channelType)
+	-- end
+	-- local url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId
+	-- if getPlatform() == "sgj" then
+	-- 	url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId
+	-- elseif getPlatform() == "xmw" then
+	-- 	url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId.."&appSrc=xmw".."&userId="..uId.."&access_token="..userdata.sdkPlatformInfo.uToken
+	-- elseif getPlatform() == "ipay_chongqin" then
+	-- 	url = payServerUrl.."/ydream/login?type=54&chltype="..channelType.."&charId="..userdata.UserInfo.id.."&bCharId=0".."&productid="..productId
+	-- end
+	-- print("url",url)
+	-- http.request(url,onGetOrderId)
+	call("21001",100,userdata.UserInfo.uidx)
 end
 
 function onGetOrderId(header,body)

@@ -22,8 +22,9 @@ local systemMessageList = {}
 local isSystemMessagePlaying = false
 local inputWidthChange = 0
 local parentModule = nil
-local fontHeight = 72
+local fontHeight = 52
 local currentUserPage = 0
+local currentUserPageNO = 15
 local userRankList = {}
 local currentTabCnt = 1
 local privateNum = 0
@@ -35,6 +36,8 @@ local isPrivate = 0
 local targetId = -1
 local targetName = ""
 local max_list_y = -150
+local defultTitleW = 47
+local bigTitleW = 61
 -- payServerUrl = payServerUrl
 function create(_gameId,_parent,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
@@ -54,10 +57,11 @@ function create(_gameId,_parent,_parentModule)
    messageList[4] = {}
    initEditBox()
    initListView()
-   changeExpressionPanelVisible(expVisible)
+   -- changeExpressionPanelVisible(expVisible)
    resetTabStatus()
    resetPanelSay()
-
+   -- print("create!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",widget.message_bg.obj:getPositionY())
+   -- printTable(tool.getPosition(widget.message_bg.obj))
    widget.message_bg.listView4.obj:registerEventScript(function(event)
      -- print("event!!!!!!!!!",event)
      if event == "SCROLL_BOTTOM" then
@@ -73,6 +77,7 @@ function create(_gameId,_parent,_parentModule)
    event.listen("ON_EXIT_GAME_NOTICE", onExitGameNotice)
    event.listen("ON_GET_USER_LIST_SUCCEED", onGetUserListSucceed)
    event.listen("ON_GET_USER_LIST_FAILED", onGetUserListFailed)
+   event.listen("ON_SYSTEM_CONTEXT", onSystemContext)
    call(6101,currentUserPage)
    return this
 end
@@ -98,7 +103,6 @@ function onEnterGameNotice(_data)
    message.pic = _data.user._picUrl
    message.sex = _data.user._sex
    setMessage(message,1)
-   setMessage(message,3)
 end
 
 function onExitGameNotice(_data)
@@ -205,13 +209,16 @@ function onSendMessageFailed(gameData)
 end
 
 function initRankView(_list)
+   local cnt = #userRankList
    for k,v in pairs(_list) do   
        table.insert(userRankList,v)
-       addRankItem(v)
+       addRankItem(v,cnt)
+       cnt = cnt + 1
    end
 end
 
 function addRankItem(item,index)       
+  -- print("addRankItem!!!!!!!!!!!!!!!!!!!!!",index)
    local obj = widget.user.obj:clone()
    obj:setTouchEnabled(true)
    obj:registerEventScript(function(event)
@@ -227,18 +234,28 @@ function addRankItem(item,index)
          user.sex = item._sex
          user.pic = item._picUrl
          userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
+         local container = widget.message_bg.listView4.obj:getInnerContainer()
+         local _index = widget.message_bg.listView4.obj:getIndex(obj)
+         local offset = container:getSize().height + container:getPositionY() 
+         local pos = {x=0,y=0}
+         print("addRankItem!!!!!!!!!!!!!!!!!!!!!!!",container:getSize().height,container:getPositionY(),offset,_index)
+         pos.x = (Screen.width - 540)/2
+         pos.y = 110+offset-(_index+1)*50
+         userAlert.resetAlertPos(pos)
       end 
    end)
    local grade = tool.findChild(obj,"grade","ImageView")
    grade:loadTexture("cash/qietu/user/v"..item._uGrade..".png")
+   local name = tool.findChild(obj,"name","Label")
+   name:setText(item._nickName)
+   -- local x = item._uGrade > 22 and 150 or 110
+   -- name:setPosition(ccp(x,name:getPositionY()))
    local id = tool.findChild(obj,"id","Label")
    id:setText(item._uidx)
-   id:setPosition(ccp(grade:getPositionX()+grade:getSize().width+10,id:getPositionX()))
+   -- id:setPosition(ccp(name:getPositionX()+name:getSize().width+10,id:getPositionX()))
    -- userdata.CharIdToImageFile[item._uidx] = {file=item._picUrl,sex=item._sex}
    -- tool.getUserImage(eventHash, head, item._uidx)
    -- tool.loadRemoteImage(eventHash, rank_img, userdata.UserInfo.uidx)
-   local name = tool.findChild(obj,"name","Label")
-   name:setText(item._nickName)
    if index and type(index) == type(0) then
       widget.message_bg.listView4.obj:insertCustomItem(obj,index)
    else
@@ -253,12 +270,12 @@ function removeRankItem(index)
 end
 
 function initEditBox()
-   local inputSize = widget.input.obj:getSize()
-   textInput = tolua.cast(CCEditBox:create(CCSizeMake(inputSize.width-60,inputSize.height),CCScale9Sprite:create("image/empty.png")),"CCEditBox")
+   local inputSize = widget.input_2.obj:getSize()
+   textInput = tolua.cast(CCEditBox:create(CCSizeMake(inputSize.width-128,inputSize.height),CCScale9Sprite:create("image/empty.png")),"CCEditBox")
    -- textInput = tolua.cast(TextField:create(),"TextField")
-   widget.input.obj:addNode(textInput)
+   widget.input_2.obj:addNode(textInput)
    -- textInput:setPosition(ccp(2,8))
-   textInput:setPosition(ccp(30,0))
+   textInput:setPosition(ccp(0,0))
    textInput:setAnchorPoint(ccp(0,0))
    textInput:setFontColor(ccc3(255,255,255))
    -- textInput:setFontSize(45)
@@ -305,8 +322,8 @@ function initEditBox()
       end
    end
    textInput:registerScriptEditBoxHandler(editBoxTextEventHandler)
-   widget.input.obj:setTouchEnabled(true)
-   widget.input.obj:registerEventScript(function (event)
+   widget.input_2.obj:setTouchEnabled(true)
+   widget.input_2.obj:registerEventScript(function (event)
                                                 if event == "releaseUp" then
                                                    textInput:attachWithIME()
                                                    textInput:setPosition(ccp(0,0))
@@ -372,7 +389,7 @@ function isExpression(str)
 end
 
 function addSplitMessage(richText, msg, cnt)
-   print("######addsplitmessage")
+   -- print("######addsplitmessage")
    local totalWidth = 0
    local args = {}
    local color = ccc3(255,255,255)
@@ -395,9 +412,9 @@ function addSplitMessage(richText, msg, cnt)
       end
       totalWidth = textLabel:getContentSize().width
       if msg.grade < 23 then
-         totalWidth = totalWidth + 47
+         totalWidth = totalWidth + defultTitleW
       else
-         totalWidth = totalWidth + 61
+         totalWidth = totalWidth + bigTitleW
       end
    elseif msg.type == 0 then
       local textLabel = Label:create()
@@ -432,17 +449,17 @@ function addSplitMessage(richText, msg, cnt)
              table.insert(args, string.sub(msg.msg,last_end,s-1))
           end
        end
-       printTable(args)
+       -- printTable(args)
        for i = 1, #args do
           local path = isExpression(args[i])
           if path ~= nil then
-             print("path!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",path,i)
+             -- print("path!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",path,i)
              local _image = RichElementImage:create(i+cnt, color, 255, "expression/expression_a_0"..path..".png");
              richText:pushBackElement(_image)
              
              totalWidth = totalWidth + 36
           else
-             print("not expression!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",i)
+             -- print("not expression!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",i)
              local _msg = RichElementText:create(i+cnt,color,255,args[i],DEFAULT_FONT,40) 
              richText:pushBackElement(_msg)
              
@@ -456,16 +473,16 @@ function addSplitMessage(richText, msg, cnt)
        end
        if msg.fromGrade then
           if msg.fromGrade < 23 then
-             totalWidth = totalWidth + 47
+             totalWidth = totalWidth + defultTitleW
           else
-             totalWidth = totalWidth + 61
+             totalWidth = totalWidth + bigTitleW
           end
        end
        if msg.toGrade then
           if msg.toGrade < 23 then
-             totalWidth = totalWidth + 47
+             totalWidth = totalWidth + defultTitleW
           else
-             totalWidth = totalWidth + 61
+             totalWidth = totalWidth + bigTitleW
           end
        end
    end
@@ -499,7 +516,7 @@ function addSystemMessage(message)
 end
 
 function addMessage(message, list, time)
-   printTable(message)
+   -- printTable(message)
    time = time == nil and 0.1 or time
    local posx = 0
    local func = function()
@@ -546,9 +563,9 @@ function addMessage(message, list, time)
         local _image = RichElementImage:create(2, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.grade..".png");
         _richText:pushBackElement(_image)
         if message.grade < 23 then
-           posx = posx + 47
+           posx = posx + defultTitleW
         else
-           posx = posx + 61
+           posx = posx + bigTitleW
         end
         local _text2 = RichElementText:create(3,ccc3(253,78,62),255,message.name,DEFAULT_FONT,40)         
         _richText:pushBackElement(_text2) 
@@ -570,8 +587,16 @@ function addMessage(message, list, time)
                user.sex = message.sex
                user.pic = message.pic
                userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
+               local container = list:getInnerContainer()
+               local _index = list:getIndex(layout)
+               local offset = layout:getPositionY() + container:getPositionY()
+               local pos = {x=0,y=0}
+               print("offset!!!!!!!!!!!!!!!!!!!!",container:getSize().height,container:getPositionY(), layout:getPositionY())
+               pos.x = posx+_layout:getSize().width/2
+               pos.y = 126+offset
+               userAlert.resetAlertPos(pos)
             end 
-        end)
+          end)
         layout:addChild(_layout)
         local _text3 = RichElementText:create(4,ccc3(255,252,204),255,_room,DEFAULT_FONT,40)         
         _richText:pushBackElement(_text3) 
@@ -619,9 +644,9 @@ function addMessage(message, list, time)
          local _image = RichElementImage:create(2, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.fromGrade..".png");
          _richText:pushBackElement(_image) 
          if message.fromGrade < 23 then
-            posx = posx + 47
+            posx = posx + defultTitleW
          else
-            posx = posx + 61
+            posx = posx + bigTitleW
          end
          local _name2 = RichElementText:create(3,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name2)   
@@ -643,6 +668,14 @@ function addMessage(message, list, time)
                  user.sex = message.fromSex
                  user.pic = message.fromPic
                  userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
+                 local container = list:getInnerContainer()
+                 local _index = list:getIndex(layout)
+                 local offset = layout:getPositionY() + container:getPositionY()
+                 local pos = {x=0,y=0}
+                 print("offset!!!!!!!!!!!!!!!!!!!!",container:getSize().height,container:getPositionY(), layout:getPositionY())
+                 pos.x = posx+_layout:getSize().width/2
+                 pos.y = 126+offset
+                 userAlert.resetAlertPos(pos)
               end 
          end)
          layout:addChild(_layout)       
@@ -658,9 +691,9 @@ function addMessage(message, list, time)
          local _image1 = RichElementImage:create(2, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.fromGrade..".png");
          _richText:pushBackElement(_image1) 
          if message.fromGrade < 23 then
-            posx = posx + 47
+            posx = posx + defultTitleW
          else
-            posx = posx + 61
+            posx = posx + bigTitleW
          end
          local _name2 = RichElementText:create(3,ccc3(254,177,23),255,message.from,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name2) 
@@ -682,6 +715,14 @@ function addMessage(message, list, time)
                  user.sex = message.fromSex
                  user.pic = message.fromPic
                  userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
+                 local container = list:getInnerContainer()
+                 local _index = list:getIndex(layout)
+                 local offset = layout:getPositionY() + container:getPositionY()
+                 local pos = {x=0,y=0}
+                 print("offset!!!!!!!!!!!!!!!!!!!!",container:getSize().height,container:getPositionY(), layout:getPositionY())
+                 pos.x = posx+_layout:getSize().width/2
+                 pos.y = 126+offset
+                 userAlert.resetAlertPos(pos)
               end 
          end)
          layout:addChild(_layout)
@@ -693,9 +734,9 @@ function addMessage(message, list, time)
          local _image2 = RichElementImage:create(5, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.fromGrade..".png");
          _richText:pushBackElement(_image2) 
          if message.fromGrade < 23 then
-            posx = posx + 47
+            posx = posx + defultTitleW
          else
-            posx = posx + 61
+            posx = posx + bigTitleW
          end
          local _name4 = RichElementText:create(6,ccc3(254,177,23),255,message.to,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name4) 
@@ -717,6 +758,14 @@ function addMessage(message, list, time)
                  user.sex = message.toSex
                  user.pic = message.toPic
                  userAlert.create(thisParent,user,package.loaded["scene.chat.main"]) 
+                 local container = list:getInnerContainer()
+                 local _index = list:getIndex(layout)
+                 local offset = layout:getPositionY() + container:getPositionY()
+                 local pos = {x=0,y=0}
+                 print("offset!!!!!!!!!!!!!!!!!!!!",container:getSize().height,container:getPositionY(), layout:getPositionY())
+                 pos.x = posx+_layout:getSize().width/2
+                 pos.y = 126+offset
+                 userAlert.resetAlertPos(pos)
               end 
          end)
          layout:addChild(_layout) 
@@ -726,7 +775,7 @@ function addMessage(message, list, time)
       end
         
       local textWidth = addSplitMessage(_richText, message, num)
-      print("textWidth=============================================",textWidth)
+      -- print("textWidth=============================================",textWidth)
       if textWidth > WIDTH-10 then     
          _richText:ignoreContentAdaptWithSize(false)
          _richText:setSize(CCSize(WIDTH-10, fontHeight*math.ceil(textWidth/(WIDTH-10))))
@@ -735,7 +784,7 @@ function addMessage(message, list, time)
       _richText:setPosition(ccp(0,0))
       layout:setSize(_richText:getSize())
       layout:addChild(_richText)   
-      print("addMessage!!!!!!!!!!!!!!!!!!!!!!!!!!!!",message.type)
+      -- print("addMessage!!!!!!!!!!!!!!!!!!!!!!!!!!!!",message.type)
       list:pushBackCustomItem(layout)
       performWithDelay(function()    
                            if not this then return end                   
@@ -761,78 +810,88 @@ function setMessage(message,id)
    addMessage(message,list)
 end
 
-function playSystemMessageEffect(flag)
-   if isSystemMessagePlaying == true then 
+function playSystemMessageEffect()
+   print("playSystemMessageEffect",userdata.isInGame)
+   if isSystemMessagePlaying == true then
       return
    end
    local func = nil
    func = function()
-  print("playSystemMessageEffect func",userdata.isInGame)
-      local data = nil
-      local hasVip = false
-      local count = 1
-      for k,v in pairs(systemMessageList) do
-          if v.type == "VIP_COM" then
-             print("a11111111111111111111111111111111")
-             count = k
-             data = v
-             hasVip = true
-             break
-          end
-      end
-      if hasVip == false then
-         data = systemMessageList[1]
-      end
-      --print("playSystemMessageEffect func",userdata.isInGame,data.type,count,isSystemMessagePlaying)
-      if userdata.isInGame == true and data and data.type ~= "VIP_COM" then--and flag == false then
-         tool.createEffect(tool.Effect.delay,{time=1.0},widget.obj,function()
-            func()
-         end)
-      else
-          if #systemMessageList == 0 then
+      -- if userdata.isInGame == true then
+      --    tool.createEffect(tool.Effect.delay,{time=1.0},widget.obj,function()
+      --       func()
+      --    end)
+      -- else
+          if type(systemMessageList) == type({}) and #systemMessageList == 0 then
              isSystemMessagePlaying = false
-             widget.system_bg.obj:setVisible(false)
              return
           end
           isSystemMessagePlaying = true
-          table.remove(systemMessageList,count)
-      -- tool.createEffect(tool.Effect.delay,{time=2.0},widget.system_layout.obj,
-      --    function()   
-            widget.system_bg.obj:setVisible(true)
-            local layout = tool.getRichTextWithColor(data.text,40)   
-            layout:setPosition(ccp(WIDTH,0))
-            widget.system_bg.obj:addChild(layout)
-            local layoutSize = layout:getSize()
-            tool.createEffect(tool.Effect.move,{time=0.5*(layoutSize.width/50),x=-layoutSize.width,y=0},layout,
-                  function()
-                    print("finish!!!!!!!!!!!!!!!!!!!!!!!")
-                    data = nil
-                    hasVip = false
-                    count = 1
-                     layout:removeFromParent()
-                     func()
-                  end)
-         -- end)
-      end
+          local data = table.remove(systemMessageList,1)
+          local layout = Layout:create()
+          local richText = RichText:create()
+         local _text1 = RichElementText:create(1,ccc3(254,177,23),255,data.name,DEFAULT_FONT,40) 
+         richText:pushBackElement(_text1)     
+         local _text2 = RichElementText:create(2,ccc3(255,255,255),255,"获得",DEFAULT_FONT,40)         
+         richText:pushBackElement(_text2)  
+         local msg = getWinStr(data.money)
+         local _text3 = RichElementText:create(3,ccc3(253,78,62),255,msg,DEFAULT_FONT,40)         
+         richText:pushBackElement(_text3)   
+         local label = Label:create()
+         label:setText(data.name.."获得"..msg)
+         label:setFontSize(40)
+         label:setFontName(DEFAULT_FONT) 
+         richText:ignoreContentAdaptWithSize(false)
+         richText:setSize(CCSize(label:getSize().width,label:getSize().height))
+         richText:setAnchorPoint(ccp(0,0))
+         richText:setPosition(ccp(0,0))
+         layout:setSize(CCSize(label:getSize().width,label:getSize().height))
+         layout:addChild(richText)
+         layout:setPosition(ccp(widget.system_bg.obj:getSize().width,(66-label:getSize().height)/2))
+          widget.system_bg.obj:addChild(layout)
+          local size = layout:getSize()
+      -- tool.createEffect(tool.Effect.delay,{time=4.0},layout,function()   
+          tool.createEffect(tool.Effect.move,{time=0.5*(size.width/50),x=-size.width,y=0},layout,
+              function()
+                 layout:removeFromParent()
+                 func()
+              end)
+      -- end)
+      -- end
    end
    func()
 end
 
-function onSystemMessage(data)
-   if data.gameId == GAME_ID then
-      table.insert(systemMessageList,data)
-      playSystemMessageEffect(true)
+function onSystemContext(data)
+   print("onSystemContext")
+   -- printTable(data)
+   for k,v in pairs(data.msg) do
+       table.insert(systemMessageList,v) 
    end
+   -- table.insert(systemMessageList,data)
+   -- printTable(systemMessageList)
+   playSystemMessageEffect()
 end
 
-function onSystemContext(data,type)
-   local _data = {}
-   _data.text = data
-   _data.type = type
-   --table.insert(systemMessageList,_data)
-   table.insert(systemMessageList,_data)
-   -- printTable(systemMessageList)
-   playSystemMessageEffect(false)
+function getWinStr(money)
+    local str = ""
+    local car = math.floor(money/100000)
+    local shoe = math.floor((money%100000)/10000)
+    local origami = math.floor(((money%100000)%10000)/1000)
+    local flower = math.floor((((money%100000)%10000)%1000)/100)
+    if car > 0 then
+       str = str..car.."辆兰博基尼"
+    end
+    if shoe > 0 then
+      str = str..shoe.."双水晶鞋"
+    end
+    if origami > 0 then
+      str = str..origami.."只千纸鹤"
+    end
+    if flower > 0 then
+      str = str..flower.."朵玫瑰"
+    end
+    return str
 end
 
 function changeExpressionPanelVisible(flag)
@@ -848,19 +907,32 @@ function changeExpressionPanelVisible(flag)
 end
 
 function resetPanelSay()
-    widget.say.text.obj:setText("所有人")
+    widget.input_1.say.text.obj:setText("所有人")
+    widget.input_1.say.obj:registerEventScript(function(event)
+        if targetId == -1 and targetName == "" then
+           return
+        end
+        tool.buttonSound("releaseUp","effect_12")
+        local posY = widget.panel_say.bg.obj:getPositionY()
+        if posY == max_list_y then
+           tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=0,easeOut=true},widget.panel_say.bg.obj)
+        elseif posY == 0 then
+           tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
+        end
+    end)
+    widget.panel_say.bg.obj:setPosition(ccp(widget.panel_say.bg.obj:getPositionX(),max_list_y))
 end
 
 function setPanelSay(_id,_name,_private)
     targetId = _id
     targetName = _name
     isPrivate = _private
-    widget.say.text.obj:setText(targetName)
+    widget.input_1.say.text.obj:setText(targetName)
     widget.panel_say.bg.label_1.obj:setText(targetName)
     if isPrivate == 1 then
-       widget.check.obj:setSelectedState(true)
+       widget.input_1.check.obj:setSelectedState(true)
     elseif isPrivate == 0 then
-       widget.check.obj:setSelectedState(false)
+       widget.input_1.check.obj:setSelectedState(false)
     end
 end
 
@@ -873,6 +945,7 @@ function exit()
       event.unListen("ON_EXIT_GAME_NOTICE", onExitGameNotice)
       event.unListen("ON_GET_USER_LIST_SUCCEED", onGetUserListSucceed)
       event.unListen("ON_GET_USER_LIST_FAILED", onGetUserListFailed)
+      event.unListen("ON_SYSTEM_CONTEXT", onSystemContext)
       this:removeFromParentAndCleanup(true)
       this = nil
       parentModule = nil
@@ -1001,21 +1074,6 @@ function resetListOrder()
    end   
 end
 
-function onSay(event)
-   if event == "releaseUp" then
-      if targetId == -1 and targetName == "" then
-         return
-      end
-      tool.buttonSound("releaseUp","effect_12")
-      local posY = widget.panel_say.bg.obj:getPositionY()
-      if posY == max_list_y then
-         tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=0,easeOut=true},widget.panel_say.bg.obj)
-      elseif posY == 0 then
-         tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
-      end
-   end
-end
-
 function onCheck(event,data1,data)
    if event == "releaseUp" then
       if targetId == -1 and targetName == "" then
@@ -1069,32 +1127,33 @@ widget = {
         scroll_bar = {_type = "ImageView"},
     },
   },
-  expression = {_type = "Button",_func = onExpression},
-  input = {_type = "ImageView"},
-  send = {_type = "Button",_func = onSend},
+  input_1 = {
+    _type = "ImageView",
+    say = {
+      _type = "Layout",
+      text = {_type = "Label"},
+    },
+    check = {_type = "CheckBox",_func = onCheck},
+    text = {_type = "Label"},
+  },
+  input_2 = {
+    _type = "ImageView",
+    send = {_type = "Button",_func = onSend},
+  },
   user = {
     _type = "Layout",
     grade = {_type = "ImageView"},
     name = {_type = "Label"},
     id = {_type = "Label"},
-    line = {_type = "ImageView"},
-  },
-  say = {
-    _type = "Button",
-    _func = onSay,
-    text = {_type = "Label"},
+    line = {_type = "Layout"},
   },
   panel_say = {
     _type = "Layout",
     bg = {
       _type = "Layout",
-      label_1 = {
-        _type = "Label",
-        line = {_type = "ImageView"},
-      },
+      label_1 = {_type = "Label"},
       label_2 = {_type = "Label"},
+      line = {_type = "Layout"},
     },
   },
-  check = {_type = "CheckBox",_func = onCheck},
-  checkText = {_type = "Label"},
 }

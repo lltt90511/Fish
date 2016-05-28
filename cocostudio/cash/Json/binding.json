@@ -10,7 +10,15 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [],
+  "texturesPng": [
+    "qietu/tymb/daBox.png",
+    "qietu/tymb/guanbiBt01.png",
+    "qietu/tymb/guanbiBt02.png",
+    "qietu/tymb/mbText10.png",
+    "qietu/tymb/nrBar01.png",
+    "qietu/tymb/changBt01.png",
+    "qietu/tymb/changBt02.png"
+  ],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",

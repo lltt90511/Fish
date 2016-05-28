@@ -142,7 +142,9 @@ handlerMap = {
    [2103] = "onChangeSexFailed",
 
    --change gold
-   [3002] = "onChangeGold",
+   -- [3002] = "onChangeGold",
+   --system message
+   [3001] = "onSystemContext",
 
    --get phone code
    [4002] = "onGetPhoneCodeSucceed",
@@ -223,6 +225,34 @@ handlerMap = {
 
    [20002] = "onSetPrivateSucceed",
    [20003] = "onSetPrivateFailed",
+
+   --charge
+   [21002] = "onGetChargeIdSucceed",
+   [21003] = "onGetChargeIdFailed",
+
+   -- [22002] = "",
+   -- [22003] = "",
+
+   --mora game 
+   [23002] = "onFingerGameBetSucceed",
+   [23003] = "onFingerGameBetFailed",
+   [23004] = "onFingerGameBetChange",
+
+   [24002] = "onFingerGameGuessSucceed",
+   [24003] = "onFingerGameGuessFailed",
+   [24004] = "onFingerGameEndTime",
+   [24005] = "onFingerGameResult",
+
+   [25002] = "onFingerGameInvite",
+   [25003] = "onFingerGameInviteSucceed",
+   [25004] = "onFingerGameInviteFailed",
+
+   [26002] = "onFingerGameInviteAgreeSucceed",
+   [26003] = "onFingerGameInviteAgreeFailed",
+
+   [27002] = "onFingerGameInviteRefuse",
+
+   [28002] = "onFingerGameInviteCancel",
 }
 
 

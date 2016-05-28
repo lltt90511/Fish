@@ -13,6 +13,7 @@ local uId = 0
 local uName = ""
 local eventHash = {}
 local data = {}
+alertHeight = 590
 
 function create(_parent,_userData,_parentModule)
    thisParent = _parent
@@ -20,13 +21,10 @@ function create(_parent,_userData,_parentModule)
    data = _userData
    this = tool.loadWidget("cash/userAlert",widget,thisParent,99)
    widget.obj:registerEventScript(onBack)
-   widget.alert.title.obj:loadTexture("cash/qietu/user/v"..data.grade..".png")
-   widget.alert.id.obj:setText(data.id)
-   widget.alert.id.obj:setPosition(ccp(widget.alert.title.obj:getPositionX()+widget.alert.title.obj:getSize().width*2+10,widget.alert.id.obj:getPositionY()))
-   widget.alert.name.obj:setText(data.name)
-   widget.alert.send.obj:setPosition(ccp(widget.alert.name.obj:getPositionX()+widget.alert.name.obj:getSize().width+10+widget.alert.send.obj:getSize().width/2,widget.alert.send.obj:getPositionY()))
-   widget.alert.send.obj:setVisible(false)
-   widget.alert.send.obj:setTouchEnabled(false)
+   widget.bg.name.obj:setText(data.name)
+   widget.bg.title.obj:loadTexture("cash/qietu/user/v"..data.grade..".png")
+   widget.bg.id.obj:setText("("..data.id..")")
+   
    local isShow3 = false
    local isShow4 = false
    local isShow5 = false
@@ -40,25 +38,27 @@ function create(_parent,_userData,_parentModule)
       if userdata.UserInfo.uGrade > data.grade then
          isShow3 = true
          isShow4 = true
-         widget.alert.btn_1.obj:setPosition(ccp(widget.alert.btn_1.obj:getPositionX(),-10))
-         widget.alert.btn_2.obj:setPosition(ccp(widget.alert.btn_2.obj:getPositionX(),-10))
-         widget.alert.btn_3.obj:setPosition(ccp(widget.alert.btn_3.obj:getPositionX(),-120))
-         widget.alert.btn_4.obj:setPosition(ccp(widget.alert.btn_4.obj:getPositionX(),-120))
+         alertHeight = 450
+         widget.bg.obj:setSize(CCSize(widget.bg.obj:getSize().width,alertHeight))
       else
-         widget.alert.btn_1.obj:setPosition(ccp(widget.alert.btn_1.obj:getPositionX(),-30))
-         widget.alert.btn_2.obj:setPosition(ccp(widget.alert.btn_2.obj:getPositionX(),-30))
+         alertHeight = 310
+         widget.bg.obj:setSize(CCSize(widget.bg.obj:getSize().width,alertHeight))
       end
    end
-   widget.alert.btn_3.obj:setVisible(isShow3)
-   widget.alert.btn_3.obj:setTouchEnabled(isShow3) 
-   widget.alert.btn_4.obj:setVisible(isShow4)
-   widget.alert.btn_4.obj:setTouchEnabled(isShow4) 
-   widget.alert.btn_5.obj:setVisible(isShow5)
-   widget.alert.btn_5.obj:setTouchEnabled(isShow5) 
-   widget.alert.btn_6.obj:setVisible(isShow6)
-   widget.alert.btn_6.obj:setTouchEnabled(isShow6) 
+   widget.bg.btn_3.obj:setVisible(isShow3)
+   widget.bg.btn_3.obj:setTouchEnabled(isShow3) 
+   widget.bg.btn_4.obj:setVisible(isShow4)
+   widget.bg.btn_4.obj:setTouchEnabled(isShow4) 
+   widget.bg.btn_5.obj:setVisible(isShow5)
+   widget.bg.btn_5.obj:setTouchEnabled(isShow5) 
+   widget.bg.btn_6.obj:setVisible(isShow6)
+   widget.bg.btn_6.obj:setTouchEnabled(isShow6) 
    userdata.CharIdToImageFile[data.id] = {file=data.pic,sex=data.sex}
-   tool.getUserImage(eventHash, widget.alert.head.icon.obj, data.id)
+   tool.getUserImage(eventHash, widget.bg.head.icon.obj, data.id)
+end
+
+function resetAlertPos(pos)
+   widget.bg.obj:setPosition(ccp(pos.x,pos.y))
 end
 
 function cleanEvent()
@@ -137,18 +137,10 @@ function onBtn6(event)
    end
 end
 
-function onSend(event)
-   if event == "releaseUp" then
-      tool.buttonSound("releaseUp","effect_12")
-      
-   end
-end
-
 widget = {
 	_ignore = true,
-	alert = {
-    _type = "ImageView",
-    back = {_type="Button",_func=onBack},
+	bg = {
+    _type = "Layout",
     head = {
       _type = "ImageView",
       icon = {_type = "ImageView"},
@@ -159,44 +151,32 @@ widget = {
     btn_1 = {
       _type = "Button",
       _func=onBtn1,
-      label = {_type = "Label"},
-      label_shadow = {_type = "Label"},
+      text = {_type = "Label"},
     },
     btn_2 = {
       _type = "Button",
       _func=onBtn2,
-      label = {_type = "Label"},
-      label_shadow = {_type = "Label"},
+      text = {_type = "Label"},
     },
     btn_3 = {
       _type = "Button",
       _func=onBtn3,
-      label = {_type = "Label"},
-      label_shadow = {_type = "Label"},
+      text = {_type = "Label"},
     },
     btn_4 = {
       _type = "Button",
       _func=onBtn4,
-      label = {_type = "Label"},
-      label_shadow = {_type = "Label"},
+      text = {_type = "Label"},
     },
     btn_5 = {
       _type = "Button",
       _func=onBtn5,
-      label = {_type = "Label"},
-      label_shadow = {_type = "Label"},
+      text = {_type = "Label"},
     },
     btn_6 = {
       _type = "Button",
       _func=onBtn6,
-      label = {_type = "Label"},
-      label_shadow = {_type = "Label"},
-    },
-    send = {
-      _type = "Button",
-      _func=onSend,
-      label = {_type = "Label"},
-      label_shadow = {_type = "Label"},
+      text = {_type = "Label"},
     },
 	},
 }

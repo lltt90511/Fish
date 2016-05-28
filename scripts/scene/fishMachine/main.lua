@@ -18,6 +18,7 @@ local data = {}
 local autoArr = {50,10,5}
 local autoIndex = 1
 local singleArr = {"玫瑰","千纸鹤","水晶鞋","兰博基尼"}
+-- local singleGoldArr = {100,1000,10000,100000}
 local singleGoldArr = {100,1000,10000,100000}
 local singleIndex = 1
 local fishTimer = nil
@@ -70,7 +71,7 @@ local fishList = {
 function create(_parent, _parentModule)
    thisParent = _parent
    parentModule = _parentModule 
-   this = tool.loadWidget("cash/fish_machine1",widget, thisParent)
+   this = tool.loadWidget("cash/fish_machine",widget, thisParent)
    commonTop.create(this,package.loaded["scene.fishMachine.main"])
    AudioEngine.playMusic("bgm02.mp3",true)
    if userdata.lastFishSingleIndex and userdata.lastFishSingleIndex ~= 0 then
@@ -133,6 +134,9 @@ function initData(gameData)
    else
       betEndTime = 20
    end
+   for k,v in pairs(gameData.bet) do
+       singleGoldArr[v.id] = v.gold
+   end
 end
 
 function onUpdateGameData(gameData)
@@ -192,12 +196,22 @@ function onBetSucceed(_data)
    if not isDoBet then
       isDoBet = true
    end
-   widget.bottom.bet_bg["bet_"..isBet[_data.betid].id].layout.obj:setVisible(true)
-   widget.bottom.bet_bg["bet_"..isBet[_data.betid].id].layout.obj:setTouchEnabled(true)
+   local equipId = 0
+   for i=1,#singleGoldArr do
+       if singleGoldArr[i] == _data.betMoney then
+          equipId = i
+          break
+       end
+   end
+   widget.bottom.bet_bg["bet_"..isBet[_data.betid].id].img.img.obj:setVisible(true)
+   widget.bottom.bet_bg["bet_"..isBet[_data.betid].id].img.img.obj:loadTexture("cash/qietu/fish/equip_"..equipId..".png")
    onGameUserActionSucceed(_data.betid,_data.betMoney)
 end
 
 function onBetFailed(_data)
+   widget.bottom.bet_bg["bet_"..isBet[_data.betid].id].img.obj:setVisible(false)
+   widget.bottom.bet_bg["bet_"..isBet[_data.betid].id].img.img.obj:setVisible(false)
+   widget.bottom.bet_bg["bet_"..isBet[_data.betid].id].img.obj:setTouchEnabled(false)
    alert.create(_data.msg)  
 end
 
@@ -233,10 +247,10 @@ function initView()
    for k, v in pairs(fishList) do
       if v.fishType == 0 then
          widget.fish["panel_outside_"..v.seqId].light.obj:setVisible(false)
-         widget.fish["panel_outside_"..v.seqId].fish.obj:loadTexture("cash/qietu/fish1/fish_"..v.res..".png")
+         widget.fish["panel_outside_"..v.seqId].fish.obj:loadTexture("cash/qietu/fish/fish_"..v.res..".png")
       elseif v.fishType == 1 then      
          widget.fish["panel_inside_"..v.seqId].light.obj:setVisible(false)           
-         widget.fish["panel_inside_"..v.seqId].fish.obj:loadTexture("cash/qietu/fish1/fish_"..v.res..".png")
+         widget.fish["panel_inside_"..v.seqId].fish.obj:loadTexture("cash/qietu/fish/fish_"..v.res..".png")
       end
    end 
    changeTouchEnabled(false)
@@ -250,25 +264,28 @@ function initView()
    -- local action = CCRotateBy:create(0.5,60)
    -- action = CCRepeatForever:create(action)
    -- light:runAction(action)
-   widget.bottom["btn_"..singleIndex].obj:setTouchEnabled(false)
-   widget.bottom["btn_"..singleIndex].obj:setBackGroundColor(ccc3(255,0,0))
+   widget.bottom.bet_btn_bg["btn_"..singleIndex].obj:setTouchEnabled(false)
+   widget.bottom.bet_btn_bg["btn_"..singleIndex].obj:setBright(false)
+   widget.bottom.bet_btn_bg["btn_"..singleIndex].text.obj:setColor(ccc3(42,25,6))
    for i=1,#singleArr do
-       if widget.bottom["btn_"..i].obj then
-          widget.bottom["btn_"..i].text.obj:setText(singleArr[i])
-          widget.bottom["btn_"..i].obj:registerEventScript(function(event)
+       if widget.bottom.bet_btn_bg["btn_"..i].obj then
+          widget.bottom.bet_btn_bg["btn_"..i].text.obj:setText(singleArr[i])
+          widget.bottom.bet_btn_bg["btn_"..i].obj:registerEventScript(function(event)
               if event == "releaseUp" then
                  singleIndex = i
                  userdata.lastFishSingleIndex = singleIndex
                  saveSetting("fishIndex",singleIndex)
                  for j=1,#singleArr do
-                     if widget.bottom["btn_"..j].obj then
+                     if widget.bottom.bet_btn_bg["btn_"..j].obj then
                         print("on widget!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",j,singleIndex)
                         if j == singleIndex then
-                           widget.bottom["btn_"..j].obj:setTouchEnabled(false)
-                           widget.bottom["btn_"..j].obj:setBackGroundColor(ccc3(255,0,0))
+                           widget.bottom.bet_btn_bg["btn_"..j].obj:setTouchEnabled(false)
+                           widget.bottom.bet_btn_bg["btn_"..j].obj:setBright(false)
+                           widget.bottom.bet_btn_bg["btn_"..j].text.obj:setColor(ccc3(42,25,6))
                         else
-                           widget.bottom["btn_"..j].obj:setTouchEnabled(true)
-                           widget.bottom["btn_"..j].obj:setBackGroundColor(ccc3(0,0,0))
+                           widget.bottom.bet_btn_bg["btn_"..j].obj:setTouchEnabled(true)
+                           widget.bottom.bet_btn_bg["btn_"..j].obj:setBright(true)
+                           widget.bottom.bet_btn_bg["btn_"..j].text.obj:setColor(ccc3(254,177,23))
                         end
                      end
                  end
@@ -276,8 +293,6 @@ function initView()
           end)
        end
    end
-
-   initCostView()
    
    startFishTimer()
    if data.type == 100 then
@@ -315,8 +330,9 @@ function initView()
              end
          end
       end
-      widget.bottom.bet_bg["bet_"..i].layout.obj:setVisible(hasBet)
-      widget.bottom.bet_bg["bet_"..i].layout.obj:setTouchEnabled(hasBet)
+      widget.bottom.bet_bg["bet_"..i].img.obj:setVisible(hasBet)
+      widget.bottom.bet_bg["bet_"..i].img.obj:setTouchEnabled(hasBet)
+      widget.bottom.bet_bg["bet_"..i].img.img.obj:setVisible(hasBet)
       widget.bottom.bet_bg["bet_"..i].obj:registerEventScript(function(ev,data)
                           if isBet[arr[i]].bool then
                              return
@@ -333,41 +349,6 @@ function initView()
       end
    end
    -- refrendeshBetTotal()
-end
-
-function initCostView()
-   widget.bottom.bet_gold.obj:setTouchEnabled(false)
-   widget.bottom.bet_layout.obj:setTouchEnabled(false)
-   widget.bottom.bet_gold.num.obj:setText(singleArr[singleIndex])
-   widget.bottom.bet_layout.bg.obj:setPosition(ccp(0,max_list_y))
-   local pushOrPullfunc = function()
-      local posY = widget.bottom.bet_layout.bg.obj:getPositionY()
-      if posY == max_list_y then
-         tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=0,easeOut=true},widget.bottom.bet_layout.bg.obj)
-      elseif posY == 0 then
-         tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.bottom.bet_layout.bg.obj)
-      end
-   end       -- widget.bottom.bet_gold.obj:registerEventScript(function(event)
-   --        if event == "releaseUp" then
-   --           tool.buttonSound("releaseUp","effect_12")
-   --           pushOrPullfunc()
-   --        end
-   -- end)
-   -- for i = 1, 4 do 
-   --    widget.bottom.bet_layout.bg["label_"..i].obj:setTouchEnabled(true)
-   --    widget.bottom.bet_layout.bg["label_"..i].obj:registerEventScript(function(event)
-   --        if event == "releaseUp" then
-   --           tool.buttonSound("releaseUp","effect_12")
-   --           singleIndex = i
-   --           userdata.lastFishSingleIndex = singleIndex
-   --           saveSetting("fishIndex",singleIndex)
-   --           widget.bottom.bet_gold.num.obj:setText(singleArr[singleIndex])
-   --           pushOrPullfunc()
-   --        end
-   --     end)
-   -- end
-
-   changeTouchEnabled(true)
 end
 
 function initResult()
@@ -413,7 +394,7 @@ function doResultAni(id)
       widget.result.cheng.obj:setPositionX(255)
       widget.result.number.obj:setPositionX(245)
    end
-   widget.result.icon.obj:loadTexture("cash/qietu/fish1/fish_"..fishTmp.res..".png")
+   widget.result.icon.obj:loadTexture("cash/qietu/fish/fish_"..fishTmp.res..".png")
    widget.result.obj:setVisible(true)
    tool.createEnterEffect(widget.result.obj,{x=0,y=-1000,easeOut=true},0.3,function()
       for i=1,starNum do 
@@ -569,12 +550,13 @@ function playCircle(maxNum, name)
                               local resultCnt = name == "inside" and data.GameResult.f[2] or data.GameResult.f[1]
                               local totalCnt = name == "inside" and maxNum + resultCnt - lastOpenId[name] + 12 or maxNum + resultCnt - lastOpenId[name]
                               local _id = name == "inside" and st + 12 or st
-                              print("201!!!!!!!!!!!!!!!!!!!!!",totalCnt,cnt,st,resultCnt,_id)
+                              -- print("201!!!!!!!!!!!!!!!!!!!!!",totalCnt,cnt,st,resultCnt,_id)
                               delay = 0.4
                               if fishList[_id].id == resultCnt then
-                                 print("end ",_id,resultCnt,fishList[_id].id,fishList[_id].name)
+                                 -- print("end ",_id,resultCnt,fishList[_id].id,fishList[_id].name)
                                  resultName[name] = fishList[_id].name
                                  finishCircleCnt = finishCircleCnt + 1
+                                 lastOpenId[name] = st
                                  if finishCircleCnt == 2 then
                                     endEffect() 
                                  end 
@@ -617,12 +599,13 @@ end
 
 function endEffect()
    userdata.isInGame = false
-   for i=1,12 do
-       if data.GameResult.f[1] == fishList[i].id then
-          lastOpenId.outside = i
-       end
-   end
-   lastOpenId.inside = data.GameResult.f[2] - 12
+   -- for i=1,12 do
+   --     if data.GameResult.f[1] == fishList[i].id then
+   --        lastOpenId.outside = i
+   --     end
+   -- end
+   -- lastOpenId.inside = data.GameResult.f[2] - 12
+   -- print("endEffect!!!!!!!!!!!!!!!",lastOpenId.outside,lastOpenId.inside)
    widget.fish["panel_outside_"..lastOpenId.outside].light.obj:setVisible(false)
    widget.fish["panel_inside_"..lastOpenId.inside].light.obj:setVisible(false)
    isPlaying = false
@@ -630,14 +613,9 @@ function endEffect()
    finishCircleCnt = 0
    for k,v in pairs(isBet) do
        v.bool = false
-       widget.bottom.bet_bg["bet_"..v.id].layout.obj:setVisible(false)
-       widget.bottom.bet_bg["bet_"..v.id].layout.obj:setTouchEnabled(false)
-   end
-   for i=1,#singleArr do
-       if widget.bottom["btn_"..i].obj then
-          widget.bottom["btn_"..i].obj:setTouchEnabled(true)
-          widget.bottom["btn_"..i].obj:setColor(ccc3(0,0,0))
-       end
+       widget.bottom.bet_bg["bet_"..v.id].img.obj:setVisible(false)
+       widget.bottom.bet_bg["bet_"..v.id].img.obj:setTouchEnabled(false)
+       widget.bottom.bet_bg["bet_"..v.id].img.img.obj:setVisible(false)
    end
    checkWinResult()
    if fishList[lastOpenId.outside].id >= 1 and fishList[lastOpenId.outside].id <= 6 then
@@ -649,6 +627,9 @@ function endEffect()
 
    betOwn = {}
    
+   tool.createEffect(tool.Effect.delay,{time=1},widget.bottom.layout.obj,function()
+          isDoBet = false
+   end)
    widget.bottom.layout.obj:setTouchEnabled(true)
    widget.bottom.layout.obj:setVisible(true)
 end
@@ -660,11 +641,11 @@ function checkWinResult()
       message.cnt = data.GameResult.c
       message.outside = resultName["outside"]
       message.inside = resultName["inside"]
-      chat.addSystemMessage(message)
+      -- chat.addSystemMessage(message)
       chat.setMessage(message,1) 
       chat.setMessage(message,3) 
+      local isInResult = false
       if data.GameResult.u and #data.GameResult.u > 0 then
-         local isInResult = false
          for k,v in pairs(data.GameResult.u) do
              local resultMsg = {}
              if v.i == userdata.UserInfo.uidx then
@@ -679,12 +660,12 @@ function checkWinResult()
              resultMsg.time = os.date("*t",tonumber(os.time()))
              resultMsg.id = v.i
              resultMsg.msg = getWinStr(v.m)
-             chat.setMessage(resultMsg,1) 
-             chat.setMessage(resultMsg,3)           
+             chat.setMessage(resultMsg,1)          
          end
-         if not isInResult and isDoBet then
-            widget.bottom.layout.text.obj:setText("很遗憾您没有中奖！") 
-         end
+         print("checkWinResult!!!!!!!!!!!!!",isDoBet,isInResult)
+      end
+      if not isInResult and isDoBet then
+         widget.bottom.layout.text.obj:setText("很遗憾您没有中奖！") 
       end
    end
 end
@@ -714,7 +695,7 @@ function initChatView()
    chatView = chat.create(1,this,package.loaded["scene.fishMachine.main"])
    widget.bottom.obj:addChild(chatView,2)
    chatView:setAnchorPoint(ccp(0,0))
-   chatView:setPosition(ccp(0,-970))
+   chatView:setPosition(ccp(0,-1058))
 end
 
 function startFishTimer()
@@ -753,19 +734,10 @@ function endNextTimer()
 end
 
 function changeTouchEnabled(flag)
-   -- widget.bottom.bet_gold.obj:setBright(flag)
-   -- widget.bottom.bet_gold.obj:setTouchEnabled(flag)
    if not isRepeat then
       widget.bottom.rebet.obj:setBright(flag)
       widget.bottom.rebet.obj:setTouchEnabled(flag)
    end
-   -- if flag == false then
-   --    local posY = widget.bottom.bet_layout.bg.obj:getPositionY()
-   --    if posY == 0 then
-   --       widget.bottom.bet_layout.obj:setTouchEnabled(false)
-   --       tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeOut=true},widget.bottom.bet_layout.bg.obj)
-   --    end
-   -- end
    for k, v in pairs(isBet) do
        widget.bottom.bet_bg["bet_"..v.id].obj:setTouchEnabled(flag)
    end
@@ -831,6 +803,8 @@ function bet(id, needGold)
       alert.create("余额不足！")
       return
    end
+   widget.bottom.bet_bg["bet_"..isBet[id].id].img.obj:setVisible(true)
+   widget.bottom.bet_bg["bet_"..isBet[id].id].img.obj:setTouchEnabled(true)
    -- if not isBet[id] then
    --    isBet[id] = true
    -- end
@@ -969,9 +943,9 @@ function exit()
       lastUserGold = 0
       historyUserGold = {}
       max_list_y = -350
-      isDoBet = false
       currentUserPage = 0
       totalUserNum = 0
+      singleGoldArr = {}
    end
 end
 
@@ -1052,74 +1026,80 @@ widget = {
           _type = "ImageView",
           image = {_type = "ImageView"},
           num = {_type = "Label"},
-          layout = {_type = "Layout"},
+          img = {
+            _type = "ImageView",
+            img = {_type = "ImageView"},
+          },
         },
         bet_2 = {
           _type = "ImageView",
           image = {_type = "ImageView"},
           num = {_type = "Label"},
-          layout = {_type = "Layout"},
+          img = {
+            _type = "Layout",
+            img = {_type = "ImageView"},
+          },
         },
         bet_3 = {
           _type = "ImageView",
           image = {_type = "ImageView"},
           num = {_type = "Label"},
-          layout = {_type = "Layout"},
+          img = {
+            _type = "Layout",
+            img = {_type = "ImageView"},
+          },
         },
         bet_4 = {
           _type = "ImageView",
           image = {_type = "ImageView"},
           num = {_type = "Label"},
-          layout = {_type = "Layout"},
+          img = {
+            _type = "Layout",
+            img = {_type = "ImageView"},
+          },
         },
         bet_5 = {
           _type = "ImageView",
           image = {_type = "ImageView"},
           num = {_type = "Label"},
-          layout = {_type = "Layout"},
+          img = {
+            _type = "Layout",
+            img = {_type = "ImageView"},
+          },
         },
         bet_6 = {
           _type = "ImageView",
           image = {_type = "ImageView"},
           num = {_type = "Label"},
-          layout = {_type = "Layout"},
+          img = {
+            _type = "Layout",
+            img = {_type = "ImageView"},
+          },
         },
       },
       layout = {
         _type = "Layout",
         text = {_type = "Label"},  
       },
-      bet_gold = {
-        _type = "Button",_func=onPoint,
-        num = {_type = "Label"},
-        point = {_type = "ImageView"},
-      },
       rebet = {_type = "Button",_func=onRepeatBet},
-      bet_layout = {
-        _type = "Layout",
-        bg = {
+      bet_btn_bg = {
+        _type = "ImageView",
+        btn_1 = {
           _type = "Layout",
-          label_1 = {_type = "Label",line={_type = "ImageView"}},
-          label_2 = {_type = "Label",line={_type = "ImageView"}},
-          label_3 = {_type = "Label",line={_type = "ImageView"}},
-          label_4 = {_type = "Label"},
+          text = {_type = "Label"},
         },
-      },
-      btn_1 = {
-        _type = "Layout",
-        text = {_type = "Label"},
-      },
-      btn_2 = {
-        _type = "Layout",
-        text = {_type = "Label"},
-      },
-      btn_3 = {
-        _type = "Layout",
-        text = {_type = "Label"},
-      },
-      btn_4 = {
-        _type = "Layout",
-        text = {_type = "Label"},
+        btn_2 = {
+          _type = "Layout",
+          text = {_type = "Label"},
+        },
+        btn_3 = {
+          _type = "Layout",
+          text = {_type = "Label"},
+        },
+        btn_4 = {
+          _type = "Layout",
+          text = {_type = "Label"},
+        },
       },
    },
    fish = {
@@ -1217,12 +1197,6 @@ widget = {
         _type = "ImageView",
         light = {_type = "ImageView"},
         fish = {_type = "ImageView"},
-      },
-      exchange = {
-        _type = "Button",
-        _func = onExchange,
-        text = {_type = "Label"},
-        text_shadow = {_type = "Label"},
       },
    },
    result = {

@@ -4,6 +4,7 @@ local userdata = require"logic.userdata"
 local countLv = require"logic.countLv"
 local quitAlert = require"scene.quitAlert"
 local backList = require"scene.backList"
+local exchange = require"scene.exchange"
 
 module("scene.commonTop",package.seeall)
 
@@ -106,11 +107,18 @@ function onRecharge(event)
    if event == "releaseUp" then
       -- call("addGold",10000)
       tool.buttonSound("releaseUp","effect_12")
-      local charge = require"scene.charge"
-      charge.create(thisParent,nil,true)
+      local charge = require"scene.chargeAlert"
+      charge.create(thisParent,2)
    end
 end
 
+function onExchange(event)
+   if event == "releaseUp" then
+      tool.buttonSound("releaseUp","effect_12")
+      call(18001)
+      exchange.create(thisParent)
+   end
+end
 function setPao()
    if not this or isShowChatHistory then return end
    messageNum = messageNum + 1
@@ -175,7 +183,7 @@ widget = {
       gold_bg = {
          _type = "ImageView",
          num = {_type = "LabelAtlas"},
-         add = {_type = "Button",_func = onRecharge},
+         add = {_type = "Button",_func = onExchange},
       },
       name_bg = {
          _type = "ImageView",

@@ -16,7 +16,6 @@
     <string>chatHistory.json</string>
     <string>chatPrivate.json</string>
     <string>common_top.json</string>
-    <string>fish_machine.json</string>
     <string>fruit_machine.json</string>
     <string>loginGift.json</string>
     <string>login_alert.json</string>
@@ -39,9 +38,10 @@
     <string>moraGame.json</string>
     <string>waitInviterAlert.json</string>
     <string>loading.json</string>
-    <string>fish_machine1.json</string>
+    <string>fish_machine.json</string>
     <string>exchange.json</string>
     <string>userAlert.json</string>
+    <string>chargeAlert.json</string>
   </JsonList>
   <CanvasSize>
     <Width>1080</Width>
@@ -52,15 +52,21 @@
   <ResRelativePath />
   <imageFileList />
   <imagePngList>
-    <string>qietu/mora/alert.png</string>
-    <string>qietu/tymb/guanbiBt01.png</string>
-    <string>qietu/tymb/guanbiBt02.png</string>
-    <string>qietu/top/head.png</string>
-    <string>GUI/image.png</string>
-    <string>qietu/user/v1.png</string>
-    <string>qietu/tymb/changBt01.png</string>
-    <string>qietu/tymb/changBt02.png</string>
+    <string>qietu/alert/charge_bg.png</string>
+    <string>qietu/alert/top.png</string>
+    <string>qietu/alert/close1.png</string>
+    <string>qietu/alert/close2.png</string>
+    <string>qietu/alert/bar.png</string>
+    <string>qietu/alert/bg2.png</string>
+    <string>qietu/alert/line.png</string>
+    <string>qietu/alert/bg1.png</string>
+    <string>qietu/alert/charge1.png</string>
+    <string>qietu/alert/charge2.png</string>
+    <string>qietu/chat/inpit2.png</string>
+    <string>qietu/alert/pay1.png</string>
+    <string>qietu/alert/pay2.png</string>
+    <string>qietu/paiming/zsbg.png</string>
   </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>userAlert.json</CurrentUIJson>
+  <CurrentUIJson>chat.json</CurrentUIJson>
 </UIProject>

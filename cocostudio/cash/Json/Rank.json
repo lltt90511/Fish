@@ -11,33 +11,13 @@
   "designWidth": 1080,
   "textures": [],
   "texturesPng": [
-    "qietu/mora/bg.png",
-    "qietu/mora/touxiang_1.png",
-    "qietu/main2/default.jpg",
-    "qietu/mora/yaoqing.png",
-    "qietu/mora/yazhuanniu.png",
-    "qietu/mora/di.png",
-    "qietu/mora/di_2.png",
-    "qietu/mora/shibai.png",
-    "qietu/mora/jiandao_2.png",
-    "qietu/mora/jiandao_1.png",
-    "qietu/mora/shitou_2.png",
-    "qietu/mora/shitou_1.png",
-    "qietu/mora/bu_2.png",
-    "qietu/mora/bu_1.png",
-    "qietu/mora/yazhu_1.png",
-    "qietu/mora/jinbi.png",
-    "qietu/mora/di_1.png",
-    "qietu/tymb/goldIcon.png",
-    "qietu/mora/alert.png",
-    "qietu/mora/shuru.png",
-    "qietu/mora/queding.png",
-    "qietu/tymb/guanbiBt01.png",
-    "qietu/tymb/guanbiBt02.png",
+    "qietu/tymb/xiaoBox.png",
     "qietu/tymb/changBt01.png",
-    "qietu/tymb/changBt02.png"
+    "qietu/tymb/changBt02.png",
+    "qietu/tymb/xuanzhong02a.png",
+    "qietu/tymb/xuanzhong02b.png"
   ],
-  "version": "1.5.0.1",
+  "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",
     "name": null,
@@ -714,7 +694,7 @@
                   "capInsetsWidth": 1,
                   "capInsetsX": 0,
                   "capInsetsY": 0,
-                  "clipAble": true,
+                  "clipAble": false,
                   "colorType": 0,
                   "direction": 1,
                   "editorClipAble": false,
@@ -1536,7 +1516,7 @@
                   "capInsetsY": 0,
                   "fileName": null,
                   "fileNameData": {
-                    "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                    "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                     "plistFile": "",
                     "resourceType": 2
                   },
@@ -2575,7 +2555,7 @@
                   "capInsetsY": 0,
                   "fileName": null,
                   "fileNameData": {
-                    "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                    "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                     "plistFile": "",
                     "resourceType": 2
                   },
@@ -4184,7 +4164,7 @@
                   "capInsetsY": 0,
                   "fileName": null,
                   "fileNameData": {
-                    "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                    "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                     "plistFile": "",
                     "resourceType": 2
                   },
@@ -4577,7 +4557,7 @@
               "capInsetsY": 0,
               "fileName": null,
               "fileNameData": {
-                "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                 "plistFile": "",
                 "resourceType": 2
               },
@@ -4628,7 +4608,7 @@
           "capInsetsY": 0,
           "fileName": null,
           "fileNameData": {
-            "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+            "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
             "plistFile": "",
             "resourceType": 2
           },
@@ -5336,7 +5316,7 @@
                   "capInsetsY": 0,
                   "fileName": null,
                   "fileNameData": {
-                    "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                    "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                     "plistFile": "",
                     "resourceType": 2
                   },
@@ -6313,14 +6293,14 @@
                   "ignoreSize": true,
                   "layoutParameter": null,
                   "opacity": 255,
-                  "positionPercentX": 0.3059413,
+                  "positionPercentX": 0.305555552,
                   "positionPercentY": 0,
                   "positionType": 0,
                   "rotation": 0,
                   "scaleX": 1,
                   "scaleY": 1,
-                  "sizePercentX": 0.08796296,
-                  "sizePercentY": 0.22131148,
+                  "sizePercentX": 0.13333334,
+                  "sizePercentY": 0.377049178,
                   "sizeType": 0,
                   "tag": 14429,
                   "touchAble": false,
@@ -6599,7 +6579,7 @@
                   "capInsetsY": 0,
                   "fileName": null,
                   "fileNameData": {
-                    "path": "C:\\Program Files (x86)\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
+                    "path": "D:\\Cocos Studio\\EditorDefaultRes\\GUI/image.png",
                     "plistFile": "",
                     "resourceType": 2
                   },
@@ -6902,8 +6882,8 @@
           "ignoreSize": false,
           "layoutParameter": null,
           "opacity": 255,
-          "positionPercentX": -1.44722235,
-          "positionPercentY": 1.18854153,
+          "positionPercentX": -1.44722223,
+          "positionPercentY": 1.18802083,
           "positionType": 0,
           "rotation": 0,
           "scaleX": 1,
