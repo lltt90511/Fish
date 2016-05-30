@@ -92,9 +92,10 @@ end
 function onBtn1(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      if parentModule and parentModule.setPanelSay then
-         parentModule.setPanelSay(data.id,data.name,0)
-      end
+      call(19001,1,data.id,5)
+      -- if parentModule and parentModule.setPanelSay then
+      --    parentModule.setPanelSay(data.id,data.name,0)
+      -- end
       exit()
    end
 end
@@ -112,14 +113,16 @@ end
 function onBtn3(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      
+      call(19001,1,data.id,1)
+      exit()
    end
 end
 
 function onBtn4(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      
+      call(19001,2,data.id,1)
+      exit()
    end
 end
 

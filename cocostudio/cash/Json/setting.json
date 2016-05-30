@@ -11,19 +11,11 @@
   "designWidth": 1080,
   "textures": [],
   "texturesPng": [
-    "qietu/tymb/daBox.png",
-    "qietu/tymb/guanbiBt01.png",
-    "qietu/tymb/guanbiBt02.png",
-    "qietu/tymb/mbText02.png",
-    "qietu/tymb/tmBox.png",
-    "qietu/text/textA07.png",
-    "qietu/text/textA08.png",
-    "qietu/tymb/tuidongBar02.png",
-    "qietu/tymb/tuidongBar01.png",
-    "qietu/tymb/tuidongBt.png",
-    "qietu/tymb/ctBt.png",
-    "qietu/tymb/xuanzhong02a.png",
-    "qietu/tymb/xuanzhong02b.png"
+    "qietu/top/head.png",
+    "GUI/image.png",
+    "qietu/user/v0.png",
+    "qietu/chat/userBtn1.png",
+    "qietu/chat/userBtn2.png"
   ],
   "version": "1.6.0.0",
   "widgetTree": {

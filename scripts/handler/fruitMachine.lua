@@ -16,20 +16,22 @@ function onEnterGameSucceed(gameData)
          mainScene.createSubWidget(mod)
       end
    end
-   if gameData.GameId == 0 then
-      local fruitMachine = package.loaded["scene.fruitMachine.main"]
-      fruitMachine.initData(gameData)
+   if gameData.gameid == 1 then
+      local fishMachine = package.loaded["scene.fishMachine.main"]
+      fishMachine.initData(gameData)
       -- enterGameFunc(mainScene.widgetID.fruitMachine)
-      mainScene.createSubWidget(mainScene.widgetID.fruitMachine)
-   elseif gameData.GameId == 1 then
+      mainScene.createSubWidget(mainScene.widgetID.fishMachine)
+   elseif gameData.gameid == 2 then
       local fishMachine = package.loaded["scene.fishMachine.main"]
       fishMachine.initData(gameData)
       -- enterGameFunc(mainScene.widgetID.fishMachine)
       mainScene.createSubWidget(mainScene.widgetID.fishMachine)
-   elseif gameData.GameId == 3 then
+   elseif gameData.gameid == 10 then
+      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
       local moraGame = package.loaded["scene.moraGame"]
-      moraGame.initData(gameData)
-      enterGameFunc(mainScene.widgetID.moraGame)
+      -- moraGame.initData(gameData)
+      -- enterGameFunc(mainScene.widgetID.moraGame)
+      mainScene.createSubWidget(mainScene.widgetID.moraGame)
    end
 end
 

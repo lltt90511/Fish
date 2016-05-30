@@ -10,6 +10,7 @@ local parentModule = nil
 local topModule = nil
 
 function create(_parent,_parentModule,_topModule)
+   if this then exit() end
    parent = _parent
    parentModule = _parentModule
    topModule = _topModule

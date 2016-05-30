@@ -234,25 +234,24 @@ handlerMap = {
    -- [22003] = "",
 
    --mora game 
-   [23002] = "onFingerGameBetSucceed",
-   [23003] = "onFingerGameBetFailed",
-   [23004] = "onFingerGameBetChange",
+   [30002] = "onFingerGameInviteSucceed",
+   [30003] = "onFingerGameInviteFailed",
+   [30004] = "onFingerGameInvite",
 
-   [24002] = "onFingerGameGuessSucceed",
-   [24003] = "onFingerGameGuessFailed",
-   [24004] = "onFingerGameEndTime",
-   [24005] = "onFingerGameResult",
+   [31002] = "onFingerGameInviteAgreeSucceed",
+   [31003] = "onFingerGameInviteAgreeFailed",
 
-   [25002] = "onFingerGameInvite",
-   [25003] = "onFingerGameInviteSucceed",
-   [25004] = "onFingerGameInviteFailed",
+   [32002] = "onFingerGameInviteRefuse",
 
-   [26002] = "onFingerGameInviteAgreeSucceed",
-   [26003] = "onFingerGameInviteAgreeFailed",
+   [33002] = "onFingerGameInviteCancel",
 
-   [27002] = "onFingerGameInviteRefuse",
+   [34002] = "onFingerGameBetSucceed",
+   [34003] = "onFingerGameBetFailed",
 
-   [28002] = "onFingerGameInviteCancel",
+   [35002] = "onFingerGameGuessSucceed",
+   [35003] = "onFingerGameGuessFailed",
+   [35004] = "onFingerGameEndTime",
+   [35005] = "onFingerGameResult",
 }
 
 

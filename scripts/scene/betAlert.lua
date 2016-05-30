@@ -148,11 +148,9 @@ function onBet(ev)
          if tonumber(textInput:getText()) <= 0 then
             alert.create("押注金额必须大于0")
          else
-             if parentModule and parentModule.isYazhu then
-                alert.create("已押注，请勿修改押注金额！")
-             else
-                call("fingerGameBet",math.floor(tonumber(textInput:getText())))
-             end
+             alert.create("指导费直接转至对方账户，确定要支付指导费么？",nil,function()
+                 call(34001,math.floor(tonumber(textInput:getText())))
+             end,nil,"确认","取消")
              event.pushEvent("ON_BET_ALERT_BACK")
          end
       end

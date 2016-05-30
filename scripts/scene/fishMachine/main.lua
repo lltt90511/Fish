@@ -34,10 +34,7 @@ local classicOutSide = {}
 local chatView = nil
 local cdEffectPlaying = false
 local eventHash = {}
-local totalCashGold = 0
-local lastUserGold = 0
-local historyUserGold = {}
-local max_list_y = -350
+-- local historyUserGold = {}
 local isRepeat = false
 local isBet = {}
 local betEndTime = 0
@@ -47,6 +44,7 @@ local isDoBet = false
 local currentUserPage = 0
 local userRankList = {}
 local totalUserNum = 0
+local isRemuse = false
 local resultName = {inside="",outside=""}
 local fishList = {
   [1]={id = 1,name = '大捕获',res = '13',fishType = 0,seqId = 1,multi = 0.0,multiEffect = '8,4,10,2'},
@@ -85,12 +83,12 @@ function create(_parent, _parentModule)
           historyBet[tonumber(list[1])] = tonumber(list[2])
       end
    end
-   if userdata.userFishHistoryGold and userdata.userFishHistoryGold ~= "" then
-      local splitList = splitString(userdata.userFishHistoryGold,",")
-      for k,v in pairs(splitList) do
-          historyUserGold[k] = tonumber(v)
-      end
-   end 
+   -- if userdata.userFishHistoryGold and userdata.userFishHistoryGold ~= "" then
+   --    local splitList = splitString(userdata.userFishHistoryGold,",")
+   --    for k,v in pairs(splitList) do
+   --        historyUserGold[k] = tonumber(v)
+   --    end
+   -- end 
    -- printTable(historyBet)
    -- widget.bottom_bg.rank_list.obj:setItemModel(widget.rank_render.obj)
    -- initClassicOutSide()
@@ -99,7 +97,6 @@ function create(_parent, _parentModule)
    initResult()
    initChatView()
    totalCashGold = 0
-   lastUserGold = 0--userdata.UserInfo.giftGold + userdata.UserInfo.gold
    currentUserPage = 1
    -- widget.bigAward.obj:setVisible(false)
    -- widget.bigAward.obj:setScale(0)
@@ -109,6 +106,7 @@ function create(_parent, _parentModule)
    event.listen("ON_GET_GAME_STATUS",onGetGameStatus)
    event.listen("ON_BET_SUCCEED", onBetSucceed)
    event.listen("ON_BET_FAILED", onBetFailed)
+   event.listen("ON_REMUSE_FROM_BACKGROUND", onRemuseFormBackground)
    -- if userdata.isFirstGame==1 then
    --    widget.bottom_bg.alert.obj:setVisible(true)
    --    alertFunc(widget.bottom_bg.alert.obj)
@@ -116,6 +114,13 @@ function create(_parent, _parentModule)
    --    widget.bottom_bg.alert.obj:setVisible(false)
    -- end
    return this
+end
+
+function onRemuseFormBackground()
+   if not isRemuse then
+      isRemuse = true
+   end
+   call(8001)
 end
 
 function initClassicOutSide()
@@ -147,9 +152,19 @@ function onUpdateGameData(gameData)
    printTable(data)
 end
 
+function hiddenAllLight()
+   for i=1,12 do
+       widget.fish["panel_outside_"..i].light.obj:setVisible(false)
+   end
+   for i=1,6 do
+       widget.fish["panel_inside_"..i].light.obj:setVisible(false)
+   end
+end
+
 function onGetGameStatus(gameData)
    onUpdateGameData(gameData)
    if data.type == 100 then
+      hiddenAllLight()
       changeTouchEnabled(true)
       endNextTimer()
       toNextTime = 10
@@ -161,14 +176,20 @@ function onGetGameStatus(gameData)
       widget.fish.cd_bg.cd.obj:setText(str) 
       widget.bottom.layout.obj:setTouchEnabled(false)
       widget.bottom.layout.obj:setVisible(false)
+      startFishTimer() 
    elseif data.type == 200 then
+      changeTouchEnabled(false)
       widget.fish.cd_bg.cd.obj:setColor(ccc3(204,255,255))
       widget.bottom.layout.obj:setTouchEnabled(true)
       widget.bottom.layout.obj:setVisible(true)
       widget.bottom.layout.text.obj:setText("开奖中......")
       widget.fish.cd_bg.cd.obj:setText("00")
-      playFishEffect()
+      if not isPlaying then
+         playFishEffect()
+      end
    elseif data.type == 201 then
+      -- hiddenAllLight()
+      changeTouchEnabled(false)
       endNextTimer()
       nextTimer = schedule(
          function()
@@ -267,9 +288,11 @@ function initView()
    widget.bottom.bet_btn_bg["btn_"..singleIndex].obj:setTouchEnabled(false)
    widget.bottom.bet_btn_bg["btn_"..singleIndex].obj:setBright(false)
    widget.bottom.bet_btn_bg["btn_"..singleIndex].text.obj:setColor(ccc3(42,25,6))
+   widget.bottom.bet_btn_bg["btn_"..singleIndex].num.obj:setColor(ccc3(42,25,6))
    for i=1,#singleArr do
        if widget.bottom.bet_btn_bg["btn_"..i].obj then
           widget.bottom.bet_btn_bg["btn_"..i].text.obj:setText(singleArr[i])
+          widget.bottom.bet_btn_bg["btn_"..i].num.obj:setText(singleGoldArr[i])
           widget.bottom.bet_btn_bg["btn_"..i].obj:registerEventScript(function(event)
               if event == "releaseUp" then
                  singleIndex = i
@@ -282,10 +305,12 @@ function initView()
                            widget.bottom.bet_btn_bg["btn_"..j].obj:setTouchEnabled(false)
                            widget.bottom.bet_btn_bg["btn_"..j].obj:setBright(false)
                            widget.bottom.bet_btn_bg["btn_"..j].text.obj:setColor(ccc3(42,25,6))
+                           widget.bottom.bet_btn_bg["btn_"..j].num.obj:setColor(ccc3(42,25,6))
                         else
                            widget.bottom.bet_btn_bg["btn_"..j].obj:setTouchEnabled(true)
                            widget.bottom.bet_btn_bg["btn_"..j].obj:setBright(true)
                            widget.bottom.bet_btn_bg["btn_"..j].text.obj:setColor(ccc3(254,177,23))
+                           widget.bottom.bet_btn_bg["btn_"..j].num.obj:setColor(ccc3(254,177,23))
                         end
                      end
                  end
@@ -434,7 +459,7 @@ function doResultAni(id)
                      -- if isBig == true then
                      --    showBigAward()
                      -- end
-                     startFishTimer()
+                     -- startFishTimer()
                   end)
                end)
             end)
@@ -538,6 +563,10 @@ function playCircle(maxNum, name)
    local func = nil
    local cnt = 0
    func = function()
+      if data.type == 100 then
+         endEffect()
+         return
+      end
       widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
       -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(0)
       tool.createEffect(tool.Effect.delay,{time=delay}, widget.fish["panel_"..name.."_"..st].light.obj,
@@ -592,7 +621,7 @@ function playFishEffect()
    endFishTimer()
    isPlaying = true
    changeTouchEnabled(false)
-
+   userdata.isInGame = true
    playCircle(6, "inside")
    playCircle(12, "outside")
 end
@@ -621,7 +650,7 @@ function endEffect()
    if fishList[lastOpenId.outside].id >= 1 and fishList[lastOpenId.outside].id <= 6 then
       doResultAni(fishList[lastOpenId.outside].id)
    else
-      startFishTimer() 
+      -- startFishTimer() 
    end 
    commonTop.registerEvent()
 
@@ -641,6 +670,7 @@ function checkWinResult()
       message.cnt = data.GameResult.c
       message.outside = resultName["outside"]
       message.inside = resultName["inside"]
+      message.time = os.date("*t",tonumber(os.time()))
       -- chat.addSystemMessage(message)
       chat.setMessage(message,1) 
       chat.setMessage(message,3) 
@@ -657,7 +687,6 @@ function checkWinResult()
              end
              resultMsg.type = 1
              resultMsg.name = v.i == userdata.UserInfo.uidx and "你" or v.e
-             resultMsg.time = os.date("*t",tonumber(os.time()))
              resultMsg.id = v.i
              resultMsg.msg = getWinStr(v.m)
              chat.setMessage(resultMsg,1)          
@@ -805,17 +834,6 @@ function bet(id, needGold)
    end
    widget.bottom.bet_bg["bet_"..isBet[id].id].img.obj:setVisible(true)
    widget.bottom.bet_bg["bet_"..isBet[id].id].img.obj:setTouchEnabled(true)
-   -- if not isBet[id] then
-   --    isBet[id] = true
-   -- end
-   -- -- local _needGiftGold = userdata.UserInfo.giftGold < needGold and userdata.UserInfo.giftGold or needGold 
-   -- -- local _needGold = needGold - _needGiftGold
-   -- -- totalCashGold = totalCashGold + _needGold + _needGiftGold
-
-   -- -- userdata.UserInfo.gold = userdata.UserInfo.gold - _needGold
-   -- -- userdata.UserInfo.giftGold = userdata.UserInfo.giftGold - _needGiftGold
-
-   -- userdata.UserInfo.owncash = userdata,UserInfo.owncash - needGold
 
    -- if userdata.isFirstGame == 1 then
    --    userdata.isFirstGame = 0
@@ -939,10 +957,7 @@ function exit()
       userRankList = nil
       starNum = 7
       classicOutSide = {}
-      totalCashGold = 0
-      lastUserGold = 0
-      historyUserGold = {}
-      max_list_y = -350
+      -- historyUserGold = {}
       currentUserPage = 0
       totalUserNum = 0
       singleGoldArr = {}
@@ -1087,18 +1102,22 @@ widget = {
         btn_1 = {
           _type = "Layout",
           text = {_type = "Label"},
+          num = {_type = "Label"},
         },
         btn_2 = {
           _type = "Layout",
           text = {_type = "Label"},
+          num = {_type = "Label"},
         },
         btn_3 = {
           _type = "Layout",
           text = {_type = "Label"},
+          num = {_type = "Label"},
         },
         btn_4 = {
           _type = "Layout",
           text = {_type = "Label"},
+          num = {_type = "Label"},
         },
       },
    },

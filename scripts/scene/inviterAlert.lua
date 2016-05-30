@@ -10,7 +10,7 @@ local eventHash = {}
 local ownerId = 0
 local ownerCharName = ""
 
-function create(_id,_charName)
+function create(data,_scene)
    if not _scene then
       local sceneManager = package.loaded["logic.sceneManager"]
       if sceneManager.currentScene then
@@ -24,12 +24,13 @@ function create(_id,_charName)
       _scene = _scene:getParent()
    end
    if this then this.exit() end
-   ownerId = _id 
-   ownerCharName = _charName
+   ownerId = data._uidx 
+   ownerCharName = data._nickName
    this = tool.loadWidget("cash/inviterAlert",widget)
    _scene:addChild(this,30)
    widget.alert.name.obj:setText(ownerCharName)
-   tool.loadRemoteImage(eventHash, widget.alert.head.icon.obj, ownerId)
+   userdata.CharIdToImageFile[data._uidx] = {file=data._picUrl,sex=data._sex}
+   tool.getUserImage(eventHash, widget.alert.head.icon.obj, ownerId)
    return this
 end
 
@@ -54,7 +55,8 @@ end
 function onTongYi(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call("fingerGameInviteAgree",ownerId)
+      -- call("fingerGameInviteAgree",ownerId)
+      call(31001,ownerId)
       exit()
    end
 end
@@ -62,7 +64,8 @@ end
 function onJujue(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call("fingerGameInviteRefuse",ownerId)
+      -- call("fingerGameInviteRefuse",ownerId)
+      call(32001,ownerId)
       exit()
    end
 end

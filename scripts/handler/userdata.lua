@@ -355,38 +355,39 @@ function onGetPrivateCharListFailed(data)
 
 end
 
-function onFingerGameBetSucceed(gold)
-	event.pushEvent("ON_FINGER_GAME_BET_SUCCEED",gold)
+function onFingerGameBetSucceed(data)
+	userdata.goldAction = true
+	event.pushEvent("ON_FINGER_GAME_BET_SUCCEED",data)
 end
 
 function onFingerGameBetFailed(msg)
-    alert.create(msg)
+	if data and data.msg then
+	   alert.create(data.msg)
+    end
 end
 
-function onFingerGameBetChange(gold)
-	event.pushEvent("ON_FINGER_GAME_BET_CHANGE",gold)
+function onFingerGameGuessSucceed(data)
+	event.pushEvent("ON_FINGER_GAME_GUESS_SUCCEED",data)
 end
 
-function onFingerGameGuessSucceed(type)
-	event.pushEvent("ON_FINGER_GAME_GUESS_SUCCEED",type)
-end
-
-function onFingerGameGuessFailed(msg)
-    alert.create(msg)
+function onFingerGameGuessFailed(data)
+	if data and data.msg then
+	   alert.create(data.msg)
+    end
 	event.pushEvent("ON_FINGER_GAME_GUESS_FAILED")
 end
 
-function onFingerGameEndTime(endTime)
-	event.pushEvent("ON_FINGER_GAME_ENDTIME",endTime)
+function onFingerGameEndTime(data)
+	event.pushEvent("ON_FINGER_GAME_ENDTIME")
 end
 
-function onFingerGameResult(fingerInfo)
-	event.pushEvent("ON_FINGER_GAME_RESULT",fingerInfo)
+function onFingerGameResult(data)
+	event.pushEvent("ON_FINGER_GAME_RESULT",data)
 end
 
-function onFingerGameInvite(ownerId,ownerCharName)
+function onFingerGameInvite(data)
 	-- event.pushEvent("ON_FINGER_GAME_INVITE",ownerId,ownerCharName)
-	inviterAlert.create(ownerId,ownerCharName)
+	inviterAlert.create(data.user)
 end
 
 function onFingerGameInviteSucceed(invitorId,invitorCharName)
@@ -394,13 +395,15 @@ function onFingerGameInviteSucceed(invitorId,invitorCharName)
 	waitInviterAlert.create()
 end
 
-function onFingerGameInviteFailed(msg)
-    alert.create(msg)
+function onFingerGameInviteFailed(data)
+    if data and data.msg then
+       alert.create(data.msg)
+    end
 end
 
-function onFingerGameInviteAgreeSucceed(fingerInfo)
+function onFingerGameInviteAgreeSucceed(data)
 	local moraGame = package.loaded["scene.moraGame"]
-    moraGame.initData(fingerInfo)
+    moraGame.initData(data)
     if waitInviterAlert.this then
        waitInviterAlert.exit()
     end
@@ -411,21 +414,29 @@ function onFingerGameInviteAgreeSucceed(fingerInfo)
     event.pushEvent("ON_FINGER_GAME_INVITE_AGREE_SUCCEED")
 end
 
-function onFingerGameInviteAgreeFailed(msg)
-    alert.create(msg)
+function onFingerGameInviteAgreeFailed(data)
+	if data and data.msg then
+       alert.create(data.msg)
+	end
 end
 
-function onFingerGameInviteRefuse(invitorId,invitorCharName)
+function onFingerGameInviteRefuse(data)
 	-- event.pushEvent("ON_FINGER_GAME_INVITE_REFUSE",invitorId,invitorCharName)
-    alert.create("玩家"..invitorCharName.."拒绝了您的邀请！")
+	print("onFingerGameInviteRefuse!!!!!!!!!!!!!!!!!!!")
+	if data and data.msg then
+       alert.create(data.msg)
+	end
     if waitInviterAlert.this then
        waitInviterAlert.exit()	
     end
 end
 
-function onFingerGameInviteCancel(ownerId,ownerCharName)
+function onFingerGameInviteCancel(data)
 	-- event.pushEvent("ON_FINGER_GAME_INVITE_CANCEL",ownerId,ownerCharName)
-    alert.create("玩家"..ownerCharName.."取消了邀请！")
+	print("onFingerGameInviteCancel!!!!!!!!!!!!!!!!!!!")
+	if data and data.msg then
+       alert.create(data.msg)
+	end
     if inviterAlert.this then
        inviterAlert.exit()	
     end
@@ -489,9 +500,12 @@ function onGetCharmFailed(data)
 end
 
 function onUserOperateSucceed(data)
-	if data and data.msg then
-	   alert.create(data.msg)
+	if data then
+	   if data.toU._uidx == userdata.UserInfo.uidx then
+	   	  alert.create("你".."被"..data.fromU._nickName..data.msg,nil,nil,nil,nil,nil,true)
+	   end
 	end
+	event.pushEvent("ON_USER_OPERATE_SUCCEED",data)
 end
 
 function onUserOperateFailed(data)

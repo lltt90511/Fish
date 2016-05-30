@@ -9,20 +9,27 @@
   <JsonList>
     <string>about.json</string>
     <string>activity.json</string>
+    <string>betAlert.json</string>
     <string>binding.json</string>
     <string>charge.json</string>
+    <string>chargeAlert.json</string>
     <string>charge_alert.json</string>
     <string>chat.json</string>
     <string>chatHistory.json</string>
     <string>chatPrivate.json</string>
     <string>common_top.json</string>
+    <string>exchange.json</string>
+    <string>fish_machine.json</string>
     <string>fruit_machine.json</string>
+    <string>inviterAlert.json</string>
+    <string>loading.json</string>
     <string>loginGift.json</string>
     <string>login_alert.json</string>
     <string>login_scene.json</string>
     <string>lottery.json</string>
     <string>mail.json</string>
     <string>main_scene.json</string>
+    <string>moraGame.json</string>
     <string>quitAlert.json</string>
     <string>Rank.json</string>
     <string>receive.json</string>
@@ -32,16 +39,9 @@
     <string>setting.json</string>
     <string>start.json</string>
     <string>tree.json</string>
-    <string>vip.json</string>
-    <string>inviterAlert.json</string>
-    <string>betAlert.json</string>
-    <string>moraGame.json</string>
-    <string>waitInviterAlert.json</string>
-    <string>loading.json</string>
-    <string>fish_machine.json</string>
-    <string>exchange.json</string>
     <string>userAlert.json</string>
-    <string>chargeAlert.json</string>
+    <string>vip.json</string>
+    <string>waitInviterAlert.json</string>
   </JsonList>
   <CanvasSize>
     <Width>1080</Width>
@@ -51,22 +51,7 @@
   <ProjectType>UIProject</ProjectType>
   <ResRelativePath />
   <imageFileList />
-  <imagePngList>
-    <string>qietu/alert/charge_bg.png</string>
-    <string>qietu/alert/top.png</string>
-    <string>qietu/alert/close1.png</string>
-    <string>qietu/alert/close2.png</string>
-    <string>qietu/alert/bar.png</string>
-    <string>qietu/alert/bg2.png</string>
-    <string>qietu/alert/line.png</string>
-    <string>qietu/alert/bg1.png</string>
-    <string>qietu/alert/charge1.png</string>
-    <string>qietu/alert/charge2.png</string>
-    <string>qietu/chat/inpit2.png</string>
-    <string>qietu/alert/pay1.png</string>
-    <string>qietu/alert/pay2.png</string>
-    <string>qietu/paiming/zsbg.png</string>
-  </imagePngList>
+  <imagePngList />
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>chat.json</CurrentUIJson>
+  <CurrentUIJson />
 </UIProject>

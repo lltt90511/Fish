@@ -302,8 +302,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 		switch (pKeyCode) {
 			case KeyEvent.KEYCODE_BACK:
 				Log.d("onKeyDown:",String.valueOf(pKeyCode));
-				//handleOnBack();
-				OnExit();
+				handleOnBack();
+//				OnExit();
 				return true;
 			case KeyEvent.KEYCODE_MENU:
 				this.queueEvent(new Runnable() {

@@ -11,13 +11,11 @@
   "designWidth": 1080,
   "textures": [],
   "texturesPng": [
-    "qietu/tymb/daBox.png",
-    "qietu/tymb/guanbiBt01.png",
-    "qietu/tymb/guanbiBt02.png",
-    "qietu/tymb/mbText10.png",
-    "qietu/tymb/nrBar01.png",
-    "qietu/tymb/changBt01.png",
-    "qietu/tymb/changBt02.png"
+    "qietu/top/head.png",
+    "GUI/image.png",
+    "qietu/user/v0.png",
+    "qietu/chat/userBtn1.png",
+    "qietu/chat/userBtn2.png"
   ],
   "version": "1.6.0.0",
   "widgetTree": {

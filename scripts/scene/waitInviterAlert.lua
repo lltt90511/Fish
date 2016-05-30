@@ -7,7 +7,7 @@ module("scene.waitInviterAlert", package.seeall)
 
 this = nil
 
-function create()
+function create(_scene)
 	if not _scene then
       local sceneManager = package.loaded["logic.sceneManager"]
       if sceneManager.currentScene then
@@ -36,7 +36,7 @@ end
 function onQuxiao(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call("fingerGameInviteCancel")
+      call(33001)
       exit()
    end
 end

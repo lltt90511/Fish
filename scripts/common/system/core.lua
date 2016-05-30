@@ -1,5 +1,6 @@
 require "common.util.string"
 require "common.util.table"
+local event = require"logic.event"
 local map = {}
 function logServer( info )
 	local http = package.loaded['logic.http']
@@ -140,6 +141,7 @@ end
 
 function onRemuseFormBackground()
 	print ("#########onRemuseFormBackground")
+	event.pushEvent("ON_REMUSE_FROM_BACKGROUND")
 end
 regListner("onRemuseFormBackground",onRemuseFormBackground)
 

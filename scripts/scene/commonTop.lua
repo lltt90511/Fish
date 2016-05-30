@@ -100,7 +100,7 @@ function onChangeGold()
 end
 
 function onChangeVip()
-   widget.top.vip_bg.vip.num.obj:setStringValue(userdata.UserInfo.viplevel)
+   widget.top.vip.obj:loadTexture("cash/qietu/user/v"..userdata.UserInfo.uGrade..".png")
 end
 
 function onRecharge(event)
@@ -189,13 +189,7 @@ widget = {
          _type = "ImageView",
          name = {_type = "Label"},
       },
-      vip_bg = {
-         _type = "ImageView",
-         vip = {
-            _type = "ImageView",
-            num = {_type = "LabelAtlas"},
-         },      
-      },
+      vip = {_type = "ImageView"},    
       head = {
          _type = "ImageView",
          icon = {_type = "ImageView"},

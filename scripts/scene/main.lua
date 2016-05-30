@@ -307,8 +307,8 @@ function initView()
       unSchedule(freeGoldTimer)
       freeGoldTimer = nil
    end
-   freeGoldTimer = schedule(scheduleFunc,1)
-   scheduleFunc()
+   -- freeGoldTimer = schedule(scheduleFunc,1)
+   -- scheduleFunc()
    -- setMailPaoNum()
    -- call("getQuestCountList")
    -- call("getPrivateCharList")
@@ -317,6 +317,8 @@ function initView()
    widget.top_btn_list.youjian.pao.obj:setVisible(false)
    widget.top_btn_list.choujiang.pao.obj:setVisible(false)
    widget.top_btn_list.jiangli.pao.obj:setVisible(false)
+   widget.top.btn_lingqu.obj:setVisible(false)
+   widget.top.btn_lingqu.obj:setTouchEnabled(false)
 end
 
 function cleanEvent()
@@ -949,6 +951,23 @@ middleList ={
   --       createSubWidget(widgetID.gameLoading)
   --       call("enterGame", 0)
   -- end},
+  {img = "image/game01.png",call = function ()
+        tool.buttonSound("releaseUp","effect_12")
+        if settingVis then
+           -- switchSetting()
+           settingVis = false
+           widget.bottom.setting_panel.obj:setVisible(false)
+           for i=1,settingMax do
+               widget.bottom.setting_panel['btn'..i].obj:setTouchEnabled(false)
+               widget.bottom.setting_panel['btn'..i].pos = tool.getPosition(widget.bottom.setting_panel['btn'..i].obj)
+           end
+           currenScene = nil
+           switchBottomBright("dating")
+        end
+        -- gameLoading.gameTitle = 2
+        -- createSubWidget(widgetID.gameLoading)
+        call(6001, 2)--初级
+  end},
   {img = "image/game02.png",call = function ()
         tool.buttonSound("releaseUp","effect_12")
         if settingVis then
@@ -964,25 +983,25 @@ middleList ={
         end
         -- gameLoading.gameTitle = 2
         -- createSubWidget(widgetID.gameLoading)
-        call(6001, 1)
+        call(6001, 1)--高级
   end},
-  -- {img = "image/game03.png",call = function ()
-  --       tool.buttonSound("releaseUp","effect_12")
-  --       if settingVis then
-  --          -- switchSetting()
-  --          settingVis = false
-  --          widget.bottom.setting_panel.obj:setVisible(false)
-  --          for i=1,settingMax do
-  --              widget.bottom.setting_panel['btn'..i].obj:setTouchEnabled(false)
-  --              widget.bottom.setting_panel['btn'..i].pos = tool.getPosition(widget.bottom.setting_panel['btn'..i].obj)
-  --          end
-  --          currenScene = nil
-  --          switchBottomBright("dating")
-  --       end
-  --       gameLoading.gameTitle = 3
-  --       createSubWidget(widgetID.gameLoading)
-  --       call("enterGame", 3)
-  -- end},
+  {img = "image/game03.png",call = function ()
+        tool.buttonSound("releaseUp","effect_12")
+        if settingVis then
+           -- switchSetting()
+           settingVis = false
+           widget.bottom.setting_panel.obj:setVisible(false)
+           for i=1,settingMax do
+               widget.bottom.setting_panel['btn'..i].obj:setTouchEnabled(false)
+               widget.bottom.setting_panel['btn'..i].pos = tool.getPosition(widget.bottom.setting_panel['btn'..i].obj)
+           end
+           currenScene = nil
+           switchBottomBright("dating")
+        end
+        -- gameLoading.gameTitle = 3
+        -- createSubWidget(widgetID.gameLoading)
+        call(6001, 10)
+  end},
 
 }
 
@@ -1036,7 +1055,7 @@ function initTop()
   widget.top.name.obj:setText(userdata.UserInfo.nickName)
   widget.top.gold.gold_num.obj:setStringValue(userdata.UserInfo.owncash)
   -- local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-  widget.top.vip.vip_num.obj:setStringValue(userdata.UserInfo.viplevel)
+  widget.top.vip.obj:loadTexture("cash/qietu/user/v"..userdata.UserInfo.uGrade..".png")
 end
 function initTips()
   local mailNum = 0
@@ -1281,9 +1300,7 @@ widget = {
    _ignore = true,
    bg = {_type = "ImageView"},
    top = {_type = "ImageView",
-     vip = {_type = "ImageView",
-        vip_num = {_type = "LabelAtlas"},
-     },
+     vip = {_type = "ImageView"},
      name = {_type = "Label"},
      gold = {_type = "ImageView",
         gold_num = {_type = "LabelAtlas"},

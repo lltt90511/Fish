@@ -11,20 +11,11 @@
   "designWidth": 1080,
   "textures": [],
   "texturesPng": [
-    "qietu/alert/charge_bg.png",
-    "qietu/alert/top.png",
-    "qietu/alert/close1.png",
-    "qietu/alert/close2.png",
-    "qietu/alert/bar.png",
-    "qietu/alert/bg2.png",
-    "qietu/alert/line.png",
-    "qietu/alert/bg1.png",
-    "qietu/alert/charge1.png",
-    "qietu/alert/charge2.png",
-    "qietu/chat/inpit2.png",
-    "qietu/alert/pay1.png",
-    "qietu/alert/pay2.png",
-    "qietu/paiming/zsbg.png"
+    "qietu/top/head.png",
+    "GUI/image.png",
+    "qietu/user/v0.png",
+    "qietu/chat/userBtn1.png",
+    "qietu/chat/userBtn2.png"
   ],
   "version": "1.6.0.0",
   "widgetTree": {

@@ -1,6 +1,7 @@
+local tool = require"logic.tool"
 module("scene.alert", package.seeall)
 this = nil
-function create(str,_scene,_okFunc,_cancelFunc,_okStr,_cancelStr)
+function create(str,_scene,_okFunc,_cancelFunc,_okStr,_cancelStr,isHide)
 	if not _scene then
 		 local sceneManager = package.loaded["logic.sceneManager"]
 		  if sceneManager.currentScene then
@@ -121,6 +122,11 @@ function create(str,_scene,_okFunc,_cancelFunc,_okStr,_cancelStr)
 	bg:addChild(cancel,4)
 	_scene:addChild(this,31)
 	
+	if type(isHide) == type(true) and isHide == true then
+	   performWithDelay(function()
+	     this.exit()
+	   end,1.0)
+	end
 	this.exit = function()
 		if this then
 			layout = nil

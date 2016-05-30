@@ -11,7 +11,7 @@
   "designWidth": 1080,
   "textures": [],
   "texturesPng": [
-    "qietu/mora/alert.png",
+    "qietu/tymb/xiaoBox.png",
     "qietu/mora/yaoqingzhong.png",
     "qietu/mora/quxiao.png"
   ],
@@ -184,7 +184,7 @@
           "touchAble": false,
           "useMergedTexture": false,
           "visible": true,
-          "width": 1014,
+          "width": 1080,
           "x": 540,
           "y": 960,
           "capInsetsHeight": 1,
@@ -193,13 +193,13 @@
           "capInsetsY": 0,
           "fileName": null,
           "fileNameData": {
-            "path": "qietu/mora/alert.png",
+            "path": "qietu/tymb/xiaoBox.png",
             "plistFile": "",
             "resourceType": 0
           },
           "scale9Enable": false,
           "scale9Height": 644,
-          "scale9Width": 1014
+          "scale9Width": 1080
         }
       }
     ],

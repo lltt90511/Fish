@@ -31,7 +31,7 @@ local mineSelect = nil
 local countDownTimer = nil
 local isCountDown = false
 local hasGuess = false
-isYazhu = false
+local hasOtherGuess = false
 local needChangeGold = 0
 
 function create(_parent,_parentModule)
@@ -44,37 +44,30 @@ function create(_parent,_parentModule)
    initView()
    initEditBox()
    showOrHideAlert(1,false)
-   showOrHideAlert(2,false)
-   showOrHideAlert(3,false)
-   if data.gold then
-      setYazhuGold(data.gold)
-   else
-      setYazhuGold(0)
-   end
-   onFingerGameInviteAgreeSucceed()
+   -- onFingerGameInviteAgreeSucceed()
    widget.bg.yazhu.obj:setVisible(false)
    widget.bg.yazhu.obj:setTouchEnabled(false)
-   if tonumber(data.ownerId) == userdata.UserInfo.id or tonumber(data.ownerId) == userdata.UserInfo.charId then
-      local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-      if vipLv >= 6 then
+   -- if tonumber(data.ownerId) == userdata.UserInfo.id or tonumber(data.ownerId) == userdata.UserInfo.charId then
+   --    local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+   --    if vipLv >= 6 then
+   --       widget.bg.yaoqing.obj:setVisible(true)
+   --       widget.bg.yaoqing.obj:setTouchEnabled(true)
+   --    end 
+   --    betAlert.create(this)
+   -- else
+   --    widget.bg.yaoqing.obj:setVisible(false)
+   --    widget.bg.yaoqing.obj:setTouchEnabled(false)
+   --    setMineTouchEnabled(true)
+   -- end
          widget.bg.yaoqing.obj:setVisible(true)
          widget.bg.yaoqing.obj:setTouchEnabled(true)
-      end 
-      betAlert.create(this)
-   else
-      widget.bg.yaoqing.obj:setVisible(false)
-      widget.bg.yaoqing.obj:setTouchEnabled(false)
-      setMineTouchEnabled(true)
-   end
-   if inviterId and inviterId > 0 then
-      call("fingerGameInvite",tostring(inviterId)) 
-   end
+   -- if inviterId and inviterId > 0 then
+   --    call("fingerGameInvite",tostring(inviterId)) 
+   -- end
    -- local ps = CCParticleSystemQuad:create("ani/jinbi1.plist")
    -- ps:setPosition(ccp(Screen.width/2,Screen.height/2))
    -- this:addNode(ps)
-   widget.bg.jieguo_layout.obj:setOpacity(0)
    event.listen("ON_FINGER_GAME_BET_SUCCEED",onFingerGameBetSucceed)
-   event.listen("ON_FINGER_GAME_BET_CHANGE",onFingerGameBetChange)
    event.listen("ON_FINGER_GAME_GUESS_SUCCEED",onFingerGameGuessSucceed)
    event.listen("ON_FINGER_GAME_GUESS_FAILED",onFingerGameGuessFailed)
    event.listen("ON_FINGER_GAME_ENDTIME",onFingerGameEndTime)
@@ -84,13 +77,12 @@ function create(_parent,_parentModule)
    return this
 end
 
-function initData(fingerInfo)
+function initData(_data)
    -- printTable(fingerInfo)
    data = {}
-   for k,v in pairs(fingerInfo) do
+   for k,v in pairs(_data) do
        data[k] = v
    end
-   printTable(data)
 end
 
 function initView()
@@ -141,7 +133,7 @@ function initEditBox()
                i = i+1
                cnt = cnt + 1
             end
-            if cnt > 21 then
+            if cnt > 20 then
                alert.create("文字太长，超过输入限制")
                textInput:setText("")
                return
@@ -217,92 +209,53 @@ function onFlyGold(flag,gold,func)
    end
 end
 
-function onFingerGameBetSucceed(gold)
-   -- print("-----------------==")
-   -- printTable(data)
-   if (userdata.UserInfo.id == tonumber(data.ownerId) or userdata.UserInfo.charId == tonumber(data.ownerId)) and tonumber(data.targetId) ~= -1 then
-      showOrHideAlert(2,true)
-   end
-   setYazhuGold(gold)
+function onFingerGameBetSucceed(_data)
+   print("onFingerGameBetSucceed!!!!!!!!!!!!!!!!!!!!!!!!!!")
    if betAlert.this then
       betAlert.exit()
    end
-end
-
-function onFingerGameBetChange(gold)
-   if gold > 0 then
-      if userdata.UserInfo.id == tonumber(data.ownerId) or userdata.UserInfo.charId == tonumber(data.ownerId) then
-         if gold ~= data.gold then
-            setYazhuGold(gold)
-            alert.create("对方拒绝您修改的押注金额!押注金额已被重置")
-         end
-         showOrHideAlert(2,false)
-      else
-         alert.create("对方修改了押注金额!当前押注金额"..gold.."!是否同意？",nil,function()
-            setYazhuGold(gold)
-            call("fingerGameBet",data.gold)
-         end,function()
-            if data.gold == 0 then
-               needChangeGold = gold
-               AudioEngine.playEffect("effect_06")
-               showOrHideAlert(3,true)
-               -- tool.createEffect(tool.Effect.delay,{time = 0.5},widget.obj,function()
-               --    alert.create("如果此时拒绝将直接离开游戏，是否拒绝？",nil,function()
-               --       setYazhuGold(gold)
-               --       call("fingerGameBet",data.gold)
-               --    end,function()
-               --       call("leaveGame")
-               --    end,"继续游戏","直接拒绝")
-               -- end)
-            else
-               call("fingerGameBet",data.gold)
-            end
-         end,"同意","拒绝")
+   local flag = false
+   local gold = 0
+   if _data.fromidx == userdata.UserInfo.uidx then
+      if userdata.UserInfo.owncash < _data.mfrom then
+         flag = true
       end
-   else
-      if isYazhu then
-         isYazhu = false
+      gold = _data.mto
+      userdata.UserInfo.owncash = _data.mfrom
+   elseif _data.toidx == userdata.UserInfo.uidx then
+      if userdata.UserInfo.owncash < _data.mto then
+         flag = true
       end
-      setYazhuGold(gold)
-      if userdata.UserInfo.id == tonumber(data.targetId) or userdata.UserInfo.charId == tonumber(data.targetId) then 
-         alert.create("押注金比数超出玩家金币数，已重设")
-      end
+      gold = _data.mfrom
+      userdata.UserInfo.owncash = _data.mto
    end
-end 
-
-function setYazhuGold(gold)
-   data.gold = gold
-   widget.bg.yazhu_layout.yazhu_num.obj:setStringValue(gold)
-   local panel = widget.bg.yazhu_layout
-   local panelSize = panel.obj:getSize()
-   panel.obj:setSize(CCSize(panel.yazhu.obj:getSize().width+panel.yazhu_num.obj:getSize().width+panel.jinbi.obj:getSize().width,panelSize.height))
-   panel.obj:setPositionX(Screen.width/2-panel.obj:getSize().width/2)
+   onFlyGold(flag,gold)
 end
 
-function onFingerGameGuessSucceed(type)
+function onFingerGameGuessSucceed(_data)
    if widget.bg.countDown.obj:isVisible() then
       widget.bg.countDown.obj:setVisible(false)
    end
-   if countDownTime > 3 then
-      setMineTouchEnabled(true)
+   -- if countDownTime > 3 then
+   --    setMineTouchEnabled(true)
+   -- end
+   if not hasOtherGuess then
+      onFingerGameEndTime()
    end
-   widget.bg.mine_shitou.btn.obj:setBright(type~=0)
-   widget.bg.mine_jiandao.btn.obj:setBright(type~=1)
-   widget.bg.mine_bu.btn.obj:setBright(type~=2)
+   setMineTouchEnabled(false)
+   widget.bg.mine_shitou.btn.obj:setBright(tonumber(_data.msg)~=0)
+   widget.bg.mine_jiandao.btn.obj:setBright(tonumber(_data.msg)~=1)
+   widget.bg.mine_bu.btn.obj:setBright(tonumber(_data.msg)~=2)
 end
 
 function onFingerGameGuessFailed()
    if hasGuess then
       hasGuess = false
    end
-   if isYazhu then
-      isYazhu = false
-   end
    setMineTouchEnabled(true)
 end
 
-function onFingerGameEndTime(endTime)
-   data.endTime = endTime
+function onFingerGameEndTime()
    widget.bg.countDown.image.num.obj:setStringValue(countDownTime)
    if countDownTime > 0 then
       widget.bg.countDown.obj:setVisible(true)
@@ -312,17 +265,17 @@ function onFingerGameEndTime(endTime)
       isCountDown = true
       beginCountDown()
    end
-   if not isYazhu then
-      isYazhu = true
+   if not hasOtherGuess then
+      hasOtherGuess = true
    end
 end
 
-function onFingerGameResult(fingerInfo)
-   data = {}
-   -- printTable(fingerInfo)
-   for k,v in pairs(fingerInfo) do
-       data[k] = v
-   end
+function onFingerGameResult(_data)
+   -- data = {}
+   -- -- printTable(fingerInfo)
+   -- for k,v in pairs(fingerInfo) do
+   --     data[k] = v
+   -- end
    -- printTable(data)
    setMineTouchEnabled(false)
    if countDownTimer then
@@ -337,48 +290,32 @@ function onFingerGameResult(fingerInfo)
    local otherId = 0
    local otherGuess = -1
    local mineGuess = -1
-   if userdata.UserInfo.id == tonumber(data.targetId) or userdata.UserInfo.charId == tonumber(data.targetId) then
-      otherGuess = tonumber(data.ownerGuess)
-      mineGuess = tonumber(data.targetGuess)
-      gold = data.ownerGold
-      otherId = tonumber(data.ownerId)
-   elseif userdata.UserInfo.id == tonumber(data.ownerId) or userdata.UserInfo.charId == tonumber(data.ownerId) then
-      otherGuess = tonumber(data.targetGuess)
-      mineGuess = tonumber(data.ownerGuess)
-      gold = data.targetGold
-      otherId = tonumber(data.targetId)
+   local isS1 = false
+   if userdata.UserInfo.uidx == tonumber(_data.s1) then
+      otherGuess = tonumber(_data.s2Res)
+      mineGuess = tonumber(_data.s1Res)
+      otherId = tonumber(_data.s2)
+      isS1 = true
+   elseif userdata.UserInfo.uidx == tonumber(_data.s2) then
+      otherGuess = tonumber(_data.s1Res)
+      mineGuess = tonumber(_data.s2Res)
+      otherId = tonumber(_data.s1)
    end
-   if tonumber(data.ownerGuess) == tonumber(data.targetGuess) then
+   if mineGuess == otherGuess then
       winOrLost = 1
    else
-      if userdata.UserInfo.id == tonumber(data.targetId) or userdata.UserInfo.charId == tonumber(data.targetId) then
-         if tonumber(data.ownerGuess) == 2 and tonumber(data.targetGuess) == 0 then
-            winOrLost = 0
-         elseif (tonumber(data.ownerGuess) == 0 and tonumber(data.targetGuess) == 2) or tonumber(data.ownerGuess) > tonumber(data.targetGuess) then
-            winOrLost = 2
-         else
-            winOrLost = 0
-         end
-      elseif userdata.UserInfo.id == tonumber(data.ownerId) or userdata.UserInfo.charId == tonumber(data.ownerId) then
-         if tonumber(data.ownerGuess) == 0 and tonumber(data.targetGuess) == 2 then
-            winOrLost = 0
-         elseif (tonumber(data.ownerGuess) == 2 and tonumber(data.targetGuess) == 0) or tonumber(data.ownerGuess) < tonumber(data.targetGuess) then
+      if mineGuess == 2 and otherGuess == 0 then
+         winOrLost = 2
+      elseif mineGuess == 0 and otherGuess == 2 then
+         winOrLost = 0
+      else
+         if mineGuess < otherGuess then
             winOrLost = 2
          else
             winOrLost = 0
          end
       end
    end
-   local panel = widget.bg.jieguo_layout
-   local panelSize = panel.obj:getSize()
-   if winOrLost == 0 then
-      panel.label.obj:setText("您输掉了")
-   elseif winOrLost == 2 then
-      panel.label.obj:setText("您赢得了")
-   end
-   panel.num.obj:setStringValue(data.gold)
-   panel.obj:setSize(CCSize(panel.label.obj:getSize().width+panel.num.obj:getSize().width+panel.image.obj:getSize().width,panelSize.height))
-   panel.obj:setPositionX(Screen.width/2-panel.obj:getSize().width/2)
    if otherId == -1 then
       widget.bg.other.image.obj:loadTexture("cash/qietu/mora/wenhao.png")
    end
@@ -414,31 +351,17 @@ function onFingerGameResult(fingerInfo)
       elseif winOrLost == 2 then
          AudioEngine.playEffect("effect_09")
       end     
-      if winOrLost ~= 1 then
-         tool.createEffect(tool.Effect.fadeIn,{time = 0.5,easeIn = true},widget.bg.jieguo_layout.obj,function()
-            tool.createEffect(tool.Effect.delay,{time = 1.0},widget.bg.jieguo_layout.obj,function()
-               tool.createEffect(tool.Effect.fadeOut,{time = 0.5,easeIn = true},widget.bg.jieguo_layout.obj)
-            end)
-         end)
-      end
+      -- if winOrLost ~= 1 then
+      --    tool.createEffect(tool.Effect.fadeIn,{time = 0.5,easeIn = true},widget.bg.jieguo_layout.obj,function()
+      --       tool.createEffect(tool.Effect.delay,{time = 1.0},widget.bg.jieguo_layout.obj,function()
+      --          tool.createEffect(tool.Effect.fadeOut,{time = 0.5,easeIn = true},widget.bg.jieguo_layout.obj)
+      --       end)
+      --    end)
+      -- end
       tool.createEffect(tool.Effect.scale,{time = 0.2,scale = 1.2},widget.bg.result.obj,function()
          tool.createEffect(tool.Effect.scale,{time = 0.15,scale = 1.0},widget.bg.result.obj,function()
             tool.createEffect(tool.Effect.scale,{time = 0.1,scale = 1.05},widget.bg.result.obj,function()
                tool.createEffect(tool.Effect.scale,{time = 0.05,scale = 1.0},widget.bg.result.obj,function()
-                  if otherId > 0 then
-                     if winOrLost ~= 1 then
-                        onFlyGold(winOrLost==2,gold)
-                     end
-                  else
-                     userdata.goldAction = false
-                     if commonTop.onChangeGold then
-                        commonTop.onChangeGold()
-                     end
-                     local mainScene = package.loaded["scene.main"]
-                     if mainScene.this and mainScene.initTop then
-                        mainScene.initTop()
-                     end
-                  end
                   tool.createEffect(tool.Effect.delay,{time = 1.0},widget.bg.result.obj,function()
                      tool.createEffect(tool.Effect.fadeOut,{time = 0.5,easeIn = true},widget.bg.result.obj)  
                      tool.createEffect(tool.Effect.fadeOut,{time = 0.5,easeIn = true},widget.bg.other.image.obj,function()
@@ -459,9 +382,7 @@ function onFingerGameResult(fingerInfo)
                               countDownTime = 10
                               isCountDown = false
                               hasGuess = false
-                              isYazhu = false
-                              data.ownerGuess = -1
-                              data.targetGuess = -1
+                              hasOtherGuess = false
                               setMineTouchEnabled(true)
                            end)
                         end)
@@ -527,24 +448,19 @@ function onFingerGameResult(fingerInfo)
 end
 
 function onFingerGameInviteAgreeSucceed()
-   local id = 0
-   local name = nil
-   local gold = nil
+   if not data.user then return end
+   local id = data.user._uidx
+   local name = data.user._nickName
+   local gold = data.gold
    -- printTable(data)
+   widget.bg.yazhu.obj:setVisible(true)
+   widget.bg.yazhu.obj:setTouchEnabled(true)
    widget.bg.yaoqing.obj:setVisible(false)
    widget.bg.yaoqing.obj:setTouchEnabled(false)
-   if tonumber(data.ownerId) == userdata.UserInfo.id or tonumber(data.ownerId) == userdata.UserInfo.charId then
-      id = tonumber(data.targetId)
-      name = data.targetCharName
-      gold = data.targetGold
-   elseif tonumber(data.targetId) == userdata.UserInfo.id or tonumber(data.targetId) == userdata.UserInfo.charId then
-      id = tonumber(data.ownerId) 
-      name = data.ownerCharName
-      gold = data.ownerGold
-   end
    if id and id > 0 then
       widget.bg.head.obj:setVisible(true)
-      tool.loadRemoteImage(eventHash, widget.bg.head.icon.obj, id)
+      userdata.CharIdToImageFile[data.user._uidx] = {file=data.user._picUrl,sex=data.user._sex}
+      tool.getUserImage(eventHash, widget.bg.head.icon.obj, id)
       if name then
          widget.bg.name.obj:setVisible(true)
          widget.bg.name.obj:setText(name)
@@ -558,10 +474,10 @@ function onFingerGameInviteAgreeSucceed()
 end
 
 function onBetAlertBack()
-   if not widget.bg.yazhu.obj:isVisible() then
-      widget.bg.yazhu.obj:setVisible(true)
-      widget.bg.yazhu.obj:setTouchEnabled(true)
-   end
+   -- if not widget.bg.yazhu.obj:isVisible() then
+   --    widget.bg.yazhu.obj:setVisible(true)
+   --    widget.bg.yazhu.obj:setTouchEnabled(true)
+   -- end
 end
 
 function beginCountDown()
@@ -601,12 +517,6 @@ function showOrHideAlert(type,flag)
       widget.bg.alert_layout.alert.input.obj:setTouchEnabled(flag)
       widget.bg.alert_layout.alert.queding.obj:setTouchEnabled(flag)
       widget.bg.alert_layout.alert.back.obj:setTouchEnabled(flag)
-   elseif type == 2 then
-      widget.bg.alert_layout.waitChange.obj:setVisible(flag)
-   elseif type == 3 then
-      widget.bg.alert_layout.refuse.obj:setVisible(flag)
-      widget.bg.alert_layout.refuse.jixu.obj:setTouchEnabled(flag)
-      widget.bg.alert_layout.refuse.likai.obj:setTouchEnabled(flag)
    end
 end
 
@@ -632,7 +542,6 @@ end
 function exit()
    if this then
       event.unListen("ON_FINGER_GAME_BET_SUCCEED",onFingerGameBetSucceed)
-      event.unListen("ON_FINGER_GAME_BET_CHANGE",onFingerGameBetChange)
       event.unListen("ON_FINGER_GAME_GUESS_SUCCEED",onFingerGameGuessSucceed)
       event.unListen("ON_FINGER_GAME_GUESS_FAILED",onFingerGameGuessFailed)
       event.unListen("ON_FINGER_GAME_ENDTIME",onFingerGameEndTime)
@@ -653,7 +562,7 @@ function exit()
       mineSelect = nil
       isCountDown = false
       hasGuess = false
-      isYazhu = false
+      hasOtherGuess = false
       needChangeGold = 0
       if goldTimer then
          unSchedule(goldTimer)
@@ -680,29 +589,26 @@ end
 function onInviter(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      if data.gold == 0 then
-         alert.create("请先押注!",nil,function()
-             betAlert.create(this,package.loaded["scene.moraGame"])
-         end,nil,"去押注","再等等")
-      else
-         local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
-         if vipLv < 6 then
-            alert.create("VIP6才能邀请玩家！")
-         else
-            showOrHideAlert(1,true)
-         end
-      end
+      -- if data.gold == 0 then
+      --    alert.create("请先押注!",nil,function()
+      --        betAlert.create(this,package.loaded["scene.moraGame"])
+      --    end,nil,"去押注","再等等")
+      -- else
+      --    local vipLv = countLv.getVipLv(userdata.UserInfo.vipExp)
+      --    if vipLv < 6 then
+      --       alert.create("VIP6才能邀请玩家！")
+      --    else
+      --       showOrHideAlert(1,true)
+      --    end
+      -- end
+      showOrHideAlert(1,true)
    end
 end
 
 function onBet(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      if isYazhu then
-         alert.create("已押注，请勿修改押注金额！")
-      else
-         betAlert.create(this,package.loaded["scene.moraGame"])
-      end
+      betAlert.create(this,package.loaded["scene.moraGame"])
    end
 end
 
@@ -729,9 +635,6 @@ function onGuess(guessType)
    if not hasGuess then
       hasGuess = true
    end
-   if not isYazhu then
-      isYazhu = true
-   end
    AudioEngine.playEffect(soundArr[guessType+1])
    userdata.goldAction = true
    if guessType == 0 then
@@ -741,13 +644,13 @@ function onGuess(guessType)
    elseif guessType == 2 then
       minePosX = 870
    end
-   call("fingerGameGuess",guessType)
+   call(35001,guessType)
 end
 
 function onBack(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call("leaveGame")
+      call(7001,10)
       -- local mainScene = package.loaded["scene.main"]
       -- mainScene.createSubWidget(nil)
    end
@@ -758,12 +661,13 @@ function onAlertQueding(event)
       tool.buttonSound("releaseUp","effect_12")
       local str = textInput:getText()
       if str == "" then
-         alert.create("请输入邀请人的ID或用户名")
+         alert.create("请输入邀请人的ID")
       else
-         if tonumber(str) and tonumber(str) > 8000000 then
-            str = tostring(tonumber(str)-8000000)
-         end
-         call("fingerGameInvite",str)
+         -- if tonumber(str) and tonumber(str) > 8000000 then
+         --    str = tostring(tonumber(str)-8000000)
+         -- end
+         -- call("fingerGameInvite",str)
+         call(30001,math.floor(tonumber(str)))
          showOrHideAlert(1,false)
          textInput:setText("")
       end
@@ -778,23 +682,6 @@ function onAlertBack(event)
    end
 end
 
-function onJixu(event)
-   if event == "releaseUp" then
-      tool.buttonSound("releaseUp","effect_12")
-      setYazhuGold(needChangeGold)
-      call("fingerGameBet",data.gold)
-      showOrHideAlert(3,false)
-      needChangeGold = 0
-   end
-end
-
-function onLikai(event)
-   if event == "releaseUp" then
-      tool.buttonSound("releaseUp","effect_12")
-      call("leaveGame")
-   end
-end
-
 widget = {
    _ignore = true,
    bg = {
@@ -804,7 +691,11 @@ widget = {
          icon = {_type = "ImageView"},
       },
       yaoqing = {_type = "Button",_func = onInviter},
-      yazhu = {_type = "Button",_func = onBet},
+      yazhu = {
+         _type = "Button",
+         _func = onBet,
+         text = {_type = "Label"},
+      },
       other = {
          _type = "ImageView",
          image = {_type = "ImageView"},
@@ -822,12 +713,6 @@ widget = {
          _type = "ImageView",
          btn = {_type = "Button",_func = onBu},
       },
-      yazhu_layout = {
-         _type = "Layout",
-         yazhu = {_type = "ImageView"},
-         yazhu_num = {_type = "LabelAtlas"},
-         jinbi = {_type = "ImageView"},
-      },
       countDown = {
          image = {
             _type = "ImageView",
@@ -837,12 +722,6 @@ widget = {
       name = {_type = "Label"},
       gold = {_type = "LabelAtlas"},
       gold_ico = {_type = "ImageView"},
-      jieguo_layout = {
-         _type = "Layout",
-         label = {_type = "Label"},
-         num = {_type = "LabelAtlas"},
-         image = {_type = "ImageView"},
-      },
       alert_layout = {
          _type = "Layout",
          alert = {
@@ -851,26 +730,6 @@ widget = {
             input = {_type = "ImageView"},
             queding = {_type = "Button",_func = onAlertQueding},
             back = {_type = "Button",_func = onAlertBack},
-         },
-         waitChange = {
-            _type = "ImageView",
-            label = {_type = "Label"},
-         },
-         refuse = {
-            _type = "ImageView",
-            label = {_type = "Label"},
-            jixu = {
-               _type = "Button",
-               _func = onJixu,
-               text = {_type = "Label"},
-               shadow = {_type = "Label"},
-            },
-            likai = {
-               _type = "Button",
-               _func = onLikai,
-               text = {_type = "Label"},
-               shadow = {_type = "Label"},
-            },
          },
       },
    },
