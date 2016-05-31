@@ -53,9 +53,9 @@
                 android:visibility="visible" />
         </LinearLayout>
     </RelativeLayout>
-
+    
     <LinearLayout
-        android:id="@+id/ll_right_activity_btn"
+         android:id="@+id/ll_right_activity_btn"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"

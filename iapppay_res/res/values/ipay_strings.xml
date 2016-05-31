@@ -6,6 +6,7 @@
     <string name="ipay_network_unconnent">网络连接失败，请检查网络！</string>
     <string name="ipay_common_loading">正在加载%s...</string>
     <string name="ipay_network_error">系统繁忙，请稍候再试...</string>
+    <string name="ipay_memory_exception">购买异常请联系客服</string>
     
     <!-- 一键支付 -->
     <string name="ipay_oneclick_bank_common_sub_title">爱贝快付</string>

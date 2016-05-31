@@ -103,7 +103,7 @@ end
 function onConfirm(event)
   if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      local p = selectType == 1 and 1000 or 1000000
+      local p = selectType == 1 and 1000000 or 1000
       local n = 0
       if selectNum < 6 then
          n = selectArr[selectNum] 
@@ -119,6 +119,7 @@ function onConfirm(event)
             n = math.floor(userdata.UserInfo.owncharm/p)
          end
       end
+      print("onConfirm!!!!!!!!!!!!!!!!",n,p)
       call(17001,n*p)
   end
 end

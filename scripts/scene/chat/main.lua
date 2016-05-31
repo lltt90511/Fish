@@ -37,6 +37,8 @@ local targetId = -1
 local targetName = ""
 local max_list_y = -200
 local defultTitleW = 110
+local eventHash = {}
+
 -- payServerUrl = payServerUrl
 function create(_gameId,_parent,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
@@ -293,6 +295,9 @@ end
 
 function removeRankItem(index)
    userAllCnt = userAllCnt - 1
+   if userAllCnt < 0 then
+      userAllCnt = 0
+   end
    widget.message_bg.listView4.obj:removeItem(index)
    widget.tab_bg.tab_4.text.obj:setText("观众("..userAllCnt..")")
 end
@@ -1044,6 +1049,13 @@ function setPanelSay(_id,_name,_private)
     end
 end
 
+function cleanEvent()
+   for k, v in pairs(eventHash) do
+      event.unListen(k)
+   end
+   eventHash = {}
+end
+
 function exit()
    if this then
       event.unListen("ON_SEND_MESSAGE_SUCCEED", onSendMessageSucceed)
@@ -1055,6 +1067,7 @@ function exit()
       event.unListen("ON_GET_USER_LIST_FAILED", onGetUserListFailed)
       event.unListen("ON_SYSTEM_CONTEXT", onSystemContext)
       event.unListen("ON_USER_OPERATE_SUCCEED", onUserOperateSucceed)
+      cleanEvent()
       this:removeFromParentAndCleanup(true)
       this = nil
       parentModule = nil

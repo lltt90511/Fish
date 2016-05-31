@@ -75,9 +75,9 @@ function firstToMainScene()
       sceneManager.Scene[sceneManager.currentScene].initView() 
    end 
    sceneManager.change(sceneManager.SceneType.mainScene)
-   luaoc.callStaticMethod("AppController","pushRegister",{account=userdata.UserInfo.uidx,server=payServerUrl.."/ydream/login",environment=""})
+   -- luaoc.callStaticMethod("AppController","pushRegister",{account=userdata.UserInfo.uidx,server=payServerUrl.."/ydream/login",environment=""})
    print("payServerUrl url", payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.uidx)
-   http.request(payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.uidx,nil)
+   -- http.request(payServerUrl.."/ydream/login?type=8&appSrc="..appSrc.."&userId="..userdata.UserInfo.uidx,nil)
 end
 function onLoginFailed(data)
    if data and data.msg then

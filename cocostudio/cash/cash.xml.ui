@@ -53,5 +53,5 @@
   <imageFileList />
   <imagePngList />
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>waitInviterAlert.json</CurrentUIJson>
+  <CurrentUIJson>chargeAlert.json</CurrentUIJson>
 </UIProject>

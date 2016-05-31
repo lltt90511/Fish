@@ -46,6 +46,7 @@ local userRankList = {}
 local totalUserNum = 0
 local isRemuse = false
 local resultName = {inside="",outside=""}
+local effectId = 0
 local fishList = {
   [1]={id = 1,name = '大捕获',res = '13',fishType = 0,seqId = 1,multi = 0.0,multiEffect = '8,4,10,2'},
   [2]={id = 8,name = '珊瑚鱼',res = '10',fishType = 0,seqId = 2,multi = 0.0,multiEffect = ''},
@@ -72,6 +73,7 @@ function create(_parent, _parentModule)
    this = tool.loadWidget("cash/fish_machine",widget, thisParent)
    commonTop.create(this,package.loaded["scene.fishMachine.main"])
    AudioEngine.playMusic("bgm02.mp3",true)
+   AudioEngine.preloadEffect("effect_19")
    if userdata.lastFishSingleIndex and userdata.lastFishSingleIndex ~= 0 then
       singleIndex = userdata.lastFishSingleIndex
    end
@@ -167,6 +169,7 @@ function onGetGameStatus(gameData)
       hiddenAllLight()
       changeTouchEnabled(true)
       endNextTimer()
+      endFishTimer()
       toNextTime = 10
       if isDoBet then
          isDoBet = false 
@@ -194,6 +197,9 @@ function onGetGameStatus(gameData)
       nextTimer = schedule(
          function()
             toNextTime = toNextTime - 1
+            if toNextTime < 0 then
+               toNextTime = 0
+            end
             if isDoBet then
                return 
             end
@@ -568,6 +574,13 @@ function playCircle(maxNum, name)
          return
       end
       widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
+      -- if name == "outside" and ((cnt%2 == 0 and data.type == 200) or data.type == 201)then
+      --    print("st!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",st)
+      --    AudioEngine.playEffect("effect_19")
+      -- end
+      if name == "outside" then
+         AudioEngine.playEffect("effect_19")
+      end
       -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(0)
       tool.createEffect(tool.Effect.delay,{time=delay}, widget.fish["panel_"..name.."_"..st].light.obj,
                         function()
@@ -587,13 +600,19 @@ function playCircle(maxNum, name)
                                  finishCircleCnt = finishCircleCnt + 1
                                  lastOpenId[name] = st
                                  if finishCircleCnt == 2 then
+                                    -- AudioEngine.stopEffect(effectId)
                                     endEffect() 
                                  end 
                                  return
                               end
-                              cnt = cnt + 1
                            end
+                           cnt = cnt + 1
                            st = st + 1
+                           if cnt > 5 then
+                              delay = 0.15
+                           elseif cnt > 10 then
+                              delay = 0.1
+                           end
                            if st == maxNum + 1 then
                               st = 1
                            end 
@@ -612,12 +631,13 @@ end
 
 function playFishEffect()
    -- printTable(id)
-   AudioEngine.playEffect("effect_02")
+   -- AudioEngine.playEffect("effect_02")
    -- for i = 1, 12 do
    --    if i ~= lastOpenId.outside then
    --       widget.fish["panel_outside_"..i].light.obj:setVisible(false)
    --    end
    -- end
+   -- effectId = AudioEngine.playEffect("effect_19",true)
    endFishTimer()
    isPlaying = true
    changeTouchEnabled(false)
@@ -635,8 +655,8 @@ function endEffect()
    -- end
    -- lastOpenId.inside = data.GameResult.f[2] - 12
    -- print("endEffect!!!!!!!!!!!!!!!",lastOpenId.outside,lastOpenId.inside)
-   widget.fish["panel_outside_"..lastOpenId.outside].light.obj:setVisible(false)
-   widget.fish["panel_inside_"..lastOpenId.inside].light.obj:setVisible(false)
+   -- widget.fish["panel_outside_"..lastOpenId.outside].light.obj:setVisible(false)
+   -- widget.fish["panel_inside_"..lastOpenId.inside].light.obj:setVisible(false)
    isPlaying = false
    winGold = 0
    finishCircleCnt = 0
@@ -734,15 +754,26 @@ function startFishTimer()
       end
       fishTimer = schedule(
          function()
+            if widget.bottom.layout.obj:isVisible() then
+               widget.bottom.layout.obj:setTouchEnabled(false)
+               widget.bottom.layout.obj:setVisible(false)
+            end
             if data.type == 100 then
                betEndTime = betEndTime - 1
+               if betEndTime < 0 then
+                  betEndTime = 0
+                  call(8001)
+               end
                local str = string.format("%02d", betEndTime)
                widget.fish.cd_bg.cd.obj:setText(str)  
                if betEndTime < 5 then
+                  AudioEngine.playEffect("effect_01")
                   widget.fish.cd_bg.cd.obj:setColor(ccc3(255,0,0))
                   tool.createEffect(tool.Effect.blink,{time=0.5,f=1},widget.fish.cd_bg.cd.obj)
                end
                changeTouchEnabled(betEndTime > 0 and true or false)
+            else
+               call(8001)
             end
          end,1)
    end
@@ -961,6 +992,7 @@ function exit()
       currentUserPage = 0
       totalUserNum = 0
       singleGoldArr = {}
+      effectId = 0
    end
 end
 

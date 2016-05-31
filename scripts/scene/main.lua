@@ -128,11 +128,18 @@ function create()
      widget.top_btn_list.kefu.obj:setVisible(false)
      widget.top_btn_list.kefu.obj:setTouchEnabled(false)
    end
+   widget.top_btn_list.obj:setVisible(false)
+   widget.top_btn_list.kefu.obj:setVisible(false)
    widget.top_btn_list.kefu.obj:setTouchEnabled(false)
+   widget.top_btn_list.youjian.obj:setVisible(false)
    widget.top_btn_list.youjian.obj:setTouchEnabled(false)
+   widget.top_btn_list.jiangli.obj:setVisible(false)
    widget.top_btn_list.jiangli.obj:setTouchEnabled(false)
+   widget.top_btn_list.choujiang.obj:setVisible(false)
    widget.top_btn_list.choujiang.obj:setTouchEnabled(false)
+   widget.top_btn_list.yaoqianshu.obj:setVisible(false)
    widget.top_btn_list.yaoqianshu.obj:setTouchEnabled(false)
+   widget.top_btn_list.VIP.obj:setVisible(false)
    widget.top_btn_list.VIP.obj:setTouchEnabled(false)
    widget.bottom.huodong.obj:setTouchEnabled(false)
    widget.bottom.paihang.obj:setTouchEnabled(false)
@@ -317,8 +324,8 @@ function initView()
    widget.top_btn_list.youjian.pao.obj:setVisible(false)
    widget.top_btn_list.choujiang.pao.obj:setVisible(false)
    widget.top_btn_list.jiangli.pao.obj:setVisible(false)
-   widget.top.btn_lingqu.obj:setVisible(false)
-   widget.top.btn_lingqu.obj:setTouchEnabled(false)
+   -- widget.top.btn_lingqu.obj:setVisible(false)
+   -- widget.top.btn_lingqu.obj:setTouchEnabled(false)
 end
 
 function cleanEvent()
@@ -331,6 +338,8 @@ end
 
 function onSetDefaultImageSucceed()
   print("onSetDefaultImageSucceed!!!!!!!!!!!!!!!!!!")
+  printTable(eventHash)
+   userdata.CharIdToImageFile[userdata.UserInfo.uidx] = {file=userdata.UserInfo.PicUrl,sex=userdata.UserInfo.sex}
    tool.getUserImage(eventHash, widget.top.image.obj, userdata.UserInfo.uidx)
    -- tool.loadRemoteImage(eventHash, widget.top.image.obj, userdata.UserInfo.id)
 end
@@ -689,10 +698,10 @@ end
 
 function enterTransitionFinish()
    -- call("enterGame", 0)
-   if daily then
-      daily = false
-      dailyScene.create(widget.obj)
-   end
+   -- if daily then
+   --    daily = false
+   --    dailyScene.create(widget.obj)
+   -- end
 end
 
 function exitTransitionStart()
@@ -842,9 +851,14 @@ end
 function onLingqu(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      currenScene = receive
-      receive.create(widget.obj)
-      receive.resetTime(min,sec)
+      if currenScene then
+        currenScene.exit()
+        currenScene = nil
+      end
+      currenScene = dailyScene
+      -- receive.create(widget.obj)
+      -- receive.resetTime(min,sec)
+      dailyScene.create(widget.obj,package.loaded["scene.main"])
    end
 end
 

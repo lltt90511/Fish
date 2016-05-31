@@ -19,7 +19,7 @@ function create(_parent,_userData,_parentModule)
    thisParent = _parent
    parentModule = _parentModule
    data = _userData
-   this = tool.loadWidget("cash/userAlert",widget,thisParent,99)
+   this = tool.loadWidget("cash/userAlert",widget,thisParent,15)
    widget.obj:registerEventScript(onBack)
    widget.bg.name.obj:setText(data.name)
    widget.bg.title.obj:loadTexture("cash/qietu/user/v"..data.grade..".png")

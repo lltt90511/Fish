@@ -1318,6 +1318,7 @@ function getImageFile(defaltMan,defaultGril,list,eventPer,cache,eventHash,charId
 			end
 		else
 			print ("body!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",body.file)
+			-- printTable(eventHash)
 			eventHash[body.file] = true
 			event.listen(body.file,
 			   function()

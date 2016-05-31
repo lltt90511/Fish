@@ -76,6 +76,7 @@ function downloadServerList()
    else 
       SERVER_LIST_PATH = "update/serverList.json"
    end
+   print("downloadServerList!!!!!!!!!!!!!!!!!!!!!!!!!",updateDownLoadURL)
    local curlId = http.request(updateDownLoadURL..SERVER_LIST_PATH,onDownloadServerList)
    table.insert(updateServerListRequest,curlId)
 end

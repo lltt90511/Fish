@@ -11,13 +11,15 @@ module("scene.loginGift", package.seeall)
 
 this = nil
 subWidget = nil
+local parentModule = nil
  boxList ={}
  cloneObj = nil
 local giftTmpList = {}
 local getEd = 0
 local isGet = false
 
-function create(parent)
+function create(parent,_parentModule)
+   parentModule = _parentModule
   this = tool.loadWidget("cash/loginGift",widget,parent,99)
   cloneObj = widget.panel.bg.tmp.obj
   cloneObj:setVisible(false)
@@ -101,6 +103,14 @@ function initList()
     end
     widget.panel.bg.bottom.obj:setVisible(false)
     widget.panel.bg.bottom.bg.get.obj:setTouchEnabled(false)
+    if parentModule then
+       if parentModule.daily == true then
+          widget.panel.bg.text.obj:setVisible(false)
+       elseif parentModule.daily == false then
+          widget.panel.bg.get.obj:setVisible(false)
+          widget.panel.bg.get.obj:setTouchEnabled(false)
+       end
+    end
     -- widget.panel.bg.bottom.bg.gold.obj:setText(tpl[getEd].gold*nextMulti/100)
     -- widget.panel.bg.bottom.bg.get.text.obj:setText("VIP"..(nextLv).."领取")
     -- widget.panel.bg.bottom.bg.get.text_shadow.obj:setText("VIP"..(nextLv).."领取")
@@ -114,6 +124,7 @@ function exit()
       tool.cleanWidgetRef(widget)
       giftTmpList = {}
       this = nil
+      parentModule = nil
   end
 end
 
@@ -140,6 +151,9 @@ function onGetDailyGift(data)
   -- tmp:setBright(false)
   local check = tool.findChild(tmp,"check","CheckBox")
   check:setSelectedState(true)
+  if parentModule and parentModule.daily == false then
+     parentModule.daily = true
+  end
 end
 
 function onBack(event)
@@ -159,6 +173,13 @@ function onGetVIP(event)
   if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
      loginAlert.create(widget.obj)
+  end
+end
+
+function onClose(event)
+  if event == "releaseUp" then
+     tool.buttonSound("releaseUp","effect_12")
+     exit()
   end
 end
 
@@ -189,6 +210,8 @@ _ignore = true,
         },
         tips =  {_type="Label"},
       },
+      back = {_type = "Button",_func = onClose},
+      text = {_type = "Label"},
     },
   },
 }

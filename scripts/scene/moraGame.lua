@@ -663,13 +663,17 @@ function onAlertQueding(event)
       if str == "" then
          alert.create("请输入邀请人的ID")
       else
+         if not tonumber(str) then
+            alert.create("请输入邀请人的ID")
+         else
+            call(30001,math.floor(tonumber(str)))
+            textInput:setText("")
+         end
          -- if tonumber(str) and tonumber(str) > 8000000 then
          --    str = tostring(tonumber(str)-8000000)
          -- end
          -- call("fingerGameInvite",str)
-         call(30001,math.floor(tonumber(str)))
-         showOrHideAlert(1,false)
-         textInput:setText("")
+         -- showOrHideAlert(1,false)
       end
    end
 end

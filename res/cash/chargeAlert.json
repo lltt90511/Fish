@@ -934,7 +934,7 @@
                   "touchAble": false,
                   "useMergedTexture": false,
                   "visible": true,
-                  "width": 200,
+                  "width": 202,
                   "x": -485,
                   "y": -190,
                   "areaHeight": 0,
@@ -943,7 +943,7 @@
                   "fontName": "微软雅黑",
                   "fontSize": 40,
                   "hAlignment": 0,
-                  "text": "充值账号：",
+                  "text": "推荐人ID：",
                   "touchScaleEnable": false,
                   "vAlignment": 0
                 }

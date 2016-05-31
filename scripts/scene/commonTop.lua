@@ -78,6 +78,7 @@ end
 
 function onSetDefaultImageSucceed()
    -- tool.loadRemoteImage(eventHash, widget.top_bg.image.obj, userdata.UserInfo.id)
+   userdata.CharIdToImageFile[userdata.UserInfo.uidx] = {file=userdata.UserInfo.PicUrl,sex=userdata.UserInfo.sex}
    tool.getUserImage(eventHash, widget.top.head.icon.obj, userdata.UserInfo.uidx)
 end
 

@@ -10,22 +10,7 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [
-    "qietu/chat/tab_bg.png",
-    "qietu/chat/tab2.png",
-    "qietu/chat/tab3.png",
-    "qietu/chat/tab1.png",
-    "GUI/image.png",
-    "buleLoading.png",
-    "buleLoadingBg.png",
-    "qietu/chat/input1.png",
-    "qietu/tymb/check.png",
-    "qietu/tymb/gou.png",
-    "qietu/chat/inpit2.png",
-    "qietu/chat/send.png",
-    "qietu/user/v17.png",
-    "qietu/top/head.png"
-  ],
+  "texturesPng": [],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",

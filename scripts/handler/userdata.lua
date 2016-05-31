@@ -471,8 +471,8 @@ end
 
 function onExchangeSucceed(data)
 	if data and type(data) == type({}) then
-		userdata.UserInfo.owncharm = data.beans
-		userdata.UserInfo.owncash = data.cash
+		userdata.UserInfo.owncharm = tonumber(data.beans)
+		userdata.UserInfo.owncash = tonumber(data.cash)
 		alert.create(data.msg)
 	end
     event.pushEvent("ON_CHANGE_GOLD")

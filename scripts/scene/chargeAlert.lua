@@ -7,7 +7,7 @@ module("scene.chargeAlert", package.seeall)
 
 this = nil
 thisParent = nil
-local chargeList = {50,100,150,200,250,300}
+local chargeList = {10,50,100,200,500,1000}
 local chargeNum = 0
 local textInput1 = nil
 local textInput2 = nil
@@ -16,16 +16,18 @@ local alertType = 0
 function create(_parent,_type)
    thisParent = _parent
    alertType = _type
-   this = tool.loadWidget("cash/chargeAlert",widget,thisParent,99)
+   this = tool.loadWidget("cash/chargeAlert",widget,thisParent,15)
    initView()
    initInput()
    onChangeGold()
+   chargeNum = chargeList[1]
    if alertType == 2 then
       widget.bg.obj:setVisible(false)
       widget.obj:registerEventScript(onBack)
    end
    event.listen("ON_CHANGE_GOLD",onChangeGold)
    event.listen("ON_GET_CHARGEID_SUCCEED", onGetChargeIdSucceed)
+   call("21001",-10000,0)
 end
 
 function onChangeGold()
@@ -34,9 +36,14 @@ function onChangeGold()
 end
 
 function onGetChargeIdSucceed(data)
-  local res = {orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx}
-  local params = cjson.encode(res)
-  luaj.callStaticMethod("com/java/platform/NdkPlatform","iapPay",{params})
+  if data.money == -100 then
+     recommendId = data.transid
+     textInput1:setText(recommendId)
+  else
+     local res = {orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx}
+     local params = cjson.encode(res)
+     luaj.callStaticMethod("com/java/platform/NdkPlatform","iapPay",{params})
+  end
 end
 
 function initView()
@@ -87,10 +94,6 @@ function initInput()
       if str == "" then
          return 
       end
-      if type(str) ~= type(0) then
-         alert.create("请输入数字")
-         return
-      end
       if strEventName == "return" or strEventName == "ended" then
          local i = 1
          local cnt = 1
@@ -114,7 +117,12 @@ function initInput()
             end
          end
          textInput1:setText(table.concat(tb))
-         recommendId = tonumber(textInput1:getText())
+         if tonumber(textInput1:getText()) then
+            recommendId = tonumber(textInput1:getText())
+         else
+            textInput1:setText("")
+            alert.create("请输入数字")
+         end
       end
    end
    textInput1:registerScriptEditBoxHandler(editBoxTextEventHandler)
@@ -215,7 +223,7 @@ end
 function onConfirm(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call("21001",chargeNum*100,userdata.UserInfo.uidx)
+      call("21001",chargeNum*100,recommendId)
    end       
 end
 
