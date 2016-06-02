@@ -14,13 +14,23 @@ local selectNum = 0
 local selectType = 0
 local selectArr = {1,5,10,50,100}
 local gameId = 0
+local bigNum = 0
+local smallNum = 0
 
-function create(_parent,_id)
+function create(_parent,_gameid)
    thisParent = _parent
    this = tool.loadWidget("cash/exchange",widget,thisParent,99)
-   gameId = _id
+   gameId = _gameid
    selectNum = 1
    selectType = 1
+   if gameId == 1 then
+      bigNum = 100000
+      smallNum = 1000
+   elseif gameId == 2 then
+      bigNum = 100
+      smallNum = 10
+   end
+   print("big smallNum",bigNum ,smallNum)
    initView()
    widget.obj:registerEventScript(onBack)
    event.listen("ON_CHANGE_GOLD",onChangeGold)
@@ -55,6 +65,8 @@ function initView()
             end
        end)
    end
+   widget.alert.bar_2.check_1.text.obj:setText("大喇叭("..bigNum..")")
+   widget.alert.bar_2.check_2.text.obj:setText("小喇叭("..smallNum..")")
    widget.alert.bar_2.check_1.obj:setSelectedState(true)
    for i=1,checkNum2 do
        local check = widget.alert.bar_3["check_"..i].obj
@@ -92,6 +104,9 @@ function exit()
       checkList2 = {}
       selectNum = 0
       selectType = 0
+      gameId = 0
+      bigNum = 0
+      smallNum = 0
   end
 end
 
@@ -105,12 +120,7 @@ end
 function onConfirm(event)
   if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      local p = 0
-      if gameId == 1 then
-         p = selectType == 1 and 100000 or 1000
-      elseif gameId == 2 then
-         p = selectType == 1 and 100 or 10
-      end
+      local p = selectType == 1 and bigNum or smallNum
       local n = 0
       if selectNum < 6 then
          n = selectArr[selectNum] 

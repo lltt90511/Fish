@@ -38,7 +38,7 @@ local targetName = ""
 local max_list_y = -200
 local defultTitleW = 110
 local eventHash = {}
-
+local nameType = 0
 -- payServerUrl = payServerUrl
 function create(_gameId,_parent,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
@@ -56,6 +56,7 @@ function create(_gameId,_parent,_parentModule)
    messageList[2] = {}
    messageList[3] = {}
    messageList[4] = {}
+   widget.input_1.check.obj:setTouchEnabled(false) 
    initEditBox()
    initListView()
    -- changeExpressionPanelVisible(expVisible)
@@ -116,7 +117,6 @@ end
 
 function onEnterGameNotice(_data)
    print("onEnterGameNotice")
-   printTable(_data)
    if _data.user._uidx == userdata.UserInfo.uidx then
       return
    end
@@ -148,10 +148,9 @@ function onExitGameNotice(_data)
        end
        -- print("!!!!!!!!!!!!!!!!!!!",v._uidx,_data.user._uidx,index)
    end
-   -- print("index!!!!!!!!!!!!!!!!!!!!!!!!",index,#userRankList)
    if index <= #userRankList then
       table.remove(userRankList,index)
-      removeRankItem(index)
+      removeRankItem(index-1)
    end   
 end
 
@@ -242,6 +241,7 @@ end
 
 function initRankView(_list)
    local cnt = #userRankList
+   print("initRankView",cnt)
    for k,v in pairs(_list) do   
        table.insert(userRankList,v)
        addRankItem(v,cnt)
@@ -1024,10 +1024,29 @@ function resetPanelSay()
           tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
        end
     end)
+    widget.panel_say.bg.label_1.obj:setTouchEnabled(true)
+    widget.panel_say.bg.label_1.obj:registerEventScript(function(event)
+       -- targetId = -1
+       -- targetName = "" 
+       nameType = 1
+       widget.input_1.check.obj:setTouchEnabled(true) 
+       if targetId ~= -1 and targetName ~= "" then
+          widget.input_1.say.text.obj:setText(targetName)
+          local posY = widget.panel_say.bg.obj:getPositionY()
+          if posY == 0 then
+             tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
+          end
+       end
+    end)
     widget.panel_say.bg.label_2.obj:setTouchEnabled(true)
     widget.panel_say.bg.label_2.obj:registerEventScript(function(event)
-       targetId = -1
-       targetName = "" 
+       -- targetId = -1
+       -- targetName = "" 
+       nameType = 0
+       widget.input_1.check.obj:setTouchEnabled(false) 
+       if widget.input_1.check.obj:getSelectedState() == true then
+          widget.input_1.check.obj:setSelectedState(false) 
+       end
        widget.input_1.say.text.obj:setText("所有人")
        local posY = widget.panel_say.bg.obj:getPositionY()
        if posY == 0 then
@@ -1037,6 +1056,7 @@ function resetPanelSay()
 end
 
 function setPanelSay(_id,_name,_private)
+    nameType = 1
     targetId = _id
     targetName = _name
     isPrivate = _private
@@ -1128,8 +1148,12 @@ function onSend(event)
          --      textInput:setText("")
          --   end)
          local _str = string.gsub(str,'"',';22|',20)
-         print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str,_str)
-         call(11001,targetId,isPrivate,_str)
+         -- print("str!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",str,_str)
+         if nameType == 0 then
+            call(11001,-1,isPrivate,_str)
+         elseif nameType == 1 then
+            call(11001,targetId,isPrivate,_str)
+         end
          textInput:setText("")
       end
    end
@@ -1197,7 +1221,7 @@ end
 
 function onCheck(event,data1,data)
    if event == "releaseUp" then
-      if targetId == -1 and targetName == "" then
+      if nameType == 0 then
          return
       end
       tool.buttonSound("releaseUp","effect_12")

@@ -14,10 +14,11 @@ local parentModule = nil
 local eventHash = {}
 isShowChatHistory = false
 local messageNum = 0
-
-function create(_parent,_parentModule)
+local gameId = 0
+function create(_parent,_parentModule,_id)
    thisParent = _parent
    parentModule = _parentModule
+   gameId = _id
    this = tool.loadWidget("cash/common_top",widget,nil,nil,true)
    thisParent:addChild(this,10)
    this:setPosition(ccp(0,0))
@@ -115,9 +116,10 @@ end
 
 function onExchange(event)
    if event == "releaseUp" then
+      if gameId == 10 then return end
       tool.buttonSound("releaseUp","effect_12")
       call(18001)
-      exchange.create(thisParent)
+      exchange.create(thisParent,gameId)
    end
 end
 function setPao()

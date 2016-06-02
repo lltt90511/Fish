@@ -47,7 +47,7 @@ local totalUserNum = 0
 local isRemuse = false
 local resultName = {inside="",outside=""}
 local effectId = 0
-local currentGameId = 0
+local gId = 0
 local fishList = {
   [1]={id = 1,name = '大捕获',res = '13',fishType = 0,seqId = 1,multi = 0.0,multiEffect = '8,4,10,2'},
   [2]={id = 8,name = '珊瑚鱼',res = '10',fishType = 0,seqId = 2,multi = 0.0,multiEffect = ''},
@@ -72,7 +72,7 @@ function create(_parent, _parentModule)
    thisParent = _parent
    parentModule = _parentModule 
    this = tool.loadWidget("cash/fish_machine",widget, thisParent)
-   commonTop.create(this,package.loaded["scene.fishMachine.main"])
+   commonTop.create(this,package.loaded["scene.fishMachine.main"],gId)
    AudioEngine.playMusic("bgm02.mp3",true)
    AudioEngine.preloadEffect("effect_19")
    if userdata.lastFishSingleIndex and userdata.lastFishSingleIndex ~= 0 then
@@ -101,7 +101,6 @@ function create(_parent, _parentModule)
    initChatView()
    totalCashGold = 0
    currentUserPage = 1
-   currentGameId = 0
    -- widget.bigAward.obj:setVisible(false)
    -- widget.bigAward.obj:setScale(0)
    -- widget.history_layout.obj:setVisible(false)
@@ -136,9 +135,9 @@ function initClassicOutSide()
    end
 end
 
-function initData(gameData,gameId)
+function initData(gameData,id)
    onUpdateGameData(gameData)
-   currentGameId = gameId
+   gId = id
    if data.type == 100 then
       betEndTime = 20 - data.time
    else
@@ -694,7 +693,13 @@ function endEffect()
    -- print("endEffect!!!!!!!!!!!!!!!",lastOpenId.outside,lastOpenId.inside)
    -- widget.fish["panel_outside_"..lastOpenId.outside].light.obj:setVisible(false)
    -- widget.fish["panel_inside_"..lastOpenId.inside].light.obj:setVisible(false)
-   isPlaying = false
+   if isDoBet then
+       performWithDelay(function()
+         isPlaying = false
+       end,3.0)
+   else
+       isPlaying = false
+   end
    winGold = 0
    finishCircleCnt = 0
    tool.setPosition(widget.result.obj,{x=240,y=1020})
@@ -739,7 +744,7 @@ function checkWinResult()
              if v.i == userdata.UserInfo.uidx then
                 isInResult = true
                 if v.m > 0 then
-                   widget.bottom.layout.text.obj:setText("恭喜您中奖了")
+                   widget.bottom.layout.text.obj:setText("恭喜您获得"..getWinStr(v.m))
                    widget.bottom.layout.bg.obj:setVisible(true)
                 end
              else
@@ -969,13 +974,14 @@ function onAlertBack(event)
    end
 end
 
-function onExchange(event)
-   if event == "releaseUp" then
-      tool.buttonSound("releaseUp","effect_12")
-      call(18001)
-      exchange.create(this,currentGameId)
-   end
-end
+-- function onExchange(event)
+--    if event == "releaseUp" then
+--       print("onExchange!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",gId)
+--       tool.buttonSound("releaseUp","effect_12")
+--       call(18001)
+--       exchange.create(this,gId)
+--    end
+-- end
 
 function cleanEvent()
    for k, v in pairs(eventHash) do
@@ -1037,7 +1043,7 @@ function exit()
       totalUserNum = 0
       singleGoldArr = {}
       effectId = 0
-      currentGameId = 0
+      gId = 0
    end
 end
 
