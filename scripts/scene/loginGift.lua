@@ -103,13 +103,11 @@ function initList()
     end
     widget.panel.bg.bottom.obj:setVisible(false)
     widget.panel.bg.bottom.bg.get.obj:setTouchEnabled(false)
-    if parentModule then
-       if parentModule.daily == true then
-          widget.panel.bg.text.obj:setVisible(false)
-       elseif parentModule.daily == false then
-          widget.panel.bg.get.obj:setVisible(false)
-          widget.panel.bg.get.obj:setTouchEnabled(false)
-       end
+    if timeToDayStart(getSyncedTime()) > userdata.UserInfo.daylastLq then
+       widget.panel.bg.text.obj:setVisible(false)
+    else
+       widget.panel.bg.get.obj:setVisible(false)
+       widget.panel.bg.get.obj:setTouchEnabled(false)
     end
     -- widget.panel.bg.bottom.bg.gold.obj:setText(tpl[getEd].gold*nextMulti/100)
     -- widget.panel.bg.bottom.bg.get.text.obj:setText("VIP"..(nextLv).."领取")
@@ -150,13 +148,13 @@ function onGetDailyGift(data)
   if nextTmp then
      nextTmp:setBright(false)
   end
-  print("tmp$%$$$$$$$$$$$$$$$$$$$$$$$$$$$$",tmp,getEd)
+  -- print("tmp$%$$$$$$$$$$$$$$$$$$$$$$$$$$$$",tmp,getEd)
   -- tmp:setBright(false)
   local check = tool.findChild(tmp,"check","CheckBox")
   check:setSelectedState(true)
-  if parentModule and parentModule.daily == false then
-     parentModule.daily = true
-  end
+  -- if parentModule and parentModule.daily == false then
+  --    parentModule.daily = true
+  -- end
 end
 
 function onBack(event)

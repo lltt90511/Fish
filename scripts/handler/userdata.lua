@@ -70,6 +70,7 @@ function onGetDailyGiftSucceed(data)
     AudioEngine.playEffect("effect_07")
 	local daily = package.loaded['scene.loginGift']
 	userdata.UserInfo.owncash = data.owncash
+	print("onGetDailyGiftSucceed!!!!!!!!!!!!!!!!!!!!!",data.lqTime, data.dayNum)
 	userdata.UserInfo.daylastLq = data.lqTime
 	userdata.UserInfo.dayNum = data.dayNum
 	daily.onGetDailyGift(data)

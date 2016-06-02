@@ -78,7 +78,7 @@ function downloadServerList()
    end
    -- print("downloadServerList!!!!!!!!!!!!!!!!!!!!!!!!!",updateDownLoadURL)
    -- local curlId = http.request(updateDownLoadURL..SERVER_LIST_PATH,onDownloadServerList)
-   local curlId = http.request(updateDownLoadURL.."updateFiles/cfg.ashx",onDownloadServerList)
+   local curlId = http.request(updateDownLoadURL.."updateFiles/cfg.json",onDownloadServerList)
    table.insert(updateServerListRequest,curlId)
 end
 
@@ -204,7 +204,7 @@ function onDownloadServerList(header,body,flag)
    end
    updateServerListRequest = {}
    print("@@@@@@@@@@@@@@@@@download server list@@@@@@@@@@@@@@@@@@@@")
-   -- print("body",body)
+   print("body",body)
    --local line = getStrFromFile(fileName)
    -- print(body)
    local tab = cjson.decode(body)
@@ -238,8 +238,8 @@ function onDownloadServerList(header,body,flag)
       local flag = checkUnfinishedFile()
       if flag == true then
          print("88888888888888888 true")
-         finishUpdate()
-      else
+         finishUpdate(
+)      else
          print("88888888888888888 false")
          finishCallBack = finishUpdate
       end
@@ -247,7 +247,7 @@ function onDownloadServerList(header,body,flag)
       print("ready to download updateList")
       haveUpdate = true
       --download(updateDownLoadURL,"update/updateList.json",6,0)
-      http.request(updateDownLoadURL.."updateFiles/updateList.ashx",onDownloadUpdateList)
+      http.request(updateDownLoadURL.."updateFiles/updateList.json",onDownloadUpdateList)
    end
 end
 
@@ -335,7 +335,7 @@ function onDownloadUpdateList(header,body)
          for i = 1, serverVersion do
             if hash[i] then
                versionInfoCnt = versionInfoCnt + 1
-               download(updateDownLoadURL,"updateFiles/v"..i..".ashx",7,0)
+               download(updateDownLoadURL,"updateFiles/v"..i..".json",7,0)
             end
          end
          -- label:setString("更新版本信息：0/"..versionInfoCnt)
@@ -403,12 +403,13 @@ function checkFileLegal(savePath)
 end
 
 function onDownloadVersionInfo(fileName)
+   print("fileName!!!!!!!!!!!!!!!",fileName)
    versionInfoHasCnt = versionInfoHasCnt + 1
    -- label:setString("更新版本信息："..versionInfoHasCnt.."/"..versionInfoCnt)
    bar.show("更新版本信息：",versionInfoHasCnt,versionInfoCnt)
    local line = getStrFromFile(fileName)
    local tab = cjson.decode(line)
-   local version = tonumber(splitString(splitString(fileName,"updateFiles/v")[1],".ashx")[1])
+   local version = tonumber(splitString(splitString(fileName,"updateFiles/v")[1],".json")[1])
    -- printTable(tab)
    print(version)
    for k, v in pairs(tab) do

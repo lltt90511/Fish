@@ -13,8 +13,8 @@ function create(parent)
 end
 
 function hideInfo()
-  widget.panel.bg.name.text.obj:setText("富豪水果机")
-  widget.panel.bg.num.text.obj:setText("V1.0")
+  widget.panel.bg.name.text.obj:setText("海底大捕获")
+  widget.panel.bg.num.text.obj:setText("V"..serverList[5])
   widget.panel.bg.QQ.obj:setVisible(false)
 end
 
