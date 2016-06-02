@@ -141,14 +141,14 @@ function onExitGameNotice(_data)
    print("onExitGameNotice")
    local index = 0
    for k,v in pairs(userRankList) do
-       printTable(v)
+       -- printTable(v)
+       index = index + 1
        if v._uidx == _data.user._uidx then
           break
        end
-       print("!!!!!!!!!!!!!!!!!!!",v._uidx,_data.user._uidx,index)
-       index = index + 1
+       -- print("!!!!!!!!!!!!!!!!!!!",v._uidx,_data.user._uidx,index)
    end
-   print("index!!!!!!!!!!!!!!!!!!!!!!!!",index,#userRankList)
+   -- print("index!!!!!!!!!!!!!!!!!!!!!!!!",index,#userRankList)
    if index <= #userRankList then
       table.remove(userRankList,index)
       removeRankItem(index)
@@ -256,7 +256,7 @@ function addRankItem(item,index)
    obj:registerEventScript(function(event)
       if event == "releaseUp" then
          if item._uidx == userdata.UserInfo.uidx then
-            alert.create("您不能与自己私聊")
+            -- alert.create("您不能与自己私聊")
             return
          end
          local user = {}
@@ -429,7 +429,7 @@ function addSplitMessage(richText, msg, cnt)
    if msg.type == -2 then
       local nowStr = ""
       if msg and msg.time then
-         nowStr = msg.time.hour..":"..msg.time.min.." "
+         nowStr = string.format("%02d", msg.time.hour)..":"..string.format("%02d", msg.time.min).." "
       end
       local textLabel = Label:create()
       textLabel:setText(nowStr..msg.toName.."被"..msg.fromName..msg.msg)
@@ -458,7 +458,7 @@ function addSplitMessage(richText, msg, cnt)
    elseif msg.type == 0 then
       local nowStr = ""
       if msg and msg.time then
-         nowStr = msg.time.hour..":"..msg.time.min.." "
+         nowStr = string.format("%02d", msg.time.hour)..":"..string.format("%02d", msg.time.min).." "
       end
       local textLabel = Label:create()
       textLabel:setText(nowStr.."第【"..msg.cnt.."】轮游戏，选中的海洋生物是"..msg.inside.."和"..msg.outside)
@@ -562,7 +562,7 @@ function addMessage(message, list, time)
       local color = ccc3(255,255,255) 
       local nowStr = ""
       if message and message.time then
-         nowStr = message.time.hour..":"..message.time.min.." "
+         nowStr = string.format("%02d", message.time.hour)..":"..string.format("%02d", message.time.min).." "
       end
       if message.type == -2 then
          local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
@@ -583,7 +583,7 @@ function addMessage(message, list, time)
          _layout:registerEventScript(function(event)
             if event == "releaseUp" then
                if message.toId == userdata.UserInfo.uidx then
-                  alert.create("您不能与自己私聊!")
+                  -- alert.create("您不能与自己私聊!")
                   return
                end
                local user = {}
@@ -622,7 +622,7 @@ function addMessage(message, list, time)
          _layout:registerEventScript(function(event)
             if event == "releaseUp" then
                if message.id == userdata.UserInfo.uidx then
-                  alert.create("您不能与自己私聊!")
+                  -- alert.create("您不能与自己私聊!")
                   return
                end
                local user = {}
@@ -684,7 +684,7 @@ function addMessage(message, list, time)
         _layout:registerEventScript(function(event)
             if event == "releaseUp" then
                if message.id == userdata.UserInfo.uidx then
-                  alert.create("您不能与自己私聊!")
+                  -- alert.create("您不能与自己私聊!")
                   return
                end
                local user = {}
@@ -763,7 +763,7 @@ function addMessage(message, list, time)
          _layout:registerEventScript(function(event)
               if event == "releaseUp" then
                  if message.fromId == userdata.UserInfo.uidx then
-                    alert.create("您不能与自己私聊!")
+                    -- alert.create("您不能与自己私聊!")
                     return
                  end
                  local user = {}
@@ -806,7 +806,7 @@ function addMessage(message, list, time)
          _layout:registerEventScript(function(event)
               if event == "releaseUp" then
                  if message.fromId == userdata.UserInfo.uidx then
-                    alert.create("您不能与自己私聊!")
+                    -- alert.create("您不能与自己私聊!")
                     return
                  end
                  local user = {}
@@ -846,7 +846,7 @@ function addMessage(message, list, time)
          _layout:registerEventScript(function(event)
               if event == "releaseUp" then
                  if message.toId == userdata.UserInfo.uidx then
-                    alert.create("您不能与自己私聊!")
+                    -- alert.create("您不能与自己私聊!")
                     return
                  end
                  local user = {}

@@ -120,6 +120,7 @@ function initInput()
          if tonumber(textInput1:getText()) then
             recommendId = tonumber(textInput1:getText())
          else
+            recommendId = 0
             textInput1:setText("")
             alert.create("请输入数字")
          end

@@ -11,11 +11,12 @@
   "designWidth": 1080,
   "textures": [],
   "texturesPng": [
-    "qietu/top/head.png",
-    "GUI/image.png",
-    "qietu/user/v0.png",
-    "qietu/chat/userBtn1.png",
-    "qietu/chat/userBtn2.png"
+    "qietu/tymb/daBox.png",
+    "qietu/tymb/guanbiBt01.png",
+    "qietu/tymb/guanbiBt02.png",
+    "qietu/tymb/mbText09.png",
+    "qietu/tymb/icon.png",
+    "qietu/text/textA11.png"
   ],
   "version": "1.6.0.0",
   "widgetTree": {
@@ -251,7 +252,7 @@
                       "touchAble": false,
                       "useMergedTexture": false,
                       "visible": true,
-                      "width": 120,
+                      "width": 200,
                       "x": 230,
                       "y": 0,
                       "areaHeight": 0,
@@ -260,7 +261,7 @@
                       "fontName": "微软雅黑",
                       "fontSize": 40,
                       "hAlignment": 0,
-                      "text": "大富翁",
+                      "text": "海底大捕获",
                       "touchScaleEnable": false,
                       "vAlignment": 0
                     }
@@ -453,7 +454,7 @@
                       "touchAble": false,
                       "useMergedTexture": false,
                       "visible": true,
-                      "width": 230,
+                      "width": 184,
                       "x": 230,
                       "y": 0,
                       "areaHeight": 0,
@@ -462,7 +463,7 @@
                       "fontName": "微软雅黑",
                       "fontSize": 40,
                       "hAlignment": 0,
-                      "text": "8555555555",
+                      "text": "11111111",
                       "touchScaleEnable": false,
                       "vAlignment": 0
                     }

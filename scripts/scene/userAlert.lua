@@ -92,10 +92,10 @@ end
 function onBtn1(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call(19001,1,data.id,5)
-      -- if parentModule and parentModule.setPanelSay then
-      --    parentModule.setPanelSay(data.id,data.name,0)
-      -- end
+      -- call(19001,1,data.id,5)
+      if parentModule and parentModule.setPanelSay then
+         parentModule.setPanelSay(data.id,data.name,0)
+      end
       exit()
    end
 end

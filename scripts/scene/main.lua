@@ -698,10 +698,10 @@ end
 
 function enterTransitionFinish()
    -- call("enterGame", 0)
-   -- if daily then
-   --    daily = false
-   --    dailyScene.create(widget.obj)
-   -- end
+   if daily then
+      -- daily = false
+      dailyScene.create(widget.obj,package.loaded["scene.main"])
+   end
 end
 
 function exitTransitionStart()

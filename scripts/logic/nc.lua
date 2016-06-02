@@ -5,11 +5,13 @@ hurtTimer = nil
 connectId = 1
 
 function connect()
-   local server = serverList[connectId]
-   C_connectAsync("120.27.156.196", "51111")
+   -- local server = serverList[connectId]
+   print("connect!!!!!!!!!!!!!!!")
+   printTable(serverList)
+   C_connectAsync(serverList[1], serverList[3])
    -- C_connectAsync("10.0.39.11", "51111")
    -- setUploadURL(server.uploadURL)
-   -- setDownloadURL(server.downloadURL)
+   setDownloadURL(serverList[4])
    -- setPayServerUrl(server.payUrl)
 end
 

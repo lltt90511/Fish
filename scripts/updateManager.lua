@@ -76,8 +76,9 @@ function downloadServerList()
    else 
       SERVER_LIST_PATH = "update/serverList.json"
    end
-   print("downloadServerList!!!!!!!!!!!!!!!!!!!!!!!!!",updateDownLoadURL)
-   local curlId = http.request(updateDownLoadURL..SERVER_LIST_PATH,onDownloadServerList)
+   -- print("downloadServerList!!!!!!!!!!!!!!!!!!!!!!!!!",updateDownLoadURL)
+   -- local curlId = http.request(updateDownLoadURL..SERVER_LIST_PATH,onDownloadServerList)
+   local curlId = http.request(updateDownLoadURL.."updateFiles/cfg.ashx",onDownloadServerList)
    table.insert(updateServerListRequest,curlId)
 end
 
@@ -115,7 +116,7 @@ function finishUpdate()
       if str == nil or str == "" then
          file:write("2")
          file:close()
-         uploadGuide(2)
+         -- uploadGuide(2)
       end
    end
 end
@@ -151,7 +152,7 @@ function firstLaunch()
    if str == nil or str == "" then
       file:write("0")
       file:close()
-      uploadGuide(1)
+      -- uploadGuide(1)
    end
 end
 function gameInit()
@@ -163,7 +164,7 @@ function gameInit()
    require"init"
 end
 function onDeviceId(str)
-   uploadGuide(1)
+   -- uploadGuide(1)
 end
 function setUploadURL(url)
    uploadURL = url
@@ -193,6 +194,7 @@ function setPayServerUrl(url)
 end
 
 function onDownloadServerList(header,body,flag)
+   print("onDownloadServerList!!!!!!!!!!!!!!!!!!")
    if flag ==false then
       
       return 
@@ -202,6 +204,7 @@ function onDownloadServerList(header,body,flag)
    end
    updateServerListRequest = {}
    print("@@@@@@@@@@@@@@@@@download server list@@@@@@@@@@@@@@@@@@@@")
+   -- print("body",body)
    --local line = getStrFromFile(fileName)
    -- print(body)
    local tab = cjson.decode(body)
@@ -209,7 +212,7 @@ function onDownloadServerList(header,body,flag)
    if tab.restartUrl then
       RestartUrl = tab.restartUrl
    end
-   for k,v in pairs(tab.Server) do
+   for k,v in pairs(tab) do
       table.insert(serverList,v)
    end
    defaultList = tab.defaultAnnounce
@@ -218,9 +221,9 @@ function onDownloadServerList(header,body,flag)
    end
    --uploadURL = tab.uploadURL
    --downloadURL = tab.downloadURL
-   serverVersion = tab.maxBuild
-   if tab.version then
-      version = tab.version
+   serverVersion = tab.build
+   if tab.AppVersion then
+      version = tab.AppVersion
    end
    setServerUrl(tab.loginServerUrl)
    appstoreVersion = tab.appstoreversion
@@ -231,7 +234,7 @@ function onDownloadServerList(header,body,flag)
    --    return
    -- end
    firstLaunch()
-   if scriptsVersion >= tab.maxBuild  then
+   if scriptsVersion >= tab.build  then
       local flag = checkUnfinishedFile()
       if flag == true then
          print("88888888888888888 true")
@@ -244,14 +247,14 @@ function onDownloadServerList(header,body,flag)
       print("ready to download updateList")
       haveUpdate = true
       --download(updateDownLoadURL,"update/updateList.json",6,0)
-      http.request(updateDownLoadURL.."update/updateList.json",onDownloadUpdateList)
+      http.request(updateDownLoadURL.."updateFiles/updateList.ashx",onDownloadUpdateList)
    end
 end
 
 function checkUnfinishedFile()
    print("checkUnfinishedFile")
-   logFile = io.open(path.."update/log.txt","r")
-   successFile = io.open(path.."update/success.txt","r")
+   logFile = io.open(path.."updateFiles/log.txt","r")
+   successFile = io.open(path.."updateFiles/success.txt","r")
    local flag = true
    if logFile and successFile then
       local successHash = {}
@@ -260,7 +263,7 @@ function checkUnfinishedFile()
          successHash[line] = true
       end
       successFile:close()
-      successFile = io.open(path.."update/success.txt","a+")
+      successFile = io.open(path.."updateFiles/success.txt","a+")
       newFileCnt = 0
       newFileHasCnt = 0
       logHash = {}
@@ -305,14 +308,15 @@ function checkIOSCanUpdate(hash)
 end
 
 function onDownloadUpdateList(header,body)
-   print("onDownloadUpdateList")
+   print("onDownloadUpdateList",scriptsVersion,serverVersion)
    --local line = getStrFromFile(fileName)
    local tab = cjson.decode(body)
-   --printTable(tab)
+   -- printTable(tab)
    local hash = {}
    for k, v in pairs(tab.updateList) do
       hash[v.build] = v
    end
+   -- printTable(hash)
    checkIOSCanUpdate(hash)
    if scriptsVersion >= serverVersion then
       local flag = checkUnfinishedFile()
@@ -323,15 +327,15 @@ function onDownloadUpdateList(header,body)
       end
       return
    end
-   if hash[serverVersion] and hash[scriptsVersion] and hash[serverVersion].engineBuild == hash[scriptsVersion].engineBuild then
+   if hash[serverVersion] and hash[scriptsVersion] then
       local flag = checkUnfinishedFile() 
       local func = function ()
          versionInfoCnt = 0
          versionInfoHasCnt = 0
-         for i = scriptsVersion+1, serverVersion do
+         for i = 1, serverVersion do
             if hash[i] then
                versionInfoCnt = versionInfoCnt + 1
-               download(updateDownLoadURL,"update/update_"..i..".json",7,0)
+               download(updateDownLoadURL,"updateFiles/v"..i..".ashx",7,0)
             end
          end
          -- label:setString("更新版本信息：0/"..versionInfoCnt)
@@ -351,19 +355,19 @@ function onDownloadUpdateList(header,body)
             end
          end
       end
-   else
-      luaj.callStaticMethod("cc/yongdream/nshx/Util","deleteDirectory",{path.."update"})
-      luaoc.callStaticMethod("AppController","deleteDirectory",{path=path.."update"})
-      package.loaded["config"] = nil
-      require"config"
-      if scriptsVersion >= serverVersion then
-         finishUpdate()
-      elseif hash[scriptsVersion] and hash[serverVersion] and hash[serverVersion].engineBuild == hash[scriptsVersion].engineBuild then
-         downloadServerList() --客户端与服务端版本号不同，引擎版本号相同，重新进入更新
-      else
-         label:setString("请重新下载app")
-         print("please download the latest app")
-      end
+   -- else
+   --    luaj.callStaticMethod("cc/yongdream/nshx/Util","deleteDirectory",{path.."update"})
+   --    luaoc.callStaticMethod("AppController","deleteDirectory",{path=path.."update"})
+   --    package.loaded["config"] = nil
+   --    require"config"
+   --    if scriptsVersion >= serverVersion then
+   --       finishUpdate()
+   --    elseif hash[scriptsVersion] and hash[serverVersion] and hash[serverVersion].engineBuild == hash[scriptsVersion].engineBuild then
+   --       downloadServerList() --客户端与服务端版本号不同，引擎版本号相同，重新进入更新
+   --    else
+   --       label:setString("请重新下载app")
+   --       print("please download the latest app")
+   --    end
    end
 end
 
@@ -404,8 +408,8 @@ function onDownloadVersionInfo(fileName)
    bar.show("更新版本信息：",versionInfoHasCnt,versionInfoCnt)
    local line = getStrFromFile(fileName)
    local tab = cjson.decode(line)
-   local version = tonumber(splitString(splitString(fileName,"update_")[2],".json")[1])
-   printTable(tab)
+   local version = tonumber(splitString(splitString(fileName,"updateFiles/v")[1],".ashx")[1])
+   -- printTable(tab)
    print(version)
    for k, v in pairs(tab) do
       if (fileHash[v.savePath] == nil or fileHash[v.savePath].version < version) and checkFileLegal(v.savePath) == true then
@@ -414,10 +418,10 @@ function onDownloadVersionInfo(fileName)
       end
    end
    if versionInfoHasCnt == versionInfoCnt then
-      os.remove(path.."update/log.txt")
-      os.remove(path.."update/success.txt")
-      logFile = io.open(path.."update/log.txt","a+")
-      successFile = io.open(path.."update/success.txt","a+")
+      os.remove(path.."updateFiles/log.txt")
+      os.remove(path.."updateFiles/success.txt")
+      logFile = io.open(path.."updateFiles/log.txt","a+")
+      successFile = io.open(path.."updateFiles/success.txt","a+")
       newFileCnt = 0
       newFileHasCnt = 0
       logHash = {}

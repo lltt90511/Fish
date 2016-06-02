@@ -36,6 +36,7 @@ function onHttpRepose(curlId)
 	print ("###############################################onHttpRepose",curlId)
 	local ret,header,body = C_getHttpRepose(curlId)
 	--print (id,header,body)
+	-- print("onHttpRepose!!!!!!!!!!!!!",body)
 	if ret == -1 then
 		-- 获取失败
 		print("http repose 获取失败...",curlId)

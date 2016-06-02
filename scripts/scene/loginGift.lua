@@ -138,6 +138,9 @@ function onGetDailyGift(data)
   if isGet == false then
      isGet = true
   end
+  widget.panel.bg.get.obj:setVisible(false)
+  widget.panel.bg.get.obj:setTouchEnabled(false)
+  widget.panel.bg.text.obj:setVisible(true)
   if userdata.goldAction == true then
      event.pushEvent("ON_GOLD_ACTION")
   end

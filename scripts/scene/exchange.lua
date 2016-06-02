@@ -13,10 +13,12 @@ local checkNum2 = 6
 local selectNum = 0
 local selectType = 0
 local selectArr = {1,5,10,50,100}
+local gameId = 0
 
-function create(_parent)
+function create(_parent,_id)
    thisParent = _parent
    this = tool.loadWidget("cash/exchange",widget,thisParent,99)
+   gameId = _id
    selectNum = 1
    selectType = 1
    initView()
@@ -103,7 +105,12 @@ end
 function onConfirm(event)
   if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      local p = selectType == 1 and 1000000 or 1000
+      local p = 0
+      if gameId == 1 then
+         p = selectType == 1 and 100000 or 1000
+      elseif gameId == 2 then
+         p = selectType == 1 and 100 or 10
+      end
       local n = 0
       if selectNum < 6 then
          n = selectArr[selectNum] 

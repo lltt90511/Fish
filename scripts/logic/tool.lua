@@ -1332,7 +1332,7 @@ function getImageFile(defaltMan,defaultGril,list,eventPer,cache,eventHash,charId
 					end
 			   end
 			)
-			fileManager.download("http://120.27.156.196:8080/Images/",splitString(body.file,"")[1],0,0)
+			fileManager.download(downloadURL,splitString(body.file,"")[1],0,0)
 		end
 	end
 	local body = cache[charId]

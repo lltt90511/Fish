@@ -24,7 +24,8 @@
     "qietu/chat/inpit2.png",
     "qietu/chat/send.png",
     "qietu/user/v17.png",
-    "qietu/top/head.png"
+    "qietu/top/head.png",
+    "qietu/main2/default.jpg"
   ],
   "version": "1.6.0.0",
   "widgetTree": {
@@ -2037,7 +2038,7 @@
                   "customProperty": "",
                   "flipX": false,
                   "flipY": false,
-                  "height": 90,
+                  "height": 86,
                   "ignoreSize": false,
                   "layoutParameter": null,
                   "opacity": 255,
@@ -2047,14 +2048,14 @@
                   "rotation": 0,
                   "scaleX": 1,
                   "scaleY": 1,
-                  "sizePercentX": 0.9,
-                  "sizePercentY": 0.9,
+                  "sizePercentX": 0.86,
+                  "sizePercentY": 0.86,
                   "sizeType": 0,
                   "tag": 22701,
                   "touchAble": false,
                   "useMergedTexture": false,
                   "visible": true,
-                  "width": 90,
+                  "width": 86,
                   "x": 0,
                   "y": 0,
                   "capInsetsHeight": 1,
@@ -2063,13 +2064,13 @@
                   "capInsetsY": 0,
                   "fileName": null,
                   "fileNameData": {
-                    "path": "GUI/image.png",
+                    "path": "qietu/main2/default.jpg",
                     "plistFile": "",
                     "resourceType": 0
                   },
                   "scale9Enable": false,
-                  "scale9Height": 90,
-                  "scale9Width": 90
+                  "scale9Height": 86,
+                  "scale9Width": 86
                 }
               }
             ],
