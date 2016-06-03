@@ -113,30 +113,40 @@ end
 function onBtn3(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call(19001,1,data.id,1)
-      exit()
+      alert.create("是否确定禁言该账号!",nil,function()
+        call(19001,1,data.id,5)
+        exit()
+      end,nil,"确定","取消")
    end
 end
 
 function onBtn4(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call(19001,2,data.id,1)
-      exit()
+      alert.create("是否确定解除该账号的禁言!",nil,function()
+        call(19001,2,data.id,0)
+        exit()
+      end,nil,"确定","取消")
    end
 end
 
 function onBtn5(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      
+      alert.create("是否确定封禁该账号!",nil,function()
+        call(19001,11,data.id,0)
+        exit()
+      end,nil,"确定","取消")
    end
 end
 
 function onBtn6(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      
+      alert.create("是否确定冻结该账号!",nil,function()
+        call(19001,12,data.id,0)
+        exit()
+      end,nil,"确定","取消")
    end
 end
 

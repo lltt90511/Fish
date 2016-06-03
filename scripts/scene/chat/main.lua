@@ -134,6 +134,7 @@ function onEnterGameNotice(_data)
    message.grade = _data.user._uGrade
    message.pic = _data.user._picUrl
    message.sex = _data.user._sex
+   message.time = os.date("*t",tonumber(os.time()))
    setMessage(message,1)
 end
 
@@ -437,21 +438,25 @@ function addSplitMessage(richText, msg, cnt)
       textLabel:setFontName(DEFAULT_FONT)
       totalWidth = textLabel:getContentSize().width
    elseif msg.type == -1 then
+      local nowStr = ""
+      if msg and msg.time then
+         nowStr = string.format("%02d", msg.time.hour)..":"..string.format("%02d", msg.time.min).." "
+      end
       local textLabel = Label:create()
       textLabel:setFontSize(40)
       textLabel:setFontName(DEFAULT_FONT)
       if msg.grade < 11 then
-         textLabel:setText("欢迎"..msg.name.."进入房间")
+         textLabel:setText(nowStr.."欢迎"..msg.name.."进入房间")
       elseif msg.grade < 17 then
-         textLabel:setText("欢迎"..msg.name.."莅临指导")
+         textLabel:setText(nowStr.."欢迎"..msg.name.."莅临指导")
       elseif msg.grade < 25 then
-         textLabel:setText("热烈欢迎"..msg.name.."屈尊降临")
+         textLabel:setText(nowStr.."热烈欢迎"..msg.name.."屈尊降临")
       elseif msg.grade < 27 then
-         textLabel:setText("全体起立，恭候"..msg.name.."大驾光临")
+         textLabel:setText(nowStr.."全体起立，恭候"..msg.name.."大驾光临")
         elseif msg.grade == 27 then
-         textLabel:setText("全体起立，恭候"..msg.name.."创世之神降临凡间")
+         textLabel:setText(nowStr.."全体起立，恭候"..msg.name.."创世之神降临凡间")
       elseif msg.grade == 28 then
-         textLabel:setText("全体起立，恭候"..msg.name.."宇宙霸主降临凡间")
+         textLabel:setText(nowStr.."全体起立，恭候"..msg.name.."宇宙霸主降临凡间")
       end
       totalWidth = textLabel:getContentSize().width
       totalWidth = totalWidth + defultTitleW
@@ -667,15 +672,19 @@ function addMessage(message, list, time)
             _welcome = "全体起立，恭候"
             _room = "宇宙霸主降临凡间"
          end
-        local _text1 = RichElementText:create(1,ccc3(255,252,204),255,_welcome,DEFAULT_FONT,40)         
+        local _text1 = RichElementText:create(1,ccc3(255,252,204),255,nowStr,DEFAULT_FONT,40)         
         _richText:pushBackElement(_text1) 
+        _label:setText(nowStr)        
+        posx = posx + _label:getSize().width
+        local _text2 = RichElementText:create(2,ccc3(255,252,204),255,_welcome,DEFAULT_FONT,40)         
+        _richText:pushBackElement(_text2) 
         _label:setText(_welcome)        
         posx = posx + _label:getSize().width 
-        local _image = RichElementImage:create(2, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.grade..".png");
+        local _image = RichElementImage:create(3, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.grade..".png");
         _richText:pushBackElement(_image)
         posx = posx + defultTitleW
-        local _text2 = RichElementText:create(3,ccc3(253,78,62),255,message.name,DEFAULT_FONT,40)         
-        _richText:pushBackElement(_text2) 
+        local _text3 = RichElementText:create(4,ccc3(253,78,62),255,message.name,DEFAULT_FONT,40)         
+        _richText:pushBackElement(_text3) 
         _label:setText(message.name)
         local _layout = Layout:create()
         _layout:setSize(CCSize(_label:getSize().width,fontHeight))
@@ -705,8 +714,8 @@ function addMessage(message, list, time)
             end 
           end)
         layout:addChild(_layout)
-        local _text3 = RichElementText:create(4,ccc3(255,252,204),255,_room,DEFAULT_FONT,40)         
-        _richText:pushBackElement(_text3) 
+        local _text4 = RichElementText:create(5,ccc3(255,252,204),255,_room,DEFAULT_FONT,40)         
+        _richText:pushBackElement(_text4) 
       elseif message.type == 0 then
           local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
           _richText:pushBackElement(_text1)
@@ -1043,6 +1052,7 @@ function resetPanelSay()
        -- targetId = -1
        -- targetName = "" 
        nameType = 0
+       isPrivate = 0
        widget.input_1.check.obj:setTouchEnabled(false) 
        if widget.input_1.check.obj:getSelectedState() == true then
           widget.input_1.check.obj:setSelectedState(false) 
@@ -1062,6 +1072,7 @@ function setPanelSay(_id,_name,_private)
     isPrivate = _private
     widget.input_1.say.text.obj:setText(targetName)
     widget.panel_say.bg.label_1.obj:setText(targetName)
+    widget.input_1.check.obj:setTouchEnabled(true)
     if isPrivate == 1 then
        widget.input_1.check.obj:setSelectedState(true)
     elseif isPrivate == 0 then

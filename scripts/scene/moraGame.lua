@@ -471,6 +471,7 @@ function onFingerGameInviteAgreeSucceed()
          widget.bg.gold.obj:setStringValue(gold)
       end
    end
+   showOrHideAlert(1,false)
 end
 
 function onBetAlertBack()

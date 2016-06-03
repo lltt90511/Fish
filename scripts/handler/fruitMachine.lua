@@ -1,5 +1,6 @@
 local event = require"logic.event"
 local userdata = require"logic.userdata"
+local tool = require "logic.tool"
 
 module("handler.fruitMachine",package.seeall)
 
@@ -36,7 +37,9 @@ function onEnterGameSucceed(gameData)
 end
 
 function onEnterGameFailed(gameData)
-   
+   if gameData and gameData.msg then
+      alert.create(gameData.msg)
+   end
 end
 
 function onLeaveGameSucceed(gameData)
@@ -48,7 +51,9 @@ function onLeaveGameSucceed(gameData)
 end
 
 function onLeaveGameFailed(gameData)
-
+   if gameData and gameData.msg then
+      alert.create(gameData.msg)
+   end
 end
 
 function onGetUserListSucceed(gameData)
