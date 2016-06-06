@@ -48,6 +48,12 @@ local isRemuse = false
 local resultName = {inside="",outside=""}
 local effectId = 0
 local gId = 0
+local dapuhuoPos = {x=0,y=0}
+local shayuPos = {x=0,y=0}
+local moguiPos = {x=0,y=0}
+local shayuSprite = nil
+local moguiSprite = nil
+
 local fishList = {
   [1]={id = 1,name = '大捕获',res = '13',fishType = 0,seqId = 1,multi = 0.0,multiEffect = '8,4,10,2'},
   [2]={id = 8,name = '珊瑚鱼',res = '10',fishType = 0,seqId = 2,multi = 0.0,multiEffect = ''},
@@ -86,6 +92,13 @@ function create(_parent, _parentModule)
           historyBet[tonumber(list[1])] = tonumber(list[2])
       end
    end
+
+   CCArmatureDataManager:sharedArmatureDataManager():addArmatureFileInfo("ani/shayu.ExportJson")
+   CCArmatureDataManager:sharedArmatureDataManager():addArmatureFileInfo("ani/moguiyu.ExportJson")
+   CCArmatureDataManager:sharedArmatureDataManager():addArmatureFileInfo("ani/denglongyu.ExportJson")
+   CCArmatureDataManager:sharedArmatureDataManager():addArmatureFileInfo("ani/wugui.ExportJson")
+   CCArmatureDataManager:sharedArmatureDataManager():addArmatureFileInfo("ani/gold.ExportJson")
+
    -- if userdata.userFishHistoryGold and userdata.userFishHistoryGold ~= "" then
    --    local splitList = splitString(userdata.userFishHistoryGold,",")
    --    for k,v in pairs(splitList) do
@@ -95,6 +108,7 @@ function create(_parent, _parentModule)
    -- printTable(historyBet)
    -- widget.bottom_bg.rank_list.obj:setItemModel(widget.rank_render.obj)
    -- initClassicOutSide()
+
    lastOpenId = {inside=1,outside=1}
    initView()
    initResult()
@@ -225,6 +239,9 @@ function onGetGameStatus(gameData)
          end,1)
       if not isPlaying then
          playFishEffect()
+      end
+      if data.GameResult.f[1] == 1 or data.GameResult.f[1] == 3 or data.GameResult.f[1] == 4 then
+         setIsBigWin()
       end
    end
 end
@@ -372,6 +389,9 @@ function initView()
       widget.bottom.layout.obj:setVisible(true)
       widget.bottom.layout.text.obj:setText("开奖中，请稍后...")
       playFishEffect()
+      if data.GameResult.f[1] == 1 or data.GameResult.f[1] == 3 or data.GameResult.f[1] == 4 then
+         setIsBigWin()
+      end
    end
    -- widget.bottom_bg.bet_list.obj:setVisible(true)
    -- widget.bottom_bg.bet_list.obj:setTouchEnabled(false)
@@ -606,14 +626,10 @@ function playCircle(maxNum, name)
          endEffect()
          return
       end
-      widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
-      -- if name == "outside" and ((cnt%2 == 0 and data.type == 200) or data.type == 201)then
-      --    print("st!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",st)
-      --    AudioEngine.playEffect("effect_19")
-      -- end
       if name == "outside" then
          AudioEngine.playEffect("effect_19")
       end
+      widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
       -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(0)
       tool.createEffect(tool.Effect.delay,{time=delay}, widget.fish["panel_"..name.."_"..st].light.obj,
                         function()
@@ -635,6 +651,7 @@ function playCircle(maxNum, name)
                                  widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
                                  if finishCircleCnt == 2 then
                                     -- AudioEngine.stopEffect(effectId)
+                                    AudioEngine.stopAllEffects()
                                     endEffect() 
                                  end 
                                  return
@@ -709,12 +726,44 @@ function endEffect()
        widget.bottom.bet_bg["bet_"..v.id].img.obj:setTouchEnabled(false)
        widget.bottom.bet_bg["bet_"..v.id].img.img.obj:setVisible(false)
    end
+   widget.fish.bigWin.obj:removeAllNodes()
+   if data.GameResult and data.GameResult.f then
+      if data.GameResult.f[1] == 1 then
+          showJinbi()   
+          local dabuhuo = CCSprite:create("cash/qietu/fish/fish_13.png")
+          dabuhuo:setAnchorPoint(ccp(0.5,0))
+          dabuhuo:setPosition(ccp(Screen.width/2,230))
+          widget.fish.bigWin.obj:addNode(dabuhuo,100)
+          local action2_1 = CCRotateTo:create(0.6,15)
+          local action2_2 = CCRotateTo:create(0.6,0)
+          local action2 = CCSequence:createWithTwoActions(action2_1,action2_2)
+          action2 = CCRepeatForever:create(action2)
+          dabuhuo:runAction(action2)
+          showShayu(1,ccp(400,400),100,-60)
+          showMoguiyu(1,ccp(680,500),100,-150)
+          showDenglongyu(1,ccp(440,220),100,0)
+          showWugui(1,ccp(640,220),100,0)
+          performWithDelay(function()
+              widget.fish.bigWin.obj:removeAllNodes()
+              goBo()
+          end,2.0)
+       elseif data.GameResult.f[1] == 3 then
+          showJinbi()
+          showShayu(1.5,ccp(Screen.width/2,692/2),100,-30)
+          performWithDelay(function()
+              widget.fish.bigWin.obj:removeAllNodes()
+              goBo()
+          end,2.0)
+       elseif data.GameResult.f[1] == 4 then
+          showJinbi()
+          showMoguiyu(1.5,ccp(Screen.width/2,692/2),100,-150)
+          performWithDelay(function()
+              widget.fish.bigWin.obj:removeAllNodes()
+              goBo()
+          end,2.0)
+      end
+   end
    checkWinResult()
-   if fishList[lastOpenId.outside].id >= 1 and fishList[lastOpenId.outside].id <= 6 and data.type == 201 then
-      doResultAni(fishList[lastOpenId.outside].id)
-   else
-      -- startFishTimer() 
-   end 
    commonTop.registerEvent()
 
    betOwn = {}
@@ -724,6 +773,141 @@ function endEffect()
    end)
    widget.bottom.layout.obj:setTouchEnabled(true)
    widget.bottom.layout.obj:setVisible(true)
+end
+
+function setIsBigWin()
+   showLight(ccp(545,530))
+
+   local dabuhuo = CCSprite:create("cash/qietu/fish/fish_13.png")
+   dabuhuo:setAnchorPoint(ccp(0.5,0))
+   dabuhuo:setPosition(ccp(545,445))
+   widget.fish.bigWin.obj:addNode(dabuhuo,100)
+   local action1 = CCRotateTo:create(0.6,15)
+   local action2 = CCRotateTo:create(0.6,0)
+   local action3 = CCSequence:createWithTwoActions(action1,action2)
+   action3 = CCRepeatForever:create(action3)
+   dabuhuo:runAction(action3)
+
+   showLight(ccp(320,250))
+   showShayu(1,ccp(260,250),100,0)
+
+   showLight(ccp(760,250))
+   showMoguiyu(1,ccp(700,250),100,0)
+
+   local action4 = CCRotateTo:create(0.6,15)
+   local action5 = CCRotateTo:create(0.6,0)
+   local action6 = CCSequence:createWithTwoActions(action4,action5)
+   action6 = CCRepeatForever:create(action6)
+   widget.fish.panel_outside_1.fish.obj:runAction(action6)
+
+   widget.fish.panel_outside_3.fish.obj:setVisible(false)
+   local armature1 = CCArmature:create("shayu")
+   local anim1 = armature1:getAnimation()
+   widget.fish.panel_outside_3.obj:addNode(armature1,10)
+   armature1:setPosition(ccp(85,50))
+   armature1:setScaleX(270/480)
+   armature1:setScaleY(203/280)
+   anim1:playWithIndex(0)
+
+   widget.fish.panel_outside_5.fish.obj:setVisible(false)
+   local armature2 = CCArmature:create("moguiyu")
+   local anim2 = armature2:getAnimation()
+   widget.fish.panel_outside_5.obj:addNode(armature2,10)
+   armature2:setPosition(ccp(75,75))
+   armature2:setScaleX(175/320)
+   armature2:setScaleY(233/360)
+   anim2:playWithIndex(0)
+
+   performWithDelay(function()
+      widget.fish.bigWin.obj:removeAllNodes()
+      widget.fish.panel_outside_1.fish.obj:stopAllActions()
+      widget.fish.panel_outside_1.fish.obj:setRotation(0)
+      widget.fish.panel_outside_3.obj:removeAllNodes()
+      widget.fish.panel_outside_3.fish.obj:setVisible(true)
+      widget.fish.panel_outside_5.obj:removeAllNodes()
+      widget.fish.panel_outside_5.fish.obj:setVisible(true)
+   end,2.0)
+end
+
+function showLight(_p)
+   local light = CCSprite:create("cash/qietu/fish/shan.png")
+   light:setPosition(_p)
+   widget.fish.bigWin.obj:addNode(light,90)
+   doLightAni(light)
+end
+
+function showJinbi()
+   local jinbi = CCArmature:create("gold")
+   local anim = jinbi:getAnimation()
+   widget.fish.bigWin.obj:addNode(jinbi,90)
+   jinbi:setPosition(ccp(Screen.width/2,260))
+   anim:playWithIndex(0)
+end
+
+function showShayu(_s,_p,_z,_r)
+   local armature = CCArmature:create("shayu")
+   local anim = armature:getAnimation()
+   widget.fish.bigWin.obj:addNode(armature,_z)
+   armature:setPosition(_p)
+   armature:setScale(_s)
+   armature:setRotation(_r)
+   anim:playWithIndex(0)
+end
+
+function showMoguiyu(_s,_p,_z,_r)
+   local armature = CCArmature:create("moguiyu")
+   local anim = armature:getAnimation()
+   widget.fish.bigWin.obj:addNode(armature,_z)
+   armature:setPosition(_p)
+   armature:setScale(_s)
+   armature:setRotation(_r)
+   anim:playWithIndex(0)
+end
+
+function showDenglongyu(_s,_p,_z,_r)
+   local armature = CCArmature:create("denglongyu")
+   local anim = armature:getAnimation()
+   widget.fish.bigWin.obj:addNode(armature,_z)
+   armature:setPosition(_p)
+   armature:setScale(_s)
+   armature:setRotation(_r)
+   anim:playWithIndex(0)
+end
+
+function showWugui(_s,_p,_z,_r)
+   local armature = CCArmature:create("wugui")
+   local anim = armature:getAnimation()
+   widget.fish.bigWin.obj:addNode(armature,_z)
+   armature:setPosition(_p)
+   armature:setScale(_s)
+   armature:setRotation(_r)
+   anim:playWithIndex(0)
+end
+
+function goBo()
+   local bo = ImageView:create()
+   bo:loadTexture("cash/qietu/fish/bo.png")
+   bo:setAnchorPoint(ccp(0,0))
+   bo:setPosition(ccp(-768,0))
+   widget.fish.bigWin.obj:addChild(bo,10)
+   tool.createEffect(tool.Effect.move,{time=1.0,x=Screen.width+768,y=0,easeOut=true},bo,function()
+      bo:setFlipX(true)
+      tool.createEffect(tool.Effect.move,{time=1.0,x=-768,y=0,easeOut=true},bo,function()
+          bo:removeFromParentAndCleanup(true)
+      end)
+   end)
+end
+
+function doLightAni(obj)
+   local action = CCRotateBy:create(1.0,60)
+   action = CCRepeatForever:create(action)
+   obj:runAction(action)
+end
+
+function dabuhuoAni(obj)
+  tool.createEffect(tool.Effect.shake,{time=0.5,roate=20},dabuhuo,function()
+      dabuhuoAni(obj)
+  end)
 end
 
 function checkWinResult()
@@ -1301,6 +1485,7 @@ widget = {
         light = {_type = "ImageView"},
         fish = {_type = "ImageView"},
       },
+      bigWin = {_type = "Layout"},
    },
    result = {
       _type = "Layout",

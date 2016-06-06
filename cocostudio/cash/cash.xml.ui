@@ -52,31 +52,22 @@
   <ResRelativePath />
   <imageFileList />
   <imagePngList>
-    <string>qietu/mora/bg.png</string>
-    <string>qietu/mora/touxiang_1.png</string>
-    <string>qietu/main2/default.jpg</string>
-    <string>qietu/mora/yaoqing.png</string>
-    <string>qietu/chat/userBtn1.png</string>
-    <string>qietu/chat/userBtn2.png</string>
-    <string>qietu/mora/di.png</string>
-    <string>qietu/mora/di_2.png</string>
-    <string>qietu/mora/shibai.png</string>
-    <string>qietu/mora/jiandao_2.png</string>
-    <string>qietu/mora/jiandao_1.png</string>
-    <string>qietu/mora/shitou_2.png</string>
-    <string>qietu/mora/shitou_1.png</string>
-    <string>qietu/mora/bu_2.png</string>
-    <string>qietu/mora/bu_1.png</string>
+    <string>qietu/chat/tab_bg.png</string>
+    <string>qietu/chat/tab2.png</string>
+    <string>qietu/chat/tab3.png</string>
+    <string>qietu/chat/tab1.png</string>
     <string>GUI/image.png</string>
-    <string>qietu/mora/jinbi.png</string>
-    <string>qietu/mora/di_1.png</string>
-    <string>qietu/tymb/goldIcon.png</string>
-    <string>qietu/tymb/xiaoBox.png</string>
-    <string>qietu/mora/shuru.png</string>
-    <string>qietu/mora/queding.png</string>
-    <string>qietu/tymb/guanbiBt01.png</string>
-    <string>qietu/tymb/guanbiBt02.png</string>
+    <string>buleLoading.png</string>
+    <string>buleLoadingBg.png</string>
+    <string>qietu/chat/input1.png</string>
+    <string>qietu/tymb/check.png</string>
+    <string>qietu/tymb/gou.png</string>
+    <string>qietu/chat/inpit2.png</string>
+    <string>qietu/chat/send.png</string>
+    <string>qietu/user/v17.png</string>
+    <string>qietu/top/head.png</string>
+    <string>qietu/main2/default.jpg</string>
   </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>moraGame.json</CurrentUIJson>
+  <CurrentUIJson>chat.json</CurrentUIJson>
 </UIProject>

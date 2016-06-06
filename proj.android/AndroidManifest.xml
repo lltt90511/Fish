@@ -314,8 +314,8 @@
         <meta-data android:name="JPUSH_CHANNEL" android:value="sgj"/>
         <meta-data android:name="JPUSH_APPKEY" android:value="fa0c2143a2bb988b24c917d1" /> <!--  </>值来自开发者平台取得的AppKey-->
         
-    	<meta-data android:value="5625f0f467e58e7865002be8" android:name="UMENG_APPKEY"></meta-data>
-		<meta-data android:value="sgjChongQing" android:name="UMENG_CHANNEL"/>
+    	<meta-data android:value="5755339e67e58e5bcd002310" android:name="UMENG_APPKEY"></meta-data>
+		<meta-data android:value="haididabuhuo1" android:name="UMENG_CHANNEL"/>
 		
     </application>
     <supports-screens android:largeScreens="true"

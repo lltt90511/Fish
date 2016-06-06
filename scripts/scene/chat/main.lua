@@ -35,10 +35,12 @@ local userAllCnt = 0
 local isPrivate = 0
 local targetId = -1
 local targetName = ""
-local max_list_y = -200
+local max_list_y = -100
 local defultTitleW = 110
 local eventHash = {}
 local nameType = 0
+local targetList = {}
+
 -- payServerUrl = payServerUrl
 function create(_gameId,_parent,_parentModule)
    this = tool.loadWidget("cash/chat",widget,nil,nil,true)
@@ -841,7 +843,7 @@ function addMessage(message, list, time)
          _richText:pushBackElement(_name3) 
          _label:setText(say)        
          posx = posx + _label:getSize().width 
-         local _image2 = RichElementImage:create(5, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.fromGrade..".png");
+         local _image2 = RichElementImage:create(5, ccc3(255,255,255), 255, "cash/qietu/user/v"..message.toGrade..".png");
          _richText:pushBackElement(_image2) 
          posx = posx + defultTitleW
          local _name4 = RichElementText:create(6,ccc3(254,177,23),255,message.to,DEFAULT_FONT,40)         
@@ -1014,7 +1016,7 @@ end
 function resetPanelSay()
     widget.input_1.say.text.obj:setText("所有人")
     widget.input_1.say.obj:registerEventScript(function(event)
-        if targetId == -1 and targetName == "" then
+        if #targetList == 0 then
            return
         end
         tool.buttonSound("releaseUp","effect_12")
@@ -1028,29 +1030,8 @@ function resetPanelSay()
     widget.panel_say.bg.obj:setPosition(ccp(widget.panel_say.bg.obj:getPositionX(),max_list_y))
     widget.panel_say.bg.label_1.obj:setTouchEnabled(true)
     widget.panel_say.bg.label_1.obj:registerEventScript(function(event)
-       local posY = widget.panel_say.bg.obj:getPositionY()
-       if posY == 0 then
-          tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
-       end
-    end)
-    widget.panel_say.bg.label_1.obj:setTouchEnabled(true)
-    widget.panel_say.bg.label_1.obj:registerEventScript(function(event)
-       -- targetId = -1
-       -- targetName = "" 
-       nameType = 1
-       widget.input_1.check.obj:setTouchEnabled(true) 
-       if targetId ~= -1 and targetName ~= "" then
-          widget.input_1.say.text.obj:setText(targetName)
-          local posY = widget.panel_say.bg.obj:getPositionY()
-          if posY == 0 then
-             tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
-          end
-       end
-    end)
-    widget.panel_say.bg.label_2.obj:setTouchEnabled(true)
-    widget.panel_say.bg.label_2.obj:registerEventScript(function(event)
-       -- targetId = -1
-       -- targetName = "" 
+       targetId = -1
+       targetName = "" 
        nameType = 0
        isPrivate = 0
        widget.input_1.check.obj:setTouchEnabled(false) 
@@ -1063,15 +1044,61 @@ function resetPanelSay()
           tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
        end
     end)
+    setSayList()
+end
+
+function setSayList()
+   max_list_y = -100    
+   for i=1,5 do
+       if targetList[i] then
+          max_list_y = max_list_y - 80
+          widget.panel_say.bg["line_"..i].obj:setVisible(true)
+          widget.panel_say.bg["label_"..i+1].obj:setVisible(true)
+          widget.panel_say.bg["label_"..i+1].obj:setText(targetList[i].name)
+          widget.panel_say.bg["label_"..i+1].obj:setTouchEnabled(true)
+          widget.panel_say.bg["label_"..i+1].obj:registerEventScript(function(event)
+             targetId = targetList[i].id
+             targetName = targetList[i].name 
+             nameType = 1
+             widget.input_1.check.obj:setTouchEnabled(true) 
+             widget.input_1.say.text.obj:setText(targetName)
+             local posY = widget.panel_say.bg.obj:getPositionY()
+             if posY == 0 then
+                tool.createEffect(tool.Effect.move,{time=0.5,x=0,y=max_list_y,easeIn=true},widget.panel_say.bg.obj)
+             end
+          end)
+       else
+          widget.panel_say.bg["line_"..i].obj:setVisible(false)
+          widget.panel_say.bg["label_"..i+1].obj:setVisible(false)
+       end
+   end
+   widget.panel_say.bg.obj:setSize(CCSize(390,-max_list_y))
+   widget.panel_say.bg.obj:setPosition(ccp(0,max_list_y))
 end
 
 function setPanelSay(_id,_name,_private)
     nameType = 1
+    local isIn = false
+    for k,v in pairs(targetList) do
+        if v.id == _id and v.name == _name then
+           isIn = true
+        end
+    end
+    if not isIn then
+       local _t = {}
+       _t.id = _id
+       _t.name = _name
+       table.insert(targetList,_t)
+       if #targetList > 5 then
+          table.remove(targetList,1)
+       end
+       setSayList()
+    end
     targetId = _id
     targetName = _name
     isPrivate = _private
-    widget.input_1.say.text.obj:setText(targetName)
-    widget.panel_say.bg.label_1.obj:setText(targetName)
+    widget.input_1.say.text.obj:setText(_name)
+    -- widget.panel_say.bg.label_1.obj:setText(targetName)
     widget.input_1.check.obj:setTouchEnabled(true)
     if isPrivate == 1 then
        widget.input_1.check.obj:setSelectedState(true)
@@ -1125,6 +1152,7 @@ function exit()
       isPrivate = 0
       targetId = -1
       targetName = ""
+      max_list_y = -100
    end
 end
 
@@ -1313,7 +1341,15 @@ widget = {
       _type = "Layout",
       label_1 = {_type = "Label"},
       label_2 = {_type = "Label"},
-      line = {_type = "Layout"},
+      label_3 = {_type = "Label"},
+      label_4 = {_type = "Label"},
+      label_5 = {_type = "Label"},
+      label_6 = {_type = "Label"},
+      line_1 = {_type = "Layout"},
+      line_2 = {_type = "Layout"},
+      line_3 = {_type = "Layout"},
+      line_4 = {_type = "Layout"},
+      line_5 = {_type = "Layout"},
     },
   },
 }
