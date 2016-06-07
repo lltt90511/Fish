@@ -64,7 +64,7 @@ function onLogin(event)
    if event == "releaseUp" then
       local str = textInput:getText()
       if str ~= "" then
-         call(1001, "1", str)
+         call(1001, "1", str,tonumber(appSrc))
       end
    end
 end

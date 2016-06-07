@@ -83,12 +83,23 @@ function create(_gameId,_parent,_parentModule)
    event.listen("ON_GET_USER_LIST_FAILED", onGetUserListFailed)
    event.listen("ON_SYSTEM_CONTEXT", onSystemContext)
    event.listen("ON_USER_OPERATE_SUCCEED", onUserOperateSucceed)
+   event.listen("ON_GET_SYSTEM_MESSAGE", onGetSystemMessage)
+
    -- call(6101,currentUserPage)
    -- performWithDelay(function()
    --   call(6101,1)
    -- end,2.0)
    call(6101,0)
    return this
+end
+
+function onGetSystemMessage(_data)
+   local message = {}
+   message.type = -3
+   message.msg = _data.msg 
+   message.time = os.date("*t",tonumber(os.time()))
+   addMessage(message,widget.message_bg.listView1.obj)
+   addMessage(message,widget.message_bg.listView3.obj)
 end
 
 function onUserOperateSucceed(_data)
@@ -429,7 +440,17 @@ function addSplitMessage(richText, msg, cnt)
    local totalWidth = 0
    local args = {}
    local color = ccc3(255,255,255)
-   if msg.type == -2 then
+   if msg.type == -3 then
+      local nowStr = ""
+      if msg and msg.time then
+         nowStr = string.format("%02d", msg.time.hour)..":"..string.format("%02d", msg.time.min).." "
+      end
+      local textLabel = Label:create()
+      textLabel:setText(nowStr.."系统消息:"..msg.msg)
+      textLabel:setFontSize(40)
+      textLabel:setFontName(DEFAULT_FONT)
+      totalWidth = textLabel:getContentSize().width
+   elseif msg.type == -2 then
       local nowStr = ""
       if msg and msg.time then
          nowStr = string.format("%02d", msg.time.hour)..":"..string.format("%02d", msg.time.min).." "
@@ -474,47 +495,28 @@ function addSplitMessage(richText, msg, cnt)
       totalWidth = textLabel:getContentSize().width
    elseif msg.type == 1 then
    else
-       local pattern = '(%;(%d+))'
-       local last_end = 1
-       local s,e,cap = string.find(msg.msg,pattern, 1)
-       if s == nil then
-          table.insert(args,msg.msg)
-       elseif s > 1 then
-          table.insert(args,string.sub(msg.msg,1,s-1))
+       local nowStr = ""
+       if msg and msg.time then
+          nowStr = string.format("%02d", msg.time.hour)..":"..string.format("%02d", msg.time.min).." "
        end
-       while s do
-          if s ~= 1 or cap ~= '' then         
-             table.insert(args,cap)
-          end
-          last_end = e + 1
-          s,e,cap = string.find(msg.msg,pattern,last_end)
-          if s == nil then
-             table.insert(args,string.sub(msg.msg,last_end))
-          elseif s > last_end then
-             table.insert(args, string.sub(msg.msg,last_end,s-1))
-          end
-       end
-       -- printTable(args)
-       for i = 1, #args do
-          local path = isExpression(args[i])
-          if path ~= nil then
-             -- print("path!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",path,i)
-             local _image = RichElementImage:create(i+cnt, color, 255, "expression/expression_a_0"..path..".png");
-             richText:pushBackElement(_image)
-             
-             totalWidth = totalWidth + 36
-          else
-             -- print("not expression!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",i)
-             local _msg = RichElementText:create(i+cnt,color,255,args[i],DEFAULT_FONT,40) 
-             richText:pushBackElement(_msg)
-             
-             local msg = Label:create()
-             msg:setText(args[i])
-             msg:setFontSize(40)
-             msg:setFontName(DEFAULT_FONT)
-             
-             totalWidth = totalWidth + msg:getContentSize().width
-          end
+       if msg.type == 2 then
+          local textLabel = Label:create()
+          textLabel:setText(nowStr..msg.from.."说："..msg.msg)
+          textLabel:setFontSize(40)
+          textLabel:setFontName(DEFAULT_FONT)
+          totalWidth = textLabel:getContentSize().width
+       elseif msg.type == 3 or msg.type == 4  then 
+          local textLabel = Label:create()
+          textLabel:setText(nowStr..msg.from.."对"..msg.to.."说："..msg.msg)
+          textLabel:setFontSize(40)
+          textLabel:setFontName(DEFAULT_FONT)
+          totalWidth = textLabel:getContentSize().width
+       elseif msg.type == 5 then 
+          local textLabel = Label:create()
+          textLabel:setText(nowStr..msg.from.."悄悄对"..msg.to.."说："..msg.msg)
+          textLabel:setFontSize(40)
+          textLabel:setFontName(DEFAULT_FONT)
+          totalWidth = textLabel:getContentSize().width
        end
        if msg.fromGrade then
           totalWidth = totalWidth + defultTitleW
@@ -571,7 +573,12 @@ function addMessage(message, list, time)
       if message and message.time then
          nowStr = string.format("%02d", message.time.hour)..":"..string.format("%02d", message.time.min).." "
       end
-      if message.type == -2 then
+      if message.type == -3 then
+         local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
+         _richText:pushBackElement(_text1)  
+         local _text2 = RichElementText:create(2,ccc3(255,0,0),255,"系统消息:"..message.msg,DEFAULT_FONT,40)
+         _richText:pushBackElement(_text2)
+      elseif message.type == -2 then
          local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
          _richText:pushBackElement(_text1)
          _label:setText(nowStr)        
@@ -794,7 +801,7 @@ function addMessage(message, list, time)
               end 
          end)
          layout:addChild(_layout)       
-         local _name3 = RichElementText:create(4,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
+         local _name3 = RichElementText:create(4,ccc3(255,255,255),255,"说："..message.msg,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name3)
          num = 4
       elseif message.type == 3 or message.type == 4 or message.type == 5 then
@@ -878,19 +885,19 @@ function addMessage(message, list, time)
               end 
          end)
          layout:addChild(_layout) 
-         local _name5 = RichElementText:create(7,ccc3(255,255,255),255,"说：",DEFAULT_FONT,40)         
+         local _name5 = RichElementText:create(7,ccc3(255,255,255),255,"说："..message.msg,DEFAULT_FONT,40)         
          _richText:pushBackElement(_name5) 
          num = 7
       end
         
       local textWidth = addSplitMessage(_richText, message, num)
-      -- print("textWidth=============================================",textWidth)
-      if textWidth > WIDTH-10 then     
+      print("textWidth=============================================",textWidth, WIDTH-52)
+      if textWidth > WIDTH-52 then     
          _richText:ignoreContentAdaptWithSize(false)
-         _richText:setSize(CCSize(WIDTH-10, fontHeight*math.ceil(textWidth/(WIDTH-10))))
+         _richText:setSize(CCSize(WIDTH-52, fontHeight*math.ceil(textWidth/(WIDTH-52))))
       end
       _richText:setAnchorPoint(ccp(0,0))
-      _richText:setPosition(ccp(0,0))
+      _richText:setPosition(ccp(10,0))
       layout:setSize(_richText:getSize())
       layout:addChild(_richText)   
       -- print("addMessage!!!!!!!!!!!!!!!!!!!!!!!!!!!!",message.type)
@@ -1125,6 +1132,7 @@ function exit()
       event.unListen("ON_GET_USER_LIST_FAILED", onGetUserListFailed)
       event.unListen("ON_SYSTEM_CONTEXT", onSystemContext)
       event.unListen("ON_USER_OPERATE_SUCCEED", onUserOperateSucceed)
+      event.unListen("ON_GET_SYSTEM_MESSAGE", onGetSystemMessage)
       cleanEvent()
       this:removeFromParentAndCleanup(true)
       this = nil

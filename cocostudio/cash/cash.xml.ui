@@ -52,22 +52,23 @@
   <ResRelativePath />
   <imageFileList />
   <imagePngList>
-    <string>qietu/chat/tab_bg.png</string>
-    <string>qietu/chat/tab2.png</string>
-    <string>qietu/chat/tab3.png</string>
-    <string>qietu/chat/tab1.png</string>
-    <string>GUI/image.png</string>
-    <string>buleLoading.png</string>
-    <string>buleLoadingBg.png</string>
-    <string>qietu/chat/input1.png</string>
-    <string>qietu/tymb/check.png</string>
-    <string>qietu/tymb/gou.png</string>
+    <string>qietu/alert/charge_bg.png</string>
+    <string>qietu/alert/top.png</string>
+    <string>qietu/alert/close1.png</string>
+    <string>qietu/alert/close2.png</string>
+    <string>qietu/alert/bar.png</string>
+    <string>qietu/alert/bg2.png</string>
+    <string>qietu/alert/line.png</string>
+    <string>qietu/alert/bg1.png</string>
+    <string>qietu/alert/charge1.png</string>
+    <string>qietu/alert/charge2.png</string>
     <string>qietu/chat/inpit2.png</string>
-    <string>qietu/chat/send.png</string>
-    <string>qietu/user/v17.png</string>
-    <string>qietu/top/head.png</string>
-    <string>qietu/main2/default.jpg</string>
+    <string>qietu/alert/pay1.png</string>
+    <string>qietu/alert/pay2.png</string>
+    <string>qietu/alert/btn1.png</string>
+    <string>qietu/alert/btn2.png</string>
+    <string>qietu/paiming/zsbg.png</string>
   </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>chat.json</CurrentUIJson>
+  <CurrentUIJson>chargeAlert.json</CurrentUIJson>
 </UIProject>

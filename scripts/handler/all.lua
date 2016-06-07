@@ -183,7 +183,8 @@ handlerMap = {
    [11004] = "onGetprivateMessage",
    --get chat 
    [12002] = "onGetMessage",
-
+   [12003] = "onGetSysMessage",
+   
    --upload head image   
    ["onUploadImageSucceed"] = "onUploadImageSucceed",
    ["onUploadImageFailed"] = "onUploadImageFailed",
@@ -218,6 +219,7 @@ handlerMap = {
    --exchange--
    [18002] = "onGetCharmSucceed",
    [18003] = "onGetCharmFailed",
+   [18004] = "onGetCharm",
 
    -- user action--
    [19002] = "onUserOperateSucceed",

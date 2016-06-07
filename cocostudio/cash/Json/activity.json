@@ -23,7 +23,9 @@
     "qietu/tymb/gou.png",
     "qietu/chat/inpit2.png",
     "qietu/chat/send.png",
-    "qietu/user/v17.png"
+    "qietu/user/v17.png",
+    "qietu/top/head.png",
+    "qietu/main2/default.jpg"
   ],
   "version": "1.6.0.0",
   "widgetTree": {

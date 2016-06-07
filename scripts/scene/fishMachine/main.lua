@@ -111,7 +111,6 @@ function create(_parent, _parentModule)
 
    lastOpenId = {inside=1,outside=1}
    initView()
-   initResult()
    initChatView()
    totalCashGold = 0
    currentUserPage = 1
@@ -435,98 +434,6 @@ function initView()
    -- refrendeshBetTotal()
 end
 
-function initResult()
-   widget.result.obj:setVisible(false)
-   widget.result.star_l.obj:setScale(0)  
-   widget.result.star_r.obj:setScale(0) 
-   widget.result.number.obj:setScale(0)
-   widget.result.cheng.obj:setScale(0)
-   widget.result.icon.obj:setScale(0)   
-   resultLight = CCSprite:create("cash/qietu/effect/guang.png")
-   resultLight:setPosition(ccp(300,300))
-   resultLight:setScale(2.0)
-   armatureBlend(resultLight)
-   widget.result.obj:addNode(resultLight)
-   resultLight:setVisible(false)
-   for i=1,starNum do 
-       local star = tool.findChild(widget.result.obj,"star_"..i,"ImageView")
-       if star then
-          starAction(star)
-       end
-   end
-end
-
-function doResultAni(id)
-   local fishTmp = nil
-   for k,v in pairs(fishList) do
-       if v.id == id then
-          fishTmp = v
-       end
-   end
-   if not fishTmp then
-      return
-   end
-   AudioEngine.playEffect("effect_05")
-   widget.result.number.obj:setStringValue(fishTmp.multi)
-   if fishTmp.multi < 10 then
-      widget.result.cheng.obj:setPositionX(305)
-      widget.result.number.obj:setPositionX(305)
-   elseif fishTmp.multi < 100 then
-      widget.result.cheng.obj:setPositionX(290)
-      widget.result.number.obj:setPositionX(280)
-   else
-      widget.result.cheng.obj:setPositionX(255)
-      widget.result.number.obj:setPositionX(245)
-   end
-   widget.result.icon.obj:loadTexture("cash/qietu/fish/fish_"..fishTmp.res..".png")
-   widget.result.obj:setVisible(true)
-   tool.createEnterEffect(widget.result.obj,{x=0,y=-1000,easeOut=true},0.3,function()
-      for i=1,starNum do 
-          local star = tool.findChild(widget.result.obj,"star_"..i,"ImageView")
-          if star then
-             star:setVisible(true)
-          end
-      end  
-      tool.createEffect(tool.Effect.scale,{time=0.1,scale=1.5},widget.result.star_l.obj) 
-      tool.createEffect(tool.Effect.scale,{time=0.1,scale=1.5},widget.result.star_r.obj) 
-      tool.createEffect(tool.Effect.scale,{time=0.1,scale=2.0},widget.result.number.obj) 
-      tool.createEffect(tool.Effect.scale,{time=0.1,scale=1.3},widget.result.cheng.obj) 
-      tool.createEffect(tool.Effect.scale,{time=0.1,scale=2.0},widget.result.icon.obj,function()
-         resultLight:setVisible(true)
-         local action = CCRotateBy:create(0.5,60)
-         action = CCRepeatForever:create(action)
-         resultLight:runAction(action)
-         tool.createEffect(tool.Effect.delay,{time=2},widget.result.icon.obj,function()
-            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.star_l.obj) 
-            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.star_r.obj) 
-            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.number.obj) 
-            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.cheng.obj) 
-            tool.createEffect(tool.Effect.scale,{time=0.1,scale=0},widget.result.icon.obj,function()
-               tool.createEffect(tool.Effect.delay,{time=0.2},widget.result.icon.obj,function() 
-                  for i=1,starNum do 
-                      local star = tool.findChild(widget.result.obj,"star_"..i,"ImageView")
-                      if star then
-                         star:setVisible(false)
-                      end
-                  end               
-                  resultLight:stopAllActions()
-                  resultLight:setVisible(false)
-                  tool.createEffect(tool.Effect.fadeOut,{time=0.15},widget.result.obj)
-                  tool.createExitEffect(widget.result.obj,{x=0,y=-300,easeOut=true},0.15,true,function()
-                     widget.result.obj:setVisible(false)
-                     widget.result.obj:setOpacity(255)
-                     -- if isBig == true then
-                     --    showBigAward()
-                     -- end
-                     -- startFishTimer()
-                  end)
-               end)
-            end)
-         end)
-      end)    
-   end)
-end
-
 function armatureBlend(armature)
     local fff = ccBlendFunc()
     local f =  {GL_SRC_ALPHA, GL_ONE};
@@ -626,13 +533,13 @@ function playCircle(maxNum, name)
          endEffect()
          return
       end
-      if name == "outside" then
-         AudioEngine.playEffect("effect_19")
-      end
       widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
       -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(0)
       tool.createEffect(tool.Effect.delay,{time=delay}, widget.fish["panel_"..name.."_"..st].light.obj,
                         function()
+      if name == "outside" then
+         AudioEngine.playEffect("effect_19")
+      end
                            -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(255)
                            widget.fish["panel_"..name.."_"..st].light.obj:stopAllActions()
 
@@ -719,7 +626,6 @@ function endEffect()
    end
    winGold = 0
    finishCircleCnt = 0
-   tool.setPosition(widget.result.obj,{x=240,y=1020})
    for k,v in pairs(isBet) do
        v.bool = false
        widget.bottom.bet_bg["bet_"..v.id].img.obj:setVisible(false)
@@ -1486,22 +1392,6 @@ widget = {
         fish = {_type = "ImageView"},
       },
       bigWin = {_type = "Layout"},
-   },
-   result = {
-      _type = "Layout",
-      star_l = {_type = "ImageView"},
-      star_r = {_type = "ImageView"},
-      pai = {_type = "ImageView"},
-      icon = {_type = "ImageView"},
-      star_1 = {_type = "ImageView"},
-      star_2 = {_type = "ImageView"},
-      star_3 = {_type = "ImageView"},
-      star_4 = {_type = "ImageView"},
-      star_5 = {_type = "ImageView"},
-      star_6 = {_type = "ImageView"},
-      star_7 = {_type = "ImageView"},
-      number = {_type = "LabelAtlas"},
-      cheng = {_type = "ImageView"},
    },
 }
                                

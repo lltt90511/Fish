@@ -7,23 +7,95 @@ module("scene.chargeAlert", package.seeall)
 
 this = nil
 thisParent = nil
-local chargeList = {10,50,100,200,500,1000}
+local chargeList = {}
 local chargeNum = 0
 local textInput1 = nil
 local textInput2 = nil
 local recommendId = 0
 local alertType = 0
+local chargeType = 0 --1 ios 2 aibei
 function create(_parent,_type)
    thisParent = _parent
    alertType = _type
    this = tool.loadWidget("cash/chargeAlert",widget,thisParent,15)
-   initView()
-   initInput()
+   widget.alert.bar_1.text_1.bg.text.obj:setText(userdata.UserInfo.nickName)
+   -- initView()
    onChangeGold()
    chargeNum = chargeList[1]
+   chargeType = 1
    if alertType == 2 then
       widget.bg.obj:setVisible(false)
       widget.obj:registerEventScript(onBack)
+   end
+   if platform == "IOS" then
+      widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1115))
+      widget.alert.confirm.obj:setPosition(ccp(0,-1045))
+      widget.alert.ios.obj:setVisible(true)
+      widget.alert.ios.obj:setTouchEnabled(true)
+      widget.alert.aibei.obj:setVisible(true)
+      widget.alert.aibei.obj:setTouchEnabled(true)
+      widget.alert.bar_2.obj:setVisible(false)
+      widget.alert.bar_3.obj:setVisible(true)
+      for i=1,6 do
+          widget.alert.bar_2["btn_"..i].obj:setTouchEnabled(false)
+          widget.alert.bar_3["btn_"..i].text.obj:setText(chargeList[i].."元")
+          widget.alert.bar_3["btn_"..i].obj:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 tool.buttonSound("releaseUp","effect_12")
+                 chargeNum = chargeList[i]
+                 for j=1,6 do
+                     if i == j then
+                         widget.alert.bar_3["btn_"..j].obj:setTouchEnabled(false)
+                         widget.alert.bar_3["btn_"..j].obj:setBright(false)
+                         widget.alert.bar_3["btn_"..j].text.obj:setColor(ccc3(5,3,0))
+                     else
+                         widget.alert.bar_3["btn_"..j].obj:setTouchEnabled(true)
+                         widget.alert.bar_3["btn_"..j].obj:setBright(true)
+                         widget.alert.bar_3["btn_"..j].text.obj:setColor(ccc3(254,177,23))
+                     end
+                 end
+              end
+           end)
+      end
+      widget.alert.bar_3.btn_1.obj:setTouchEnabled(false)
+      widget.alert.bar_3.btn_1.obj:setBright(false)
+      widget.alert.bar_3.btn_1.text.obj:setColor(ccc3(5,3,0))
+   else
+      chargeList = {10,50,100,200,500,1000}
+      widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
+      widget.alert.confirm.obj:setPosition(ccp(0,-955))
+      widget.alert.ios.obj:setVisible(false)
+      widget.alert.ios.obj:setTouchEnabled(false)
+      widget.alert.aibei.obj:setVisible(false)
+      widget.alert.aibei.obj:setTouchEnabled(false)
+      widget.alert.bar_2.obj:setVisible(true)
+      widget.alert.bar_3.obj:setVisible(false)
+      for i=1,6 do
+          widget.alert.bar_3["btn_"..i].obj:setTouchEnabled(false)
+           widget.alert.bar_2["btn_"..i].text.obj:setText(chargeList[i].."元")
+           widget.alert.bar_2["btn_"..i].obj:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 tool.buttonSound("releaseUp","effect_12")
+                 chargeNum = chargeList[i]
+                 textInput2:setText("")
+                 for j=1,6 do
+                     if i == j then
+                         widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(false)
+                         widget.alert.bar_2["btn_"..j].obj:setBright(false)
+                         widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(5,3,0))
+                     else
+                         widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(true)
+                         widget.alert.bar_2["btn_"..j].obj:setBright(true)
+                         widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(254,177,23))
+                     end
+                 end
+              end
+           end)
+      end
+      widget.alert.bar_2.btn_1.obj:setTouchEnabled(false)
+      widget.alert.bar_2.btn_1.obj:setBright(false)
+      widget.alert.bar_2.btn_1.text.obj:setColor(ccc3(5,3,0))
+      initInput()
    end
    event.listen("ON_CHANGE_GOLD",onChangeGold)
    event.listen("ON_GET_CHARGEID_SUCCEED", onGetChargeIdSucceed)
@@ -47,7 +119,6 @@ function onGetChargeIdSucceed(data)
 end
 
 function initView()
-   widget.alert.bar_1.text_1.bg.text.obj:setText(userdata.UserInfo.nickName)
    for i=1,6 do
        widget.alert.bar_2["btn_"..i].text.obj:setText(chargeList[i].."元")
        widget.alert.bar_2["btn_"..i].obj:registerEventScript(function(event)
@@ -206,11 +277,13 @@ function exit()
       tool.cleanWidgetRef(widget)
       this = nil
       thisParent = nil
+      chargeList = {}
       chargeNum = 0
       textInput1 = nil
       textInput2 = nil
       recommendId = 0
       alertType = 0
+      chargeType = 1
   end
 end
 
@@ -224,8 +297,22 @@ end
 function onConfirm(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call("21001",chargeNum*100,recommendId)
+      call(21001,chargeNum*100,recommendId)
    end       
+end
+
+function onIOS(event)
+   if event == "releaseUp" then
+      tool.buttonSound("releaseUp","effect_12")
+      call(21001,chargeNum*100,recommendId)
+   end   
+end
+
+function onAIBEI(event)
+   if event == "releaseUp" then
+      tool.buttonSound("releaseUp","effect_12")
+      call(21001,chargeNum*100,recommendId)
+   end   
 end
 
 widget = {
@@ -291,7 +378,45 @@ widget = {
       },
       input = {_type = "ImageView"},
     },
+    bar_3 = {
+      _type = "ImageView",
+      text = {_type = "Label"},
+      btn_1 = {
+        _type = "Button",
+        text = {_type = "Label"},
+      },
+      btn_2 = {
+        _type = "Button",
+        text = {_type = "Label"},
+      },
+      btn_3 = {
+        _type = "Button",
+        text = {_type = "Label"},
+      },
+      btn_4 = {
+        _type = "Button",
+        text = {_type = "Label"},
+      },
+      btn_5 = {
+        _type = "Button",
+        text = {_type = "Label"},
+      },
+      btn_6 = {
+        _type = "Button",
+        text = {_type = "Label"},
+      },
+    },
     confirm = {_type="Button",_func=onConfirm},
+    ios = {
+      _type = "Button",
+      _func = "onIOS",
+      text = {_type = "Label"},
+    },
+    aibei = {
+      _type = "Button",
+      _func = "onAIBEI",
+      text = {_type = "Label"},
+    },
   },
   bg = {_type = "ImageView"},
 }

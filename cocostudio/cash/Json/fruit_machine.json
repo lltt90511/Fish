@@ -11,11 +11,13 @@
   "designWidth": 1080,
   "textures": [],
   "texturesPng": [
-    "qietu/top/head.png",
-    "GUI/image.png",
-    "qietu/user/v0.png",
-    "qietu/chat/userBtn1.png",
-    "qietu/chat/userBtn2.png"
+    "qietu/tymb/xiaoBox.png",
+    "qietu/mora/queding.png",
+    "qietu/mora/xiala.png",
+    "qietu/mora/shuru.png",
+    "qietu/mora/xialaanniu.png",
+    "qietu/tymb/guanbiBt01.png",
+    "qietu/tymb/guanbiBt02.png"
   ],
   "version": "1.6.0.0",
   "widgetTree": {

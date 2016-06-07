@@ -126,7 +126,7 @@ end
 function umengUserLevel(_level)
 	print("umengUserLevel", _level)
 	luaoc.callStaticMethod("umeng","umengUserLevel",{level=tostring(_level)})
-	luaj.callStaticMethod("cc/yongdream/nshx/umeng","umengUserLevel",{tostring(_level)})
+	luaj.callStaticMethod("cc/yongdream/nshx/umeng","umengUserLevel",{tonumber(_level)})
 end
 
 -- 玩家信息

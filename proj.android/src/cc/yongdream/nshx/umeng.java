@@ -46,12 +46,12 @@ public class umeng {
 		UMGameAgent.bonus(item, Integer.parseInt(amount), Double.valueOf(price), Integer.parseInt(source));
 	}
 	
-	public static void umengUserLevel(String level) {
+	public static void umengUserLevel(int level) {
 		UMGameAgent.setPlayerLevel(level);
 	}
 	
 	public static void umengUserInfo(String userId, String sex, String age, String platform) {
-		UMGameAgent.setPlayerInfo(userId, Integer.parseInt(sex), Integer.parseInt(age), platform);
+//		UMGameAgent.setPlayerInfo(userId, Integer.parseInt(sex), Integer.parseInt(age), platform);
 	}
 
 	public static void umengUserInfo2(String userId, String age, String sex, String source, String level, String server, String comment) {
@@ -71,14 +71,14 @@ public class umeng {
 	}
 	
 	public static void umengEventBegin(String eventId) {
-		UMGameAgent.onEventBegin(mainActivity.main, eventId);
+//		UMGameAgent.onEventBegin(mainActivity.main, eventId);
 	}
 	
 	public static void umengEventEnd(String eventId) {
-		UMGameAgent.onEventEnd(mainActivity.main, eventId);
+//		UMGameAgent.onEventEnd(mainActivity.main, eventId);
 	}
 	
 	public static void umengEventDurations(String eventId, String millisecond) {
-		UMGameAgent.onEventDuration(mainActivity.main, eventId, Long.valueOf(millisecond));
+//		UMGameAgent.onEventDuration(mainActivity.main, eventId, Long.valueOf(millisecond));
 	}
 }

@@ -164,7 +164,7 @@ function onRegisterPhoneSucceed(data)
 		else
 			alert.create("该手机已经绑定了账号，登陆该账号？",nil,
 			function ()
-				call(1001, "2", data.n)--记录下
+				call(1001, "2", data.n,tonumber(appSrc))--记录下
 				saveSetting("uuid", data.n)
 			end)
 		end
@@ -491,13 +491,28 @@ function onGetCharmSucceed(data)
 	   userdata.UserInfo.owncash = data.owncash
 	end
     event.pushEvent("ON_CHANGE_GOLD")
-    if data.msg ~= "" then
+    if data.msg and data.msg ~= "" then
 	   alert.create(data.msg)
     end
 end
 
 function onGetCharmFailed(data)
-	
+	if data and data.msg then
+	   alert.create(data.msg)
+    end
+end
+
+function onGetCharm(data)
+	if data and type(data) == type({}) then
+	   userdata.UserInfo.owncharm = data.owncharm
+	   userdata.UserInfo.owncash = data.owncash
+	   print("onGetCharm",data.payMoney,data.addCoin)
+	   umengPay(data.payMoney, 2, data.addCoin)
+       event.pushEvent("ON_CHANGE_GOLD")
+	   if data.msg and data.msg ~= "" then
+	   	  alert.create(data.msg)
+	   end
+	end
 end
 
 function onUserOperateSucceed(data)

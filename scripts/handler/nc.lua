@@ -17,12 +17,12 @@ reconnectAlert = function ()
             if UserSetting.uuid ~= nil and UserSetting.uuid ~= "" then
                print("login uuid", UserSetting.uuid)
                nc.connect()
-               call(1001, "2", UserSetting.uuid)
+               call(1001, "2", UserSetting.uuid,tonumber(appSrc))
             else
                if userdata.deviceId then
                   print("login deviceId", userdata.deviceId)
                   nc.connect()
-                  call(1001, "1", userdata.deviceId)
+                  call(1001, "1", userdata.deviceId,tonumber(appSrc))
                end
            end
            -- if getPlatform() == "sgj" or getPlatform() == "ipay_chongqin" then

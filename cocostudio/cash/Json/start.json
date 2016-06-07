@@ -10,16 +10,7 @@
   "designHeight": 1920,
   "designWidth": 1080,
   "textures": [],
-  "texturesPng": [
-    "qietu/start/dlBg.jpg",
-    "qietu/start/paizi.png",
-    "qietu/start/youjin.png",
-    "qietu/start/zuojin.png",
-    "qietu/start/ksyxBt01.png",
-    "qietu/start/ksyxBt02.png",
-    "qietu/start/xxTp.png",
-    "qietu/start/xx.png"
-  ],
+  "texturesPng": [],
   "version": "1.6.0.0",
   "widgetTree": {
     "classname": "Panel",
