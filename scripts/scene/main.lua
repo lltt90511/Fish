@@ -141,7 +141,8 @@ function create()
    widget.top_btn_list.yaoqianshu.obj:setTouchEnabled(false)
    widget.top_btn_list.VIP.obj:setVisible(false)
    widget.top_btn_list.VIP.obj:setTouchEnabled(false)
-   widget.bottom.huodong.obj:setTouchEnabled(false)
+   -- widget.bottom.huodong.obj:setTouchEnabled(false)
+   widget.bottom.paihang.obj:setVisible(false)
    widget.bottom.paihang.obj:setTouchEnabled(false)
    return this
 end
@@ -882,14 +883,13 @@ end
 function onHuodong(event)
    if event == "releaseUp" and currenScene ~= activity  then
       tool.buttonSound("releaseUp","effect_12")
-      -- alert.create("敬请期待")
-     --  if currenScene then
-     --    currenScene.exit()
-     --    currenScene = nil
-     --  end
-     --  currenScene = activity
-     --  switchBottomBright("huodong")
-     --  activity.create(widget.obj)
+      if currenScene then
+        currenScene.exit()
+        currenScene = nil
+      end
+      currenScene = activity
+      switchBottomBright("huodong")
+      activity.create(widget.obj)
    end
 end
 

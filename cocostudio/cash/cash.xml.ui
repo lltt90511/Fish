@@ -51,24 +51,7 @@
   <ProjectType>UIProject</ProjectType>
   <ResRelativePath />
   <imageFileList />
-  <imagePngList>
-    <string>qietu/alert/charge_bg.png</string>
-    <string>qietu/alert/top.png</string>
-    <string>qietu/alert/close1.png</string>
-    <string>qietu/alert/close2.png</string>
-    <string>qietu/alert/bar.png</string>
-    <string>qietu/alert/bg2.png</string>
-    <string>qietu/alert/line.png</string>
-    <string>qietu/alert/bg1.png</string>
-    <string>qietu/alert/charge1.png</string>
-    <string>qietu/alert/charge2.png</string>
-    <string>qietu/chat/inpit2.png</string>
-    <string>qietu/alert/pay1.png</string>
-    <string>qietu/alert/pay2.png</string>
-    <string>qietu/alert/btn1.png</string>
-    <string>qietu/alert/btn2.png</string>
-    <string>qietu/paiming/zsbg.png</string>
-  </imagePngList>
+  <imagePngList />
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson>chargeAlert.json</CurrentUIJson>
+  <CurrentUIJson>activity.json</CurrentUIJson>
 </UIProject>

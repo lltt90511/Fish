@@ -17,9 +17,9 @@ local defult_width = 870
 
 function create(parent)
    this = tool.loadWidget("cash/activity",widget,parent,99)
-   widget.panel.bg.label.obj:setVisible(false)
-   call("getAllActivityInfo")
-   event.listen("ON_GET_ALL_ACTIVITY_INFO",onGetAllActivityInfo)
+   -- widget.panel.bg.label.obj:setVisible(false)
+   -- call("getAllActivityInfo")
+   -- event.listen("ON_GET_ALL_ACTIVITY_INFO",onGetAllActivityInfo)
    return this
 end
 
