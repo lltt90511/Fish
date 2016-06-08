@@ -7,7 +7,8 @@ module("scene.chargeAlert", package.seeall)
 
 this = nil
 thisParent = nil
-local chargeList = {}
+local chargeListIOS = {6,12,30,60,118,298}
+local chargeListANDROID = {10,50,100,200,500,1000}
 local chargeNum = 0
 local textInput1 = nil
 local textInput2 = nil
@@ -22,34 +23,58 @@ function create(_parent,_type)
    -- initView()
    initInput()
    onChangeGold()
-   chargeNum = chargeList[1]
    chargeType = 1
    if alertType == 2 then
       widget.bg.obj:setVisible(false)
       widget.obj:registerEventScript(onBack)
    end
    if platform == "IOS" then
-      chargeList = {6,12,30,60,120,300}
-      widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
-      widget.alert.confirm.obj:setPosition(ccp(0,-955))
-      widget.alert.bar_3.obj:setPosition(ccp(0,widget.alert.bar_2.obj:getPositionY()))
-      -- widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1115))
-      -- widget.alert.bar_2.obj:setPosition(ccp(0,widget.alert.bar_3.obj:getPositionY()))
-      -- widget.alert.confirm.obj:setPosition(ccp(0,-1045))
-      widget.alert.ios.obj:setBright(false)
-      widget.alert.ios.obj:setVisible(false)
-      widget.alert.ios.obj:setTouchEnabled(false)
-      widget.alert.aibei.obj:setVisible(false)
-      widget.alert.aibei.obj:setTouchEnabled(false)
+      chargeNum = chargeListIOS[1]
+      if userdata.UserInfo.aip == 0 or true then
+         widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
+         widget.alert.confirm.obj:setPosition(ccp(0,-955))
+         widget.alert.bar_3.obj:setPosition(ccp(0,widget.alert.bar_2.obj:getPositionY()))
+         widget.alert.ios.obj:setVisible(false)
+         widget.alert.ios.obj:setTouchEnabled(false)
+         widget.alert.aibei.obj:setVisible(false)
+         widget.alert.aibei.obj:setTouchEnabled(false)
+      else
+         widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1115))
+         widget.alert.confirm.obj:setPosition(ccp(0,-1045))
+         widget.alert.bar_2.obj:setPosition(ccp(0,widget.alert.bar_3.obj:getPositionY()))
+         widget.alert.ios.obj:setBright(false)
+         widget.alert.ios.obj:setVisible(true)
+         widget.alert.ios.obj:setTouchEnabled(false)
+         widget.alert.aibei.obj:setVisible(true)
+         widget.alert.aibei.obj:setTouchEnabled(true)
+      end
       widget.alert.bar_2.obj:setVisible(false)
       widget.alert.bar_3.obj:setVisible(true)
       for i=1,6 do
           widget.alert.bar_2["btn_"..i].obj:setTouchEnabled(false)
-          widget.alert.bar_3["btn_"..i].text.obj:setText(chargeList[i].."元")
+          widget.alert.bar_2["btn_"..i].text.obj:setText(chargeListANDROID[i].."元")
+          widget.alert.bar_2["btn_"..i].obj:registerEventScript(function(event)
+              if event == "releaseUp" then
+                 tool.buttonSound("releaseUp","effect_12")
+                 chargeNum = chargeListANDROID[i]
+                 for j=1,6 do
+                     if i == j then
+                         widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(false)
+                         widget.alert.bar_2["btn_"..j].obj:setBright(false)
+                         widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(5,3,0))
+                     else
+                         widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(true)
+                         widget.alert.bar_2["btn_"..j].obj:setBright(true)
+                         widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(254,177,23))
+                     end
+                 end
+              end
+           end)
+          widget.alert.bar_3["btn_"..i].text.obj:setText(chargeListIOS[i].."元")
           widget.alert.bar_3["btn_"..i].obj:registerEventScript(function(event)
               if event == "releaseUp" then
                  tool.buttonSound("releaseUp","effect_12")
-                 chargeNum = chargeList[i]
+                 chargeNum = chargeListIOS[i]
                  for j=1,6 do
                      if i == j then
                          widget.alert.bar_3["btn_"..j].obj:setTouchEnabled(false)
@@ -68,7 +93,7 @@ function create(_parent,_type)
       widget.alert.bar_3.btn_1.obj:setBright(false)
       widget.alert.bar_3.btn_1.text.obj:setColor(ccc3(5,3,0))
    else
-      chargeList = {10,50,100,200,500,1000}
+      chargeNum = chargeListANDROID[1]
       widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
       widget.alert.confirm.obj:setPosition(ccp(0,-955))
       widget.alert.ios.obj:setVisible(false)
@@ -79,11 +104,11 @@ function create(_parent,_type)
       widget.alert.bar_3.obj:setVisible(false)
       for i=1,6 do
           widget.alert.bar_3["btn_"..i].obj:setTouchEnabled(false)
-           widget.alert.bar_2["btn_"..i].text.obj:setText(chargeList[i].."元")
+           widget.alert.bar_2["btn_"..i].text.obj:setText(chargeListANDROID[i].."元")
            widget.alert.bar_2["btn_"..i].obj:registerEventScript(function(event)
               if event == "releaseUp" then
                  tool.buttonSound("releaseUp","effect_12")
-                 chargeNum = chargeList[i]
+                 chargeNum = chargeListANDROID[i]
                  textInput2:setText("")
                  for j=1,6 do
                      if i == j then
@@ -105,7 +130,7 @@ function create(_parent,_type)
    end
    event.listen("ON_CHANGE_GOLD",onChangeGold)
    event.listen("ON_GET_CHARGEID_SUCCEED", onGetChargeIdSucceed)
-   call("21001",-10000,0)
+   call(21001,-10000,0,0)
 end
 
 function onChangeGold()
@@ -115,12 +140,22 @@ end
 
 function onGetChargeIdSucceed(data)
   if data.money == -100 then
-     recommendId = data.transid
-     textInput1:setText(recommendId)
+     if data.transid ~= 0 then
+        recommendId = data.transid
+        textInput1:setText(recommendId)
+     end
   else
-     local res = {orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx}
-     local params = cjson.encode(res)
-     luaj.callStaticMethod("com/java/platform/NdkPlatform","iapPay",{params})
+     if platform == "IOS" then 
+        if data.paytype == 2 then
+           luaoc.callStaticMethod("AppController","appstoreBuy",{productId="com.youngdream.hddbh6",time=tostring(os.time())})
+        elseif data.paytype == 24 then
+           luaoc.callStaticMethod("AppController","appstoreBuy",{productId="com.youngdream.hddbh6",time=tostring(os.time())})
+        end
+     else
+         local res = {orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx}
+         local params = cjson.encode(res)
+         luaj.callStaticMethod("com/java/platform/NdkPlatform","iapPay",{params})
+     end
   end
 end
 
@@ -211,65 +246,67 @@ function initInput()
                                                    textInput1:setPosition(ccp(30,0))
                                                 end
    end)
-   if platform == "IOS" then 
-       local inputSize = widget.alert.bar_2.input.obj:getSize()
-       textInput2 = tolua.cast(CCEditBox:create(CCSizeMake(inputSize.width,inputSize.height),CCScale9Sprite:create("image/empty.png")),"CCEditBox")
-       widget.alert.bar_2.input.obj:addNode(textInput2)
-       textInput2:setPosition(ccp(0,0))
-       textInput2:setAnchorPoint(ccp(0,0.5))
-       textInput2:setFontColor(ccc3(255,255,255))
-       textInput2:setFontSize(40)
-       textInput2:setFontName(DEFAULT_FONT)
-       textInput2:setReturnType(1)
-       textInput2:setMaxLength(20)
-       textInput2:setPlaceHolder("输入金额")
-       textInput2:setText("")
-       textInput2:setVisible(true)
 
-       local function editBoxTextEventHandler(strEventName, pSender)
-          local str = textInput2:getText()
-          if str == "" then
-             return 
-          end
-          if strEventName == "return" or strEventName == "ended" then
-             local i = 1
-             local cnt = 1
-             local tb = {}
-             while i <= #str  do
-                c = str:sub(i,i)
-                ord = c:byte()
-                if ord > 128 then
-                   table.insert(tb,str:sub(i,i+2))
-                   i = i+3
-                   cnt = cnt + 1
-                else
-                   table.insert(tb,c)
-                   i = i+1
-                   cnt = cnt + 1
-                end
-                if cnt > 20 then
-                   alert.create("数字太长，超过输入限制")
-                   textInput2:setText("")
-                   return
-                end
-             end
-             textInput2:setText(table.concat(tb))
-             if tonumber(textInput2:getText()) then
-                chargeNum = math.floor(tonumber(textInput2:getText()))
-             else
-                textInput2:setText("")
-                alert.create("请输入数字")
-             end
-          end
-       end
-       textInput2:registerScriptEditBoxHandler(editBoxTextEventHandler)
-       widget.alert.bar_2.input.obj:setTouchEnabled(true)
-       widget.alert.bar_2.input.obj:registerEventScript(function (event)
-                                                    if event == "releaseUp" then
-                                                       textInput2:attachWithIME()
-                                                       textInput2:setPosition(ccp(0,0))
-                                                    end
-       end)
+   local inputSize = widget.alert.bar_2.input.obj:getSize()
+   textInput2 = tolua.cast(CCEditBox:create(CCSizeMake(inputSize.width,inputSize.height),CCScale9Sprite:create("image/empty.png")),"CCEditBox")
+   widget.alert.bar_2.input.obj:addNode(textInput2)
+   textInput2:setPosition(ccp(0,0))
+   textInput2:setAnchorPoint(ccp(0,0.5))
+   textInput2:setFontColor(ccc3(255,255,255))
+   textInput2:setFontSize(40)
+   textInput2:setFontName(DEFAULT_FONT)
+   textInput2:setReturnType(1)
+   textInput2:setMaxLength(20)
+   textInput2:setPlaceHolder("输入金额")
+   textInput2:setText("")
+   textInput2:setVisible(true)
+
+   local function editBoxTextEventHandler(strEventName, pSender)
+      local str = textInput2:getText()
+      if str == "" then
+         return 
+      end
+      if strEventName == "return" or strEventName == "ended" then
+         local i = 1
+         local cnt = 1
+         local tb = {}
+         while i <= #str  do
+            c = str:sub(i,i)
+            ord = c:byte()
+            if ord > 128 then
+               table.insert(tb,str:sub(i,i+2))
+               i = i+3
+               cnt = cnt + 1
+            else
+               table.insert(tb,c)
+               i = i+1
+               cnt = cnt + 1
+            end
+            if cnt > 20 then
+               alert.create("数字太长，超过输入限制")
+               textInput2:setText("")
+               return
+            end
+         end
+         textInput2:setText(table.concat(tb))
+         if tonumber(textInput2:getText()) then
+            chargeNum = math.floor(tonumber(textInput2:getText()))
+         else
+            textInput2:setText("")
+            alert.create("请输入数字")
+         end
+      end
+   end
+   textInput2:registerScriptEditBoxHandler(editBoxTextEventHandler)
+   widget.alert.bar_2.input.obj:setTouchEnabled(true)
+   widget.alert.bar_2.input.obj:registerEventScript(function (event)
+                                                if event == "releaseUp" then
+                                                   textInput2:attachWithIME()
+                                                   textInput2:setPosition(ccp(0,0))
+                                                end
+   end)
+   if platform == "IOS" or true then
+      widget.alert.bar_2.input.obj:setTouchEnabled(false)
    end
 end
 
@@ -306,13 +343,14 @@ function onConfirm(event)
       tool.buttonSound("releaseUp","effect_12")
       if platform == "IOS" then
          if chargeType == 1 then
-            luaoc.callStaticMethod("AppController","appstoreBuy",{productId="com.youngdream.hddbh1",time=tostring(os.time())})
+            call(21001,chargeNum*100,recommendId,24)
          elseif chargeType == 2 then
-            call(21001,chargeNum*100,recommendId)
+            call(21001,chargeNum*100,recommendId,2)
          end
       else
-         call(21001,chargeNum*100,recommendId)
+         call(21001,chargeNum*100,recommendId,2)
       end
+      print("onConfirm!!!!!!!!!!!!!!!!!!!!!!",chargeNum)
    end       
 end
 
@@ -326,12 +364,19 @@ function onIOS(event)
       widget.alert.aibei.obj:setTouchEnabled(true)
       widget.alert.bar_2.obj:setVisible(false)
       widget.alert.bar_3.obj:setVisible(true)
+      chargeNum = chargeListIOS[1]
       for i=1,6 do
+          widget.alert.bar_2["btn_"..i].obj:setBright(true)
           widget.alert.bar_2["btn_"..i].obj:setVisible(false)
           widget.alert.bar_2["btn_"..i].obj:setTouchEnabled(false)
+          widget.alert.bar_2["btn_"..i].text.obj:setColor(ccc3(254,177,23))
           widget.alert.bar_3["btn_"..i].obj:setVisible(true)
           widget.alert.bar_3["btn_"..i].obj:setTouchEnabled(true)
       end
+      widget.alert.bar_3.btn_1.obj:setTouchEnabled(false)
+      widget.alert.bar_3.btn_1.obj:setBright(false)
+      widget.alert.bar_3.btn_1.text.obj:setColor(ccc3(5,3,0))
+      widget.alert.bar_2.input.obj:setTouchEnabled(false)
    end   
 end
 
@@ -345,12 +390,19 @@ function onAIBEI(event)
       widget.alert.aibei.obj:setTouchEnabled(false)
       widget.alert.bar_2.obj:setVisible(true)
       widget.alert.bar_3.obj:setVisible(false)
+      chargeNum = chargeListANDROID[1]
       for i=1,6 do
           widget.alert.bar_2["btn_"..i].obj:setVisible(true)
           widget.alert.bar_2["btn_"..i].obj:setTouchEnabled(true)
+          widget.alert.bar_3["btn_"..i].obj:setBright(true)
           widget.alert.bar_3["btn_"..i].obj:setVisible(false)
           widget.alert.bar_3["btn_"..i].obj:setTouchEnabled(false)
+          widget.alert.bar_3["btn_"..i].text.obj:setColor(ccc3(254,177,23))
       end
+      widget.alert.bar_2.btn_1.obj:setTouchEnabled(false)
+      widget.alert.bar_2.btn_1.obj:setBright(false)
+      widget.alert.bar_2.btn_1.text.obj:setColor(ccc3(5,3,0))
+      widget.alert.bar_2.input.obj:setTouchEnabled(true)
    end   
 end
 

@@ -45,6 +45,9 @@
 #import "OpenUDID.h"
 #import "CCLuaObjcBridge.h"
 
+#import <IapppayKit/IapppayKit.h>
+#import <IapppayKit/IapppayOrderUtils.h> 
+ 
 ////////////////////////////////////////////////////////////////////////////////
 
 //static NSMutableDictionary * gHistory;
@@ -182,7 +185,7 @@ bool once = true;
     
     _iap = [IAP alloc];
     [MobClick setLogEnabled:YES];
-    [MobClick startWithAppkey:@"53e2f32bfd98c526c50065ef" reportPolicy:(ReportPolicy)0 channelId:@"nshx"];
+    [MobClick startWithAppkey:@"5757aad2e0f55aeb70002d01" reportPolicy:(ReportPolicy)0 channelId:@"hddbh"];
 //    [MobClickGameAnalytice ]
     
     //推送反馈(app不在前台运行时，点击推送激活时)
