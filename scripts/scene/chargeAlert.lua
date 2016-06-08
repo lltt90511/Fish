@@ -30,7 +30,7 @@ function create(_parent,_type)
    end
    if platform == "IOS" then
       chargeNum = chargeListIOS[1]
-      if userdata.UserInfo.aip == 0 or true then
+      if userdata.UserInfo.aip == 0 then
          widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
          widget.alert.confirm.obj:setPosition(ccp(0,-955))
          widget.alert.bar_3.obj:setPosition(ccp(0,widget.alert.bar_2.obj:getPositionY()))
@@ -305,7 +305,7 @@ function initInput()
                                                    textInput2:setPosition(ccp(0,0))
                                                 end
    end)
-   if platform == "IOS" or true then
+   if platform == "IOS" then
       widget.alert.bar_2.input.obj:setTouchEnabled(false)
    end
 end
