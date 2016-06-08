@@ -51,7 +51,13 @@
   <ProjectType>UIProject</ProjectType>
   <ResRelativePath />
   <imageFileList />
-  <imagePngList />
+  <imagePngList>
+    <string>qietu/tymb/daBox.png</string>
+    <string>qietu/tymb/guanbiBt01.png</string>
+    <string>qietu/tymb/guanbiBt02.png</string>
+    <string>qietu/tymb/mbText08.png</string>
+    <string>GUI/image.png</string>
+  </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
   <CurrentUIJson>activity.json</CurrentUIJson>
 </UIProject>

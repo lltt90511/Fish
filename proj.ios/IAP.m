@@ -170,7 +170,7 @@ SKPaymentTransaction *completeTrans;
     NSData *recipt64Data = [GTMBase64 encodeData:transaction.transactionReceipt];
     NSString *receiptStr = [[NSString alloc] initWithData:recipt64Data encoding:NSUTF8StringEncoding];
 //    NSLog(@"complete:%@",receiptStr);
-    NSString *URLPath = [NSString stringWithFormat:@"%@?type=4&token=%@&receipt=%s&verifyState=%@&time=%@&charId=%@",serverId, @"token", [receiptStr UTF8String],environment, buyTime, charId];
+    NSString *URLPath = [NSString stringWithFormat:@"receipt=%s&time=%@&charId=%@", [receiptStr UTF8String], buyTime, charId];
     NSLog(@"url=%@",URLPath);
     
     //保存充值数据
@@ -196,9 +196,15 @@ SKPaymentTransaction *completeTrans;
 }
 
 NSMutableData *responseData;
-- (void)httpConnectionWithRequest:(NSString*)url{;
-    NSURL *URL = [NSURL URLWithString:url];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+- (void)httpConnectionWithRequest:(NSString*)url{
+    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@",serverId]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
+    [request setHTTPMethod:@"POST"]; 
+    //body
+    NSMutableData *postBody = [NSMutableData data];
+    [postBody appendData:[[NSString stringWithFormat:@"%@",url] dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPBody:postBody]; 
+    // NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     
     [NSURLConnection connectionWithRequest:request delegate:self];
     responseData = [[NSMutableData alloc] initWithData:nil];
