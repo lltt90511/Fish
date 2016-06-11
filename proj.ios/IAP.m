@@ -12,6 +12,7 @@
 #import "ProgressHUD.h"
 
 @implementation IAP
+NSString *buyOrderId = @"";
 NSString *productId = @"";
 NSString *charId = @"";
 NSString *buyTime = @"";
@@ -38,12 +39,13 @@ NSString *environment = @"";
     environment = [[NSString alloc] initWithFormat:@"%@",envirId];
 }
 
--(void)buy:(NSString*)type buyTime:(NSString*)time
+-(void)buy:(NSString*)type buyTime:(NSString*)time buyOrderId:(NSString*)orderId;
 {
     if ([SKPaymentQueue canMakePayments]) {
         NSLog(@"can MakePayments");
         productId = type;
-        buyTime = [[NSString alloc] initWithFormat:@"%@",time];;
+        buyOrderId = [[NSString alloc] initWithFormat:@"%@",orderId];
+        buyTime = [[NSString alloc] initWithFormat:@"%@",time];
         [self RequestProductData:type];
         [ProgressHUD show:@"提交订单中..."];
     }
@@ -170,7 +172,7 @@ SKPaymentTransaction *completeTrans;
     NSData *recipt64Data = [GTMBase64 encodeData:transaction.transactionReceipt];
     NSString *receiptStr = [[NSString alloc] initWithData:recipt64Data encoding:NSUTF8StringEncoding];
 //    NSLog(@"complete:%@",receiptStr);
-    NSString *URLPath = [NSString stringWithFormat:@"receipt=%s&time=%@&charId=%@", [receiptStr UTF8String], buyTime, charId];
+    NSString *URLPath = [NSString stringWithFormat:@"receipt=%s&time=%@&charId=%@&buyOrderId=%@", [receiptStr UTF8String], buyTime, charId,buyOrderId];
     NSLog(@"url=%@",URLPath);
     
     //保存充值数据
@@ -198,12 +200,12 @@ SKPaymentTransaction *completeTrans;
 NSMutableData *responseData;
 - (void)httpConnectionWithRequest:(NSString*)url{
     NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@",serverId]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
     [request setHTTPMethod:@"POST"]; 
     //body
     NSMutableData *postBody = [NSMutableData data];
     [postBody appendData:[[NSString stringWithFormat:@"%@",url] dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setHTTPBody:postBody]; 
+    [request setHTTPBody:postBody];
     // NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     
     [NSURLConnection connectionWithRequest:request delegate:self];
@@ -228,7 +230,6 @@ NSMutableData *responseData;
 
 - (void)connection:(NSURLConnection *)theConnection didFailWithError:(NSError *)error
 {
-    NSLog(@"response error%@", [error localizedFailureReason]);
     [ProgressHUD dismiss];
 }
 
@@ -294,9 +295,8 @@ NSMutableData *responseData;
 }
 
 -(void) restoreTransaction:(SKPaymentTransaction *)transaction{
-    NSLog(@"交易恢复");
-//    [self provideContent: transaction.originalTransaction.payment.productIdentifier];
-//    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    [self provideContent: transaction.originalTransaction.payment.productIdentifier];
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
     [self completeTransaction:transaction];
 }
 

@@ -7,13 +7,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>水果机</string>
+	<string>海底大捕获</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>com.youngdream.nshx</string>
+	<string>com.youngdream.hddbh</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -40,10 +40,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>alipay</string>
+			<string>iapppay.alipay</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>${PRODUCT_NAME}</string>
+				<string>iapppay.alipay.com.AiBei.IapppayExample</string>
 			</array>
 		</dict>
 	</array>
@@ -51,6 +51,11 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Res/res/fonts/zhongyi.ttf</string>

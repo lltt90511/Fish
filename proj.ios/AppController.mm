@@ -1,18 +1,18 @@
 /****************************************************************************
  Copyright (c) 2010 cocos2d-x.org
-
+ 
  http://www.cocos2d-x.org
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,16 +38,13 @@
 #import <sys/sysctl.h>
 #import <mach/mach.h>
 #import <webViewController.h>
-
-#import "KxMovieDecoder.h"
-#import "KxAudioManager.h"
+//#import "UMMobClick/MobClick.h"
+//#import "KxMovieDecoder.h"
+//#import "KxAudioManager.h"
 
 #import "OpenUDID.h"
 #import "CCLuaObjcBridge.h"
 
-#import <IapppayKit/IapppayKit.h>
-#import <IapppayKit/IapppayOrderUtils.h> 
- 
 ////////////////////////////////////////////////////////////////////////////////
 
 //static NSMutableDictionary * gHistory;
@@ -60,7 +57,7 @@
 
 @interface AppController()
 {
-    KxMovieDecoder      *_decoder;
+    //    KxMovieDecoder      *_decoder;
     dispatch_queue_t    _dispatchQueue;
     NSMutableArray      *_videoFrames;
     NSMutableArray      *_audioFrames;
@@ -84,7 +81,8 @@
 @property (readwrite) BOOL decoding;
 @property (readwrite) BOOL opening;
 @property (readwrite) BOOL running;
-@property (readwrite, strong) KxArtworkFrame *artworkFrame;
+//@property (readwrite, strong) KxArtworkFrame *artworkFrame;
+@property (nonatomic, strong) NSString *mCheckResultKey;    //验签密钥
 
 @end
 
@@ -118,7 +116,7 @@ bool once = true;
     
     
     // Override point for customization after application launch.
-
+    
     // Add the view controller's view to the window and display.
     window = [[UIWindow alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
     EAGLView *__glView = [EAGLView viewWithFrame: [window bounds]
@@ -128,12 +126,12 @@ bool once = true;
                                       sharegroup: nil
                                    multiSampling: NO
                                  numberOfSamples: 0 ];;
-
+    
     [__glView setMultipleTouchEnabled:NO];
     // Use RootViewController manage EAGLView
-
+    
     //add a view by tangjiawen
-  
+    
     __glView.opaque = NO;
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -164,7 +162,7 @@ bool once = true;
     viewController = [[RootViewController alloc] initWithNibName:nil bundle:nil];
     viewController.wantsFullScreenLayout = YES;
     viewController.view = overView;
-//    viewController.view = __glView;
+    //    viewController.view = __glView;
     rootViewControllerPtr = viewController;
     // Set RootViewController to window
     if ( [[UIDevice currentDevice].systemVersion floatValue] < 6.0)
@@ -179,14 +177,25 @@ bool once = true;
     }
     [viewController startReachNotifier];
     [window makeKeyAndVisible];
-
+    
     [[UIApplication sharedApplication] setStatusBarHidden: YES];
     cocos2d::CCApplication::sharedApplication()->run();
     
     _iap = [IAP alloc];
+    
+//    UMConfigInstance.appKey = @"5757aad2e0f55aeb70002d01";
+//    UMConfigInstance.ChannelId = @"HDDBH";
+    
     [MobClick setLogEnabled:YES];
     [MobClick startWithAppkey:@"5757aad2e0f55aeb70002d01" reportPolicy:(ReportPolicy)0 channelId:@"hddbh"];
-//    [MobClickGameAnalytice ]
+    //    [MobClickGameAnalytice ]
+    
+    //设置支付宝回调地址
+    [[IapppayKit sharedInstance] setAppAlipayScheme:@"iapppay.alipay.com.AiBei.IapppayExample"];
+    
+    self.mCheckResultKey = mOrderUtilsCheckResultKey;
+    [[IapppayKit sharedInstance] setAppId:mOrderUtilsAppId mACID:mOrderUtilsChannel];
+    [[IapppayKit sharedInstance] setIapppayPayWindowOrientationMask:UIInterfaceOrientationMaskPortrait];
     
     //推送反馈(app不在前台运行时，点击推送激活时)
     //[XGPush handleLaunching:launchOptions];
@@ -195,6 +204,20 @@ bool once = true;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
     [XGPush handleLaunching:launchOptions];
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    //此方法在某一时刻弃用，使用application:openURL:sourceApplication:annotation:代替
+    [[IapppayKit sharedInstance] handleOpenUrl:url];
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    //此方法为代替application:handleOpenURL:
+    [[IapppayKit sharedInstance] handleOpenUrl:url];
     return YES;
 }
 
@@ -334,7 +357,7 @@ bool once = true;
 }
 
 + (void) openUrlWithSafari:(NSDictionary *)dict{
-     NSString *url2 = [dict objectForKey:@"url"];
+    NSString *url2 = [dict objectForKey:@"url"];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url2]];
 }
 
@@ -536,17 +559,17 @@ bool once = true;
     }
     [self onPushData:messageId type:messageType];
     
-//    Notification{
-//        aps =     {
-//            alert = "\U6d4b\U8bd5";
-//            sound = default;
-//        };
-//        key ＝ value;
-//        xg =     {
-//            bid = 0;
-//            ts = 1407218463;
-//        };
-//    }
+    //    Notification{
+    //        aps =     {
+    //            alert = "\U6d4b\U8bd5";
+    //            sound = default;
+    //        };
+    //        key ＝ value;
+    //        xg =     {
+    //            bid = 0;
+    //            ts = 1407218463;
+    //        };
+    //    }
 }
 
 - (void)onPushData:(int)data type:(int)tp
@@ -600,8 +623,26 @@ bool once = true;
 +(void) appstoreBuy:(NSDictionary*)dict{
     NSString *productId = [dict objectForKey:@"productId"];
     NSString *time = [dict objectForKey:@"time"];
+    NSString *orderId = [dict objectForKey:@"orderId"];
     NSLog(@"appstoreBuy:%@,time:%@",productId,time);
-    [_iap buy:productId buyTime:time];
+    [_iap buy:productId buyTime:time buyOrderId:orderId];
+}
+
++(void) iapppayBuy:(NSDictionary*)dict{
+    NSString *orderId = [dict objectForKey:@"orderId"];
+    NSString *price = [dict objectForKey:@"price"];
+    NSString *productId = [dict objectForKey:@"productId"];
+    NSString *userId = [dict objectForKey:@"userId"];
+    IapppayOrderUtils *orderInfo = [[IapppayOrderUtils alloc] init];
+    orderInfo.appId         = mOrderUtilsAppId;
+    orderInfo.cpPrivateKey  = mOrderUtilsCpPrivateKey;
+    orderInfo.cpOrderId     = orderId;
+    orderInfo.waresId       = productId;
+    orderInfo.price         = price;
+    orderInfo.appUserId     = userId;
+    
+    NSString *trandInfo = [orderInfo getTrandData];
+    [[IapppayKit sharedInstance] makePayForTrandInfo:trandInfo payDelegate:self];
 }
 
 +(void) popWeb:(NSDictionary*)dict{
@@ -648,6 +689,47 @@ bool once = true;
      */
 }
 
+/**
+ * 此处方法是支付结果处理
+ **/
+#pragma mark - IapppayKitPayRetDelegate
+- (void)iapppayKitRetPayStatusCode:(IapppayKitPayRetCodeType)statusCode
+                        resultInfo:(NSDictionary *)resultInfo
+{
+    NSLog(@"statusCode : %d, resultInfo : %@", (int)statusCode, resultInfo);
+    
+    if (statusCode == IAPPPAY_PAYRETCODE_SUCCESS)
+    {
+        BOOL isSuccess = [IapppayOrderUtils checkPayResult:resultInfo[@"Signature"]
+                                                withAppKey:self.mCheckResultKey];
+        if (isSuccess) {
+            //支付成功，验签成功
+//            [MBProgressHUD showTextHUDAddedTo:self.view Msg:@"支付成功，验签成功" animated:YES];
+        } else {
+            //支付成功，验签失败
+//            [MBProgressHUD showTextHUDAddedTo:self.view Msg:@"支付成功，验签失败" animated:YES];
+        }
+    }
+    else if (statusCode == IAPPPAY_PAYRETCODE_FAILED)
+    {
+        //支付失败
+        NSString *message = @"支付失败";
+        if (resultInfo != nil) {
+            message = [NSString stringWithFormat:@"%@:code:%@\n（%@）",message,resultInfo[@"RetCode"],resultInfo[@"ErrorMsg"]];
+        }
+        
+//        [MBProgressHUD showTextHUDAddedTo:self.view Msg:message animated:YES];
+    }
+    else
+    {
+        //支付取消
+        NSString *message = @"支付取消";
+        if (resultInfo != nil) {
+            message = [NSString stringWithFormat:@"%@:code:%@\n（%@）",message,resultInfo[@"RetCode"],resultInfo[@"ErrorMsg"]];
+        }
+//        [MBProgressHUD showTextHUDAddedTo:self.view Msg:message animated:YES];
+    }
+}
 
 #pragma mark -
 #pragma mark Memory management
@@ -673,8 +755,8 @@ bool once = true;
         } else {
             
             // force ffmpeg to free allocated memory
-            [_decoder closeFile];
-            [_decoder openFile:nil error:nil];
+            //            [_decoder closeFile];
+            //            [_decoder openFile:nil error:nil];
             
             [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failure", nil)
                                         message:NSLocalizedString(@"Out of memory", nil)
@@ -686,8 +768,8 @@ bool once = true;
     } else {
         
         [self freeBufferedFrames];
-        [_decoder closeFile];
-        [_decoder openFile:nil error:nil];
+        //        [_decoder closeFile];
+        //        [_decoder openFile:nil error:nil];
     }
 }
 
@@ -722,11 +804,11 @@ bool once = true;
     if (self.playing)
         return;
     
-    if (!_decoder.validVideo &&
-        !_decoder.validAudio) {
-        
-        return;
-    }
+    //    if (!_decoder.validVideo &&
+    //        !_decoder.validAudio) {
+    //
+    //        return;
+    //    }
     
     if (_interrupted)
         return;
@@ -743,8 +825,8 @@ bool once = true;
         [self tick];
     });
     
-    if (_decoder.validAudio)
-        [self enableAudio:YES];
+    //    if (_decoder.validAudio)
+    //        [self enableAudio:YES];
     
     [self videoSucc];
     NSLog(@"play movie");
@@ -760,30 +842,30 @@ bool once = true;
     NSLog(@"url=%@",urlString);
     [mVideoView setImage:nil];
     _PlayUrl = urlString;
-    id<KxAudioManager> audioManager = [KxAudioManager audioManager];
-    [audioManager activateAudioSession];
+    //    id<KxAudioManager> audioManager = [KxAudioManager audioManager];
+    //    [audioManager activateAudioSession];
     
     _moviePosition = 0;
     __weak AppController *weakSelf = self;
-    KxMovieDecoder *decoder = [[KxMovieDecoder alloc] init];
-    decoder.interruptCallback = ^BOOL(){
-        
-        __strong AppController *strongSelf = weakSelf;
-        return strongSelf ? [strongSelf interruptDecoder] : YES;
-    };
+    //    KxMovieDecoder *decoder = [[KxMovieDecoder alloc] init];
+    //    decoder.interruptCallback = ^BOOL(){
+    //
+    //        __strong AppController *strongSelf = weakSelf;
+    //        return strongSelf ? [strongSelf interruptDecoder] : YES;
+    //    };
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
         NSError *error = nil;
         NSLog(@"openFile starting...");
-        [decoder openFile:urlString error:&error];
+        //        [decoder openFile:urlString error:&error];
         if (error != nil) {
-//            mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
-//            mVideoView.contentMode = UIViewContentModeCenter;
+            //            mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
+            //            mVideoView.contentMode = UIViewContentModeCenter;
             [self videoError];
         }
         NSLog(@"openFile finished.");
-                self.opening = FALSE;
+        self.opening = FALSE;
         if(!self.running)
             return;
         
@@ -792,7 +874,7 @@ bool once = true;
             
             dispatch_sync(dispatch_get_main_queue(), ^{
                 
-                [strongSelf setMovieDecoder:decoder withError:error];
+                //                [strongSelf setMovieDecoder:decoder withError:error];
             });
         }
     });
@@ -801,9 +883,9 @@ bool once = true;
         
         [self showLoadingIndicators];
     }
-    if (_decoder) {
-        [self setupPresentView];
-    }
+    //    if (_decoder) {
+    //        [self setupPresentView];
+    //    }
 }
 
 - (void)stop
@@ -838,10 +920,10 @@ bool once = true;
     _moviePosition = 0;
     _tickCorrectionTime = 0;
     _tickCounter = 0;
-    if(_decoder){
-        [_decoder release];
-    }
-    _decoder = nil;
+    //    if(_decoder){
+    //        [_decoder release];
+    //    }
+    //    _decoder = nil;
     _interrupted = FALSE;
     
     NSLog(@"stop movie");
@@ -862,80 +944,80 @@ bool once = true;
 }
 
 #pragma mark - private
-
-- (void) setMovieDecoder: (KxMovieDecoder *) decoder
-               withError: (NSError *) error
-{
-    if (!error && decoder) {
-        _decoder        = decoder;
-        if (_decoder.isNetwork) {
-            
-            _minBufferedDuration = NETWORK_MIN_BUFFERED_DURATION;
-            _maxBufferedDuration = NETWORK_MAX_BUFFERED_DURATION;
-            
-        } else {
-            
-            _minBufferedDuration = LOCAL_MIN_BUFFERED_DURATION;
-            _maxBufferedDuration = LOCAL_MAX_BUFFERED_DURATION;
-        }
-        
-        if (!_decoder.validVideo)
-            _minBufferedDuration *= 10.0; // increase for audio
-        
-        // allow to tweak some parameters at runtime
-        //        if (_parameters.count) {
-        //
-        //            id val;
-        //
-        //            val = [_parameters valueForKey: KxMovieParameterMinBufferedDuration];
-        //            if ([val isKindOfClass:[NSNumber class]])
-        //                _minBufferedDuration = [val floatValue];
-        //
-        //            val = [_parameters valueForKey: KxMovieParameterMaxBufferedDuration];
-        //            if ([val isKindOfClass:[NSNumber class]])
-        //                _maxBufferedDuration = [val floatValue];
-        //
-        //            val = [_parameters valueForKey: KxMovieParameterDisableDeinterlacing];
-        //            if ([val isKindOfClass:[NSNumber class]])
-        //                _decoder.disableDeinterlacing = [val boolValue];
-        //
-        //            if (_maxBufferedDuration < _minBufferedDuration)
-        //                _maxBufferedDuration = _minBufferedDuration * 2;
-        //        }
-        
-        // disable deinterlacing for iPhone, because it's complex operation can cause stuttering
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-            _decoder.disableDeinterlacing = YES;
-        if (_maxBufferedDuration < _minBufferedDuration)
-            _maxBufferedDuration = _minBufferedDuration * 2;
-        
-        
-        NSLog(@"buffered limit: %.1f - %.1f", _minBufferedDuration, _maxBufferedDuration);
-        
-        //        if (self.isViewLoaded) {
-        
-        [self setupPresentView];
-        
-        if ([_PlayUrl compare: @"rtmp://"] == NSOrderedSame){
-            if (_activityIndicatorView.isAnimating) {
-                [self restorePlay];
-            }
-        }
-        else{
-            [self restorePlay];
-        }
-        //        }
-        
-    } else {
-        NSLog(@"setMovieDecoder,error=%d, %@",error.code, error.localizedDescription);
-        [self hideLoadingIndicators];
-        if (!_interrupted)
-            [self handleDecoderMovieError: error];
-    }
-    [self hideLoadingIndicators];
-}
-
-
+/*
+ - (void) setMovieDecoder: (KxMovieDecoder *) decoder
+ withError: (NSError *) error
+ {
+ if (!error && decoder) {
+ _decoder        = decoder;
+ if (_decoder.isNetwork) {
+ 
+ _minBufferedDuration = NETWORK_MIN_BUFFERED_DURATION;
+ _maxBufferedDuration = NETWORK_MAX_BUFFERED_DURATION;
+ 
+ } else {
+ 
+ _minBufferedDuration = LOCAL_MIN_BUFFERED_DURATION;
+ _maxBufferedDuration = LOCAL_MAX_BUFFERED_DURATION;
+ }
+ 
+ if (!_decoder.validVideo)
+ _minBufferedDuration *= 10.0; // increase for audio
+ 
+ // allow to tweak some parameters at runtime
+ //        if (_parameters.count) {
+ //
+ //            id val;
+ //
+ //            val = [_parameters valueForKey: KxMovieParameterMinBufferedDuration];
+ //            if ([val isKindOfClass:[NSNumber class]])
+ //                _minBufferedDuration = [val floatValue];
+ //
+ //            val = [_parameters valueForKey: KxMovieParameterMaxBufferedDuration];
+ //            if ([val isKindOfClass:[NSNumber class]])
+ //                _maxBufferedDuration = [val floatValue];
+ //
+ //            val = [_parameters valueForKey: KxMovieParameterDisableDeinterlacing];
+ //            if ([val isKindOfClass:[NSNumber class]])
+ //                _decoder.disableDeinterlacing = [val boolValue];
+ //
+ //            if (_maxBufferedDuration < _minBufferedDuration)
+ //                _maxBufferedDuration = _minBufferedDuration * 2;
+ //        }
+ 
+ // disable deinterlacing for iPhone, because it's complex operation can cause stuttering
+ if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+ _decoder.disableDeinterlacing = YES;
+ if (_maxBufferedDuration < _minBufferedDuration)
+ _maxBufferedDuration = _minBufferedDuration * 2;
+ 
+ 
+ NSLog(@"buffered limit: %.1f - %.1f", _minBufferedDuration, _maxBufferedDuration);
+ 
+ //        if (self.isViewLoaded) {
+ 
+ [self setupPresentView];
+ 
+ if ([_PlayUrl compare: @"rtmp://"] == NSOrderedSame){
+ if (_activityIndicatorView.isAnimating) {
+ [self restorePlay];
+ }
+ }
+ else{
+ [self restorePlay];
+ }
+ //        }
+ 
+ } else {
+ NSLog(@"setMovieDecoder,error=%d, %@",error.code, error.localizedDescription);
+ [self hideLoadingIndicators];
+ if (!_interrupted)
+ [self handleDecoderMovieError: error];
+ }
+ [self hideLoadingIndicators];
+ }
+ 
+ */
 
 - (void) restorePlay
 {
@@ -945,22 +1027,22 @@ bool once = true;
     //    else
     [self play];
 }
-
-- (void) setupPresentView
-{
-    if (!_decoder.validVideo) {
-        NSLog(@"fallback to use RGB video frame and UIKit");
-        [_decoder setupVideoFrameFormat:KxVideoFrameFormatRGB];
-    }
-    
-    if (!_decoder.validVideo) {
-        //缺省图片
-//        mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
-//        mVideoView.contentMode = UIViewContentModeCenter;
-        [self videoError];
-    }
-}
-
+/*
+ - (void) setupPresentView
+ {
+ if (!_decoder.validVideo) {
+ NSLog(@"fallback to use RGB video frame and UIKit");
+ [_decoder setupVideoFrameFormat:KxVideoFrameFormatRGB];
+ }
+ 
+ if (!_decoder.validVideo) {
+ //缺省图片
+ //        mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
+ //        mVideoView.contentMode = UIViewContentModeCenter;
+ [self videoError];
+ }
+ }
+ */
 - (void) audioCallbackFillData: (float *) outData
                      numFrames: (UInt32) numFrames
                    numChannels: (UInt32) numChannels
@@ -980,41 +1062,41 @@ bool once = true;
                 
                 @synchronized(_audioFrames) {
                     
-                    NSUInteger count = _audioFrames.count;
-                    //                    NSLog(@"_audioFrames = %d", count);
-                    if (count > 0) {
-                        
-                        KxAudioFrame *frame = [[_audioFrames[0] retain] autorelease];
-                        
-                        if (_decoder.validVideo) {
-                            
-                            const CGFloat delta = _moviePosition - frame.position;
-                            
-                            if (delta < -2.0) {
-                                
-                                memset(outData, 0, numFrames * numChannels * sizeof(float));
-                                break; // silence and exit
-                            }
-                            
-                            [_audioFrames removeObjectAtIndex:0];
-                            
-                            if (delta > 2.0 && count > 1) {
-                                continue;
-                            }
-                            
-                        } else {
-                            
-                            [_audioFrames removeObjectAtIndex:0];
-                            _moviePosition = frame.position;
-                            _bufferedDuration -= frame.duration;
-                        }
-                        
-                        _currentAudioFramePos = 0;
-                        if(frame){
-                            //                            _currentAudioFrame = frame.samples;
-                            _currentAudioFrame = [[NSData alloc] initWithData:frame.samples];
-                        }
-                    }
+                    //                    NSUInteger count = _audioFrames.count;
+                    //                    //                    NSLog(@"_audioFrames = %d", count);
+                    //                    if (count > 0) {
+                    //
+                    //                        KxAudioFrame *frame = [[_audioFrames[0] retain] autorelease];
+                    //
+                    //                        if (_decoder.validVideo) {
+                    //
+                    //                            const CGFloat delta = _moviePosition - frame.position;
+                    //
+                    //                            if (delta < -2.0) {
+                    //
+                    //                                memset(outData, 0, numFrames * numChannels * sizeof(float));
+                    //                                break; // silence and exit
+                    //                            }
+                    //
+                    //                            [_audioFrames removeObjectAtIndex:0];
+                    //
+                    //                            if (delta > 2.0 && count > 1) {
+                    //                                continue;
+                    //                            }
+                    //
+                    //                        } else {
+                    //
+                    //                            [_audioFrames removeObjectAtIndex:0];
+                    //                            _moviePosition = frame.position;
+                    //                            _bufferedDuration -= frame.duration;
+                    //                        }
+                    //
+                    //                        _currentAudioFramePos = 0;
+                    //                        if(frame){
+                    //                            //                            _currentAudioFrame = frame.samples;
+                    //                            _currentAudioFrame = [[NSData alloc] initWithData:frame.samples];
+                    //                        }
+                    //                    }
                 }
             }
             
@@ -1048,185 +1130,186 @@ bool once = true;
 
 - (void) enableAudio: (BOOL) on
 {
-    id<KxAudioManager> audioManager = [KxAudioManager audioManager];
-    
-    if (on && _decoder.validAudio) {
-        
-        audioManager.outputBlock = ^(float *outData, UInt32 numFrames, UInt32 numChannels) {
-            
-            [self audioCallbackFillData: outData numFrames:numFrames numChannels:numChannels];
-        };
-        
-        [audioManager play];
-        
-        NSLog(@"audio device smr: %d fmt: %d chn: %d",
-              (int)audioManager.samplingRate,
-              (int)audioManager.numBytesPerSample,
-              (int)audioManager.numOutputChannels);
-        
-    } else {
-        NSLog(@"audio pause.");
-        [audioManager pause];
-        audioManager.outputBlock = nil;
-    }
+    //    id<KxAudioManager> audioManager = [KxAudioManager audioManager];
+    //
+    //    if (on && _decoder.validAudio) {
+    //
+    //        audioManager.outputBlock = ^(float *outData, UInt32 numFrames, UInt32 numChannels) {
+    //
+    //            [self audioCallbackFillData: outData numFrames:numFrames numChannels:numChannels];
+    //        };
+    //
+    //        [audioManager play];
+    //
+    //        NSLog(@"audio device smr: %d fmt: %d chn: %d",
+    //              (int)audioManager.samplingRate,
+    //              (int)audioManager.numBytesPerSample,
+    //              (int)audioManager.numOutputChannels);
+    //
+    //    } else {
+    //        NSLog(@"audio pause.");
+    //        [audioManager pause];
+    //        audioManager.outputBlock = nil;
+    //    }
 }
 
 - (BOOL) addFrames: (NSArray *)frames
 {
-    if (_decoder.validVideo) {
-        
-        @synchronized(_videoFrames) {
-            for (KxMovieFrame *frame in frames)
-                if (frame.type == KxMovieFrameTypeVideo) {
-                    [_videoFrames addObject:frame];
-                    _bufferedDuration += frame.duration;
-                }
-        }
-    }
-    
-    if (_decoder.validAudio) {
-        
-        @synchronized(_audioFrames) {
-            
-            for (KxMovieFrame *frame in frames)
-                if (frame.type == KxMovieFrameTypeAudio) {
-                    [_audioFrames addObject:frame];
-                    if (!_decoder.validVideo)
-                        _bufferedDuration += frame.duration;
-                }
-        }
-        
-        if (!_decoder.validVideo) {
-            
-            for (KxMovieFrame *frame in frames)
-                if (frame.type == KxMovieFrameTypeArtwork)
-                    self.artworkFrame = (KxArtworkFrame *)frame;
-        }
-    }
-    
-    return self.playing && _bufferedDuration < _maxBufferedDuration;
+    //    if (_decoder.validVideo) {
+    //
+    //        @synchronized(_videoFrames) {
+    //            for (KxMovieFrame *frame in frames)
+    //                if (frame.type == KxMovieFrameTypeVideo) {
+    //                    [_videoFrames addObject:frame];
+    //                    _bufferedDuration += frame.duration;
+    //                }
+    //        }
+    //    }
+    //
+    //    if (_decoder.validAudio) {
+    //
+    //        @synchronized(_audioFrames) {
+    //
+    //            for (KxMovieFrame *frame in frames)
+    //                if (frame.type == KxMovieFrameTypeAudio) {
+    //                    [_audioFrames addObject:frame];
+    //                    if (!_decoder.validVideo)
+    //                        _bufferedDuration += frame.duration;
+    //                }
+    //        }
+    //
+    //        if (!_decoder.validVideo) {
+    //
+    //            for (KxMovieFrame *frame in frames)
+    //                if (frame.type == KxMovieFrameTypeArtwork)
+    //                    self.artworkFrame = (KxArtworkFrame *)frame;
+    //        }
+    //    }
+    //
+    //    return self.playing && _bufferedDuration < _maxBufferedDuration;
+    return false;
 }
 
 - (BOOL) decodeFrames
 {
     //NSAssert(dispatch_get_current_queue() == _dispatchQueue, @"bugcheck");
     
-    NSMutableArray *frames = nil;
-    
-    if (_decoder.validVideo ||
-        _decoder.validAudio) {
-        
-        frames = [NSMutableArray arrayWithArray:[_decoder decodeFrames:0]];
-    }
-    
-    if (frames.count) {
-        return [self addFrames: frames];
-    }
+    //    NSMutableArray *frames = nil;
+    //
+    //    if (_decoder.validVideo ||
+    //        _decoder.validAudio) {
+    //
+    //        frames = [NSMutableArray arrayWithArray:[_decoder decodeFrames:0]];
+    //    }
+    //
+    //    if (frames.count) {
+    //        return [self addFrames: frames];
+    //    }
     return NO;
 }
 
 - (void) asyncDecodeFrames
 {
-    if (self.decoding)
-        return;
-    
-    __weak AppController *weakSelf = self;
-    __weak KxMovieDecoder *weakDecoder = _decoder;
-    
-    const CGFloat duration = _decoder.isNetwork ? .0f : 0.1f;
-    
-    self.decoding = YES;
-    dispatch_async(_dispatchQueue, ^{
-        {
-            __strong AppController *strongSelf = weakSelf;
-            if (!strongSelf.playing)
-                return;
-        }
-        
-        BOOL good = YES;
-        while (good) {
-            good = NO;
-            
-            @autoreleasepool {
-                __strong KxMovieDecoder *decoder = weakDecoder;
-                
-                if (decoder && (decoder.validVideo || decoder.validAudio)) {
-                    
-                    NSArray *frames = [decoder decodeFrames:duration];
-                    if (frames.count) {
-                        
-                        __strong AppController *strongSelf = weakSelf;
-                        if (strongSelf)
-                            good = [strongSelf addFrames:frames];
-                    }
-                }
-            }
-        }
-        
-        {
-            __strong AppController *strongSelf = weakSelf;
-            if (strongSelf) strongSelf.decoding = NO;
-        }
-    });
+    //    if (self.decoding)
+    //        return;
+    //
+    //    __weak AppController *weakSelf = self;
+    //    __weak KxMovieDecoder *weakDecoder = _decoder;
+    //
+    //    const CGFloat duration = _decoder.isNetwork ? .0f : 0.1f;
+    //
+    //    self.decoding = YES;
+    //    dispatch_async(_dispatchQueue, ^{
+    //        {
+    //            __strong AppController *strongSelf = weakSelf;
+    //            if (!strongSelf.playing)
+    //                return;
+    //        }
+    //
+    //        BOOL good = YES;
+    //        while (good) {
+    //            good = NO;
+    //
+    //            @autoreleasepool {
+    //                __strong KxMovieDecoder *decoder = weakDecoder;
+    //
+    //                if (decoder && (decoder.validVideo || decoder.validAudio)) {
+    //
+    //                    NSArray *frames = [decoder decodeFrames:duration];
+    //                    if (frames.count) {
+    //
+    //                        __strong AppController *strongSelf = weakSelf;
+    //                        if (strongSelf)
+    //                            good = [strongSelf addFrames:frames];
+    //                    }
+    //                }
+    //            }
+    //        }
+    //
+    //        {
+    //            __strong AppController *strongSelf = weakSelf;
+    //            if (strongSelf) strongSelf.decoding = NO;
+    //        }
+    //    });
 }
 
 - (void) tick
 {
-    //NSLog(@"tick start.........");
-    if (_buffered && ((_bufferedDuration > _minBufferedDuration) || _decoder.isEOF)) {
-        
-        _tickCorrectionTime = 0;
-        _buffered = NO;
-        [self hideLoadingIndicators];
-    }
-    
-    CGFloat interval = 0;
-    if (!_buffered)
-        interval = [self presentFrame];
-    
-    if (self.playing) {
-        
-        const NSUInteger leftFrames =
-        (_decoder.validVideo ? _videoFrames.count : 0) +
-        (_decoder.validAudio ? _audioFrames.count : 0);
-        
-        if (0 == leftFrames) {
-            
-            if (_decoder.isEOF) {
-                
-                [self stop];
-                NSLog(@"_decoderStoped set true");
-                //add by tangjiawen 主播断开切换默认页面
-//                mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
-                [self videoFinish];
-                return;
-            }
-            
-            if (_minBufferedDuration > 0 && !_buffered) {
-                
-                _buffered = YES;
-                if ([_PlayUrl compare:@"rtmp://"] == NSOrderedSame) {
-                    [self showLoadingIndicators];
-                }
-            }
-        }
-        
-        if (!leftFrames ||
-            !(_bufferedDuration > _minBufferedDuration)) {
-            
-            [self asyncDecodeFrames];
-        }
-        
-        const NSTimeInterval correction = [self tickCorrection];
-        const NSTimeInterval time = MAX(interval + correction, 0.01);
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self tick];
-        });
-    }else{
-        NSLog(@"_decoderStoped set true");
-    }
-    //    NSLog(@"tick end.");
+    //    //NSLog(@"tick start.........");
+    //    if (_buffered && ((_bufferedDuration > _minBufferedDuration) || _decoder.isEOF)) {
+    //
+    //        _tickCorrectionTime = 0;
+    //        _buffered = NO;
+    //        [self hideLoadingIndicators];
+    //    }
+    //
+    //    CGFloat interval = 0;
+    //    if (!_buffered)
+    //        interval = [self presentFrame];
+    //
+    //    if (self.playing) {
+    //
+    //        const NSUInteger leftFrames =
+    //        (_decoder.validVideo ? _videoFrames.count : 0) +
+    //        (_decoder.validAudio ? _audioFrames.count : 0);
+    //
+    //        if (0 == leftFrames) {
+    //
+    //            if (_decoder.isEOF) {
+    //
+    //                [self stop];
+    //                NSLog(@"_decoderStoped set true");
+    //                //add by tangjiawen 主播断开切换默认页面
+    ////                mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
+    //                [self videoFinish];
+    //                return;
+    //            }
+    //
+    //            if (_minBufferedDuration > 0 && !_buffered) {
+    //
+    //                _buffered = YES;
+    //                if ([_PlayUrl compare:@"rtmp://"] == NSOrderedSame) {
+    //                    [self showLoadingIndicators];
+    //                }
+    //            }
+    //        }
+    //
+    //        if (!leftFrames ||
+    //            !(_bufferedDuration > _minBufferedDuration)) {
+    //
+    //            [self asyncDecodeFrames];
+    //        }
+    //
+    //        const NSTimeInterval correction = [self tickCorrection];
+    //        const NSTimeInterval time = MAX(interval + correction, 0.01);
+    //        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC);
+    //        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    //            [self tick];
+    //        });
+    //    }else{
+    //        NSLog(@"_decoderStoped set true");
+    //    }
+    //    //    NSLog(@"tick end.");
 }
 
 - (CGFloat) tickCorrection
@@ -1261,114 +1344,114 @@ bool once = true;
 {
     CGFloat interval = 0;
     
-    if (_decoder.validVideo) {
-        //        NSLog(@"presentFrame video");
-        
-        KxVideoFrame *frame = nil;
-        @synchronized(_videoFrames) {
-            
-            if (_videoFrames.count > 0) {
-                frame = [[_videoFrames objectAtIndex:0] retain];
-                [_videoFrames removeObjectAtIndex:0];
-                _bufferedDuration -= frame.duration;
-            }
-        }
-        
-        if (frame){
-            interval = [self presentVideoFrame:frame];
-            [frame release];
-        }
-        
-    } else if (_decoder.validAudio) {
-        //        NSLog(@"presentFrame audio");
-        
-        //interval = _bufferedDuration * 0.5;
-        if (self.artworkFrame) {
-            
-            mVideoView.image = [self.artworkFrame asImage];
-            self.artworkFrame = nil;
-        }
-    }
+    //    if (_decoder.validVideo) {
+    //        //        NSLog(@"presentFrame video");
+    //
+    //        KxVideoFrame *frame = nil;
+    //        @synchronized(_videoFrames) {
+    //
+    //            if (_videoFrames.count > 0) {
+    //                frame = [[_videoFrames objectAtIndex:0] retain];
+    //                [_videoFrames removeObjectAtIndex:0];
+    //                _bufferedDuration -= frame.duration;
+    //            }
+    //        }
+    //
+    //        if (frame){
+    //            interval = [self presentVideoFrame:frame];
+    //            [frame release];
+    //        }
+    //
+    //    } else if (_decoder.validAudio) {
+    //        //        NSLog(@"presentFrame audio");
+    //
+    //        //interval = _bufferedDuration * 0.5;
+    //        if (self.artworkFrame) {
+    //
+    //            mVideoView.image = [self.artworkFrame asImage];
+    //            self.artworkFrame = nil;
+    //        }
+    //    }
     
     return interval;
 }
 
-- (CGFloat) presentVideoFrame: (KxVideoFrame *) frame
-{
-    if (frame.format==KxVideoFrameFormatYUV) {
-        KxVideoFrameYUV *yuvFrame = [(KxVideoFrameYUV *)frame retain];
-        [mVideoView setImage:[yuvFrame asImage]];
-        [yuvFrame release];
-        
-    } else {
-        
-        KxVideoFrameRGB *rgbFrame = [(KxVideoFrameRGB *)frame retain];
-        [mVideoView setImage:[rgbFrame asImage]];
-        [rgbFrame release];
-    }
-    
-    _moviePosition = frame.position;
-    
-    return frame.duration;
-}
-
-- (void) setMoviePositionFromDecoder
-{
-    _moviePosition = _decoder.position;
-}
-
-- (void) setDecoderPosition: (CGFloat) position
-{
-    _decoder.position = position;
-}
+//- (CGFloat) presentVideoFrame: (KxVideoFrame *) frame
+//{
+//    if (frame.format==KxVideoFrameFormatYUV) {
+//        KxVideoFrameYUV *yuvFrame = [(KxVideoFrameYUV *)frame retain];
+//        [mVideoView setImage:[yuvFrame asImage]];
+//        [yuvFrame release];
+//
+//    } else {
+//
+//        KxVideoFrameRGB *rgbFrame = [(KxVideoFrameRGB *)frame retain];
+//        [mVideoView setImage:[rgbFrame asImage]];
+//        [rgbFrame release];
+//    }
+//
+//    _moviePosition = frame.position;
+//
+//    return frame.duration;
+//}
+//
+//- (void) setMoviePositionFromDecoder
+//{
+//    _moviePosition = _decoder.position;
+//}
+//
+//- (void) setDecoderPosition: (CGFloat) position
+//{
+//    _decoder.position = position;
+//}
 
 - (void) updatePosition: (CGFloat) position
                playMode: (BOOL) playMode
 {
     [self freeBufferedFrames];
     
-    position = MIN(_decoder.duration - 1, MAX(0, position));
-    
-    __weak AppController *weakSelf = self;
-    
-    dispatch_async(_dispatchQueue, ^{
-        
-        if (playMode) {
-            
-            {
-                __strong AppController *strongSelf = weakSelf;
-                if (!strongSelf) return;
-                [strongSelf setDecoderPosition: position];
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                __strong AppController *strongSelf = weakSelf;
-                if (strongSelf) {
-                    [strongSelf setMoviePositionFromDecoder];
-                    [strongSelf play];
-                }
-            });
-            
-        } else {
-            
-            {
-                __strong AppController *strongSelf = weakSelf;
-                if (!strongSelf) return;
-                [strongSelf setDecoderPosition: position];
-                [strongSelf decodeFrames];
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                __strong AppController *strongSelf = weakSelf;
-                if (strongSelf) {
-                    [strongSelf setMoviePositionFromDecoder];
-                    [strongSelf presentFrame];
-                }
-            });
-        }
-    });
+    //    position = MIN(_decoder.duration - 1, MAX(0, position));
+    //
+    //    __weak AppController *weakSelf = self;
+    //
+    //    dispatch_async(_dispatchQueue, ^{
+    //
+    //        if (playMode) {
+    //
+    //            {
+    //                __strong AppController *strongSelf = weakSelf;
+    //                if (!strongSelf) return;
+    //                [strongSelf setDecoderPosition: position];
+    //            }
+    //
+    //            dispatch_async(dispatch_get_main_queue(), ^{
+    //
+    //                __strong AppController *strongSelf = weakSelf;
+    //                if (strongSelf) {
+    //                    [strongSelf setMoviePositionFromDecoder];
+    //                    [strongSelf play];
+    //                }
+    //            });
+    //
+    //        } else {
+    //
+    //            {
+    //                __strong AppController *strongSelf = weakSelf;
+    //                if (!strongSelf) return;
+    //                [strongSelf setDecoderPosition: position];
+    //                [strongSelf decodeFrames];
+    //            }
+    //
+    //            dispatch_async(dispatch_get_main_queue(), ^{
+    //
+    //                __strong AppController *strongSelf = weakSelf;
+    //                if (strongSelf) {
+    //                    [strongSelf setMoviePositionFromDecoder];
+    //                    [strongSelf presentFrame];
+    //                }
+    //            });
+    //        }
+    //    });
 }
 
 - (void) freeBufferedFrames
@@ -1389,17 +1472,17 @@ bool once = true;
 
 - (void) handleDecoderMovieError: (NSError *) error
 {
-//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failure", nil)
-//                                                        message:[error localizedDescription]
-//                                                       delegate:nil
-//                                              cancelButtonTitle:NSLocalizedString(@"Close", nil)
-//                                              otherButtonTitles:nil];
+    //    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Failure", nil)
+    //                                                        message:[error localizedDescription]
+    //                                                       delegate:nil
+    //                                              cancelButtonTitle:NSLocalizedString(@"Close", nil)
+    //                                              otherButtonTitles:nil];
     if(error!=nil){
-//        mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
-//        mVideoView.contentMode = UIViewContentModeCenter;
+        //        mVideoView.image = [UIImage imageNamed:@"iTunesArtwork.png"];
+        //        mVideoView.contentMode = UIViewContentModeCenter;
         [self videoError];
     }
-//    [alertView show];
+    //    [alertView show];
 }
 
 - (BOOL) interruptDecoder
@@ -1423,7 +1506,7 @@ bool once = true;
 
 + (void)setAutoLockScreen:(NSDictionary*)dict{
     Boolean flag = [[dict objectForKey:@"flag"]boolValue];
-   [[UIApplication sharedApplication] setIdleTimerDisabled: !flag];
+    [[UIApplication sharedApplication] setIdleTimerDisabled: !flag];
 }
 
 

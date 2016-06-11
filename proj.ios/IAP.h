@@ -15,7 +15,7 @@
 -(void)initData:(NSString*)cId sId:(NSString*)serId eId:(NSString*)envirId;
 -(void)requestProUpgradeProductData;
 -(void)RequestProductData:(NSString *)proId;
--(void)buy:(NSString *)type buyTime:(NSString*)time;
+-(void)buy:(NSString *)type buyTime:(NSString*)time buyOrderId:(NSString*)orderId;
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions;
 -(void)PurchasedTransaction:(SKPaymentTransaction *)transaction;
 -(void)completeTransaction: (SKPaymentTransaction *)transaction;
