@@ -238,8 +238,8 @@ function onDownloadServerList(header,body,flag)
       local flag = checkUnfinishedFile()
       if flag == true then
          print("88888888888888888 true")
-         finishUpdate(
-)      else
+         finishUpdate() 
+      else
          print("88888888888888888 false")
          finishCallBack = finishUpdate
       end
