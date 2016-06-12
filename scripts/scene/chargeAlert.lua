@@ -152,9 +152,9 @@ function onGetChargeIdSucceed(data)
            luaoc.callStaticMethod("AppController","appstoreBuy",{orderId=data.transid,productId="com.youngdream.hddbh"..chargeNum,time=tostring(os.time())})
         end
      else
-         local res = {orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx}
-         local params = cjson.encode(res)
-         luaj.callStaticMethod("com/java/platform/NdkPlatform","iapPay",{params})
+        local res = {orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx}
+        local params = cjson.encode(res)
+        luaj.callStaticMethod("com/java/platform/NdkPlatform","iapPay",{params})
      end
   end
 end
