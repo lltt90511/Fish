@@ -578,6 +578,7 @@ function addMessage(message, list, time)
          _richText:pushBackElement(_text1)  
          local _text2 = RichElementText:create(2,ccc3(255,0,0),255,"系统消息:"..message.msg,DEFAULT_FONT,40)
          _richText:pushBackElement(_text2)
+         num = 2
       elseif message.type == -2 then
          local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
          _richText:pushBackElement(_text1)
@@ -659,6 +660,7 @@ function addMessage(message, list, time)
          layout:addChild(_layout)
          local _text5 = RichElementText:create(7,ccc3(255,255,255),255,message.msg,DEFAULT_FONT,40)         
          _richText:pushBackElement(_text5)  
+         num = 7
       elseif message.type == -1 then
          local _welcome = ""
          local _room = ""
@@ -725,6 +727,7 @@ function addMessage(message, list, time)
         layout:addChild(_layout)
         local _text4 = RichElementText:create(5,ccc3(255,252,204),255,_room,DEFAULT_FONT,40)         
         _richText:pushBackElement(_text4) 
+        num = 5
       elseif message.type == 0 then
           local _text1 = RichElementText:create(1,ccc3 (255,255,255),255,nowStr,DEFAULT_FONT,40)
           _richText:pushBackElement(_text1)
@@ -736,6 +739,7 @@ function addMessage(message, list, time)
           _richText:pushBackElement(_text4) 
           local _text5 = RichElementText:create(5,ccc3(253,78,62),255,message.outside,DEFAULT_FONT,40)         
           _richText:pushBackElement(_text5) 
+          num = 5
       elseif message.type == 1 then
          local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
          _richText:pushBackElement(_text1)
