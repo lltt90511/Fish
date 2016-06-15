@@ -727,7 +727,7 @@ function addMessage(message, list, time)
         layout:addChild(_layout)
         local _text4 = RichElementText:create(5,ccc3(255,252,204),255,_room,DEFAULT_FONT,40)         
         _richText:pushBackElement(_text4) 
-         num = 5
+        num = 5
       elseif message.type == 0 then
           local _text1 = RichElementText:create(1,ccc3 (255,255,255),255,nowStr,DEFAULT_FONT,40)
           _richText:pushBackElement(_text1)
@@ -739,7 +739,7 @@ function addMessage(message, list, time)
           _richText:pushBackElement(_text4) 
           local _text5 = RichElementText:create(5,ccc3(253,78,62),255,message.outside,DEFAULT_FONT,40)         
           _richText:pushBackElement(_text5) 
-         num = 5
+          num = 5
       elseif message.type == 1 then
          local _text1 = RichElementText:create(1,ccc3(255,255,255),255,nowStr,DEFAULT_FONT,40)
          _richText:pushBackElement(_text1)
