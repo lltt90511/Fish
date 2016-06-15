@@ -80,7 +80,7 @@ function create(_parent, _parentModule)
    this = tool.loadWidget("cash/fish_machine",widget, thisParent)
    commonTop.create(this,package.loaded["scene.fishMachine.main"],gId)
    AudioEngine.playMusic("bgm02.mp3",true)
-   AudioEngine.preloadEffect("effect_19")
+   -- AudioEngine.preloadEffect("effect_19")
    if userdata.lastFishSingleIndex and userdata.lastFishSingleIndex ~= 0 then
       singleIndex = userdata.lastFishSingleIndex
    end
