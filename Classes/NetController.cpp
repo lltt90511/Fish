@@ -15,6 +15,7 @@ typedef unsigned char BYTE;
 typedef unsigned long DWORD;
 #include "unistd.h"
 #include "netinet/in.h"
+#include <netdb.h>
 #include "sys/socket.h"
 #include "sys/ioctl.h"
 #include "arpa/inet.h"
@@ -351,59 +352,109 @@ int NetController::connectServer(char* ip, int port) {
     if (isConnected()) {
         return -1;
     }
-#ifdef WIN32
-	 WSADATA  Ws;
-     //Init Windows Socket
-     if ( WSAStartup(MAKEWORD(2,2), &Ws) != 0 )
-     {
-         std::cout<<"Init Windows Socket Failed::"<<GetLastError()<<std::endl;
-         return -1;
-     }
-#endif
-	int sockfd;
+//#ifdef WIN32
+//	 WSADATA  Ws;
+//     //Init Windows Socket
+//     if ( WSAStartup(MAKEWORD(2,2), &Ws) != 0 )
+//     {
+//         std::cout<<"Init Windows Socket Failed::"<<GetLastError()<<std::endl;
+//         return -1;
+//     }
+//#endif
+//	int sockfd;
+//    
+//    struct sockaddr_in servaddr;
+//    
+//    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+//
+//	if (sockfd == -1){
+//		CCLog("Error In Open Socket Connect LastError : %s", strerror(errno));
+//		return sockfd;
+//	}
+//    
+//    //bzero(&servaddr, sizeof(servaddr));
+//	
+//	memset(&servaddr, 0, sizeof(servaddr));
+//    
+//    servaddr.sin_family = AF_INET;
+//    
+//    servaddr.sin_port = htons(port);
+//    
+//#ifdef WIN32
+//	servaddr.sin_addr.s_addr = inet_addr(ip);
+//#else
+//    inet_pton(AF_INET, ip, &servaddr.sin_addr);
+//#endif
+//    
+//	CCLog("now, begin to connect to %s %d %d", ip, port, sockfd);
+//    int timeout = 5;
+//#ifdef WIN32
+//	int ret = connect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
+//#else
+//    int ret = timeConnect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr), timeout);
+//#endif
+//	
+//	if (ret == 0) {
+//		this->setSockfd(sockfd);
+//        CCLog("connect to %s success", ip);
+//    }else{
+//        this->setSockfd(-1);
+//		CCLog("connect to %s faild", ip);
+//    }
+//
+//    LogicController::getInstance()->onConnect(ret);
+//    
+//    return sockfd;
     
-    struct sockaddr_in servaddr;
+//    uint8_t ipv4[4] = {120,27,156,196};
+    struct addrinfo hints, *res, *res0;
+    int error, s;
+    const char *cause = NULL;
     
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-	if (sockfd == -1){
-		CCLog("Error In Open Socket Connect LastError : %s", strerror(errno));
-		return sockfd;
-	}
+//    char ipv4_str_buf[INET_ADDRSTRLEN] = { 0 };
+//    const char *ipv4_str = inet_ntop(AF_INET, &ipv4, ipv4_str_buf, sizeof(ipv4_str_buf));
     
-    //bzero(&servaddr, sizeof(servaddr));
-	
-	memset(&servaddr, 0, sizeof(servaddr));
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = PF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_DEFAULT;
+    error = getaddrinfo(ip, "51111", &hints, &res0);
+    if (error) {
+        /*NOTREACHED*/
+    }
+    s = -1;
+    for (res = res0; res; res = res->ai_next) {
+        s = socket(res->ai_family, res->ai_socktype,
+                   res->ai_protocol);
+        if (s < 0) {
+            cause = "socket";
+            continue;
+        }
+        
+        if (connect(s, res->ai_addr, res->ai_addrlen) < 0) {
+            cause = "connect";
+            close(s);
+            s = -1;
+            continue;
+        }
+        
+        break;  /* okay we got one */
+    }
+    if (s < 0) {
+        /*NOTREACHED*/
+    }
+    freeaddrinfo(res0);
     
-    servaddr.sin_family = AF_INET;
-    
-    servaddr.sin_port = htons(port);
-    
-#ifdef WIN32
-	servaddr.sin_addr.s_addr = inet_addr(ip);
-#else
-    inet_pton(AF_INET, ip, &servaddr.sin_addr);
-#endif
-    
-	CCLog("now, begin to connect to %s %d %d", ip, port, sockfd);
-    int timeout = 5;
-#ifdef WIN32
-	int ret = connect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
-#else
-    int ret = timeConnect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr), timeout);
-#endif
-	
-	if (ret == 0) {
-		this->setSockfd(sockfd);
+    int ret = timeConnect(s, (const struct sockaddr *)&res0, sizeof(res0), 5);
+    if (ret == 0) {
+        this->setSockfd(s);
         CCLog("connect to %s success", ip);
     }else{
         this->setSockfd(-1);
-		CCLog("connect to %s faild", ip);
+        CCLog("connect to %s faild", ip);
     }
     
-    LogicController::getInstance()->onConnect(ret);
-    
-    return sockfd;
+    return s;
 }
 void NetController::sendData(const char *data, int data_len, int protocol) {
     if (!isConnected() && getSendQueueLen() >= 1) {
