@@ -476,7 +476,7 @@ function addSplitMessage(richText, msg, cnt)
          textLabel:setText(nowStr.."热烈欢迎"..msg.name.."屈尊降临")
       elseif msg.grade < 27 then
          textLabel:setText(nowStr.."全体起立，恭候"..msg.name.."大驾光临")
-        elseif msg.grade == 27 then
+      elseif msg.grade == 27 then
          textLabel:setText(nowStr.."全体起立，恭候"..msg.name.."创世之神降临凡间")
       elseif msg.grade == 28 then
          textLabel:setText(nowStr.."全体起立，恭候"..msg.name.."宇宙霸主降临凡间")
