@@ -171,7 +171,6 @@
 		4621D6821D0716C0007CA14F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4621D6811D0716C0007CA14F /* libsqlite3.tbd */; };
 		4621D6841D071796007CA14F /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4621D6831D071796007CA14F /* libsqlite3.0.tbd */; };
 		4621D6871D071DE2007CA14F /* libXG-SDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A27D6EAE198F595C0037DB98 /* libXG-SDK.a */; };
-		4624DF431D09328B00236A0B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4624DF421D09328B00236A0B /* Info.plist */; };
 		4624DF451D093BC500236A0B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4624DF441D093BC500236A0B /* Security.framework */; };
 		4624DF521D093F6800236A0B /* libMobClickGameLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4624DF4F1D093F6800236A0B /* libMobClickGameLibrary.a */; };
 		4624DF701D09418500236A0B /* AlipaySDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4624DF661D09418500236A0B /* AlipaySDK.bundle */; };
@@ -712,7 +711,6 @@
 		4621D67F1D07167E007CA14F /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		4621D6811D0716C0007CA14F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		4621D6831D071796007CA14F /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
-		4624DF421D09328B00236A0B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4624DF441D093BC500236A0B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		4624DF4F1D093F6800236A0B /* libMobClickGameLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickGameLibrary.a; sourceTree = "<group>"; };
 		4624DF501D093F6800236A0B /* MobClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClick.h; sourceTree = "<group>"; };
@@ -2464,7 +2462,6 @@
 		F293B3BD15EB7BE500256477 = {
 			isa = PBXGroup;
 			children = (
-				4624DF421D09328B00236A0B /* Info.plist */,
 				46A1EDF21D0862DC003EA467 /* LaunchImage.launchimage.xcassets */,
 				F1ED98F71A1C3EC5008AF0AE /* Images.xcassets */,
 				F1AFDA8718FE9AFA00E1AF57 /* Res */,
@@ -2699,7 +2696,6 @@
 				F1BE102C19115F84002F8477 /* Icon-76@2x.png in Resources */,
 				A249873919862CD60016DB88 /* Icon-Small-50.png in Resources */,
 				F1BE102A19115F84002F8477 /* Icon-60@2x.png in Resources */,
-				4624DF431D09328B00236A0B /* Info.plist in Resources */,
 				CF4D272C192348660000C560 /* nc_crop_rotate_btn_h.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3181,10 +3177,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = (
-					armv7,
-					armv7s,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_CXX_LIBRARY = "compiler-default";
@@ -3262,10 +3255,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = (
-					armv7,
-					armv7s,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_CXX_LIBRARY = "compiler-default";
@@ -3333,7 +3323,7 @@
 				SDKROOT = iphoneos8.1;
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

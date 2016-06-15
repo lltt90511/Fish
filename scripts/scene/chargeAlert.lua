@@ -147,7 +147,7 @@ function onGetChargeIdSucceed(data)
   else
      if platform == "IOS" then 
         if data.paytype == 2 then
-           luaoc.callStaticMethod("AppController","iapppayBuy",{orderId=data.transid,price=tostring(0.01),productId=1,userId=userdata.UserInfo.uidx})
+           luaoc.callStaticMethod("AppController","iapppayBuy",{orderId=data.transid,price=tostring(data.money),productId=1,userId=userdata.UserInfo.uidx})
         elseif data.paytype == 24 then
            luaoc.callStaticMethod("AppController","appstoreBuy",{orderId=data.transid,productId="com.youngdream.hddbh"..chargeNum,time=tostring(os.time())})
         end

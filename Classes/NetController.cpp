@@ -2,6 +2,7 @@
 #include "LogicController.h"
 #include "cocos2d.h"
 #include "APC.h"
+
 #ifdef WIN32
 #include "windows.h"
 typedef int socklen_t;  
@@ -418,7 +419,9 @@ int NetController::connectServer(char* ip, int port) {
     hints.ai_family = PF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_DEFAULT;
-    error = getaddrinfo(ip, "51111", &hints, &res0);
+    char portStr[10];
+    int length = sprintf(portStr, "%d", port);
+    error = getaddrinfo(ip, portStr, &hints, &res0);
     if (error) {
         /*NOTREACHED*/
     }
@@ -431,21 +434,20 @@ int NetController::connectServer(char* ip, int port) {
             continue;
         }
         
-        if (connect(s, res->ai_addr, res->ai_addrlen) < 0) {
-            cause = "connect";
-            close(s);
-            s = -1;
-            continue;
-        }
+//        if (connect(s, res->ai_addr, res->ai_addrlen) < 0) {
+//            cause = "connect";
+//            close(s);
+//            s = -1;
+//            continue;
+//        }
         
         break;  /* okay we got one */
     }
     if (s < 0) {
         /*NOTREACHED*/
     }
-    freeaddrinfo(res0);
     
-    int ret = timeConnect(s, (const struct sockaddr *)&res0, sizeof(res0), 5);
+    int ret = timeConnect(s, res0->ai_addr, res->ai_addrlen, 5);
     if (ret == 0) {
         this->setSockfd(s);
         CCLog("connect to %s success", ip);
@@ -453,6 +455,8 @@ int NetController::connectServer(char* ip, int port) {
         this->setSockfd(-1);
         CCLog("connect to %s faild", ip);
     }
+    
+    freeaddrinfo(res0);
     
     return s;
 }
