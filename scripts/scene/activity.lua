@@ -8,7 +8,7 @@ local countLv = require "logic.countLv"
 local countLv = require"logic.countLv"
 local scrollList = require"widget.scrollList"
 local template = require"template.gamedata".data
-
+local http = require"logic.http"
 module("scene.activity", package.seeall)
 
 this = nil
@@ -17,9 +17,10 @@ local defult_width = 870
 
 function create(parent)
    this = tool.loadWidget("cash/activity",widget,parent,99)
-   -- widget.panel.bg.label.obj:setVisible(false)
+   widget.panel.bg.label.obj:setVisible(false)
    -- call("getAllActivityInfo")
    -- event.listen("ON_GET_ALL_ACTIVITY_INFO",onGetAllActivityInfo)
+   http.request(updateDownLoadURL.."activity.json",onGetAllActivityInfo)
    return this
 end
 
@@ -32,7 +33,17 @@ textList = {
  --  [6] = {size = 40,height = 52,offset = 0,list = {[1] = {r = 255,g = 249,y = 255,text =  "活动期间玩家VIP等级每提升一次，可获得升级大礼包一个，礼包金币数量=升级VIP所需的累计充值金额数*10000，奖励金币将在充值成功通过邮件发送到您的游戏账户中。单笔充值提升了多个VIP等级时，系统将按会发送对应数量的升级大礼包！"}}},
 }
 
-function onGetAllActivityInfo(infoList)
+function onGetAllActivityInfo(header,body,flag)
+    if flag ==false then
+       return 
+    end
+    -- print("body!!!!!!!!!!!!!!",body)
+    local info = cjson.decode(body)
+    if not info or not info.active then
+       widget.panel.bg.label.obj:setVisible(true)
+       return
+    end
+    local infoList = info.active
     if #infoList == 0 then
        widget.panel.bg.label.obj:setVisible(true)
     else
@@ -40,37 +51,39 @@ function onGetAllActivityInfo(infoList)
        widget.panel.bg.list.obj:setTouchEnabled(true)
        widget.panel.bg.list.obj:removeAllItems()
     end
-    printTable(infoList)
+    -- printTable(infoList)
     for k,v in pairs(infoList) do  
         addActivityInfo(v.name,65,20,50,ccc3(255,0,71))
+        addActivityInfo(v.time,52,20,32,ccc3(0,255,0))
+        addActivityInfo(v.info,52,0,32)
         --local startRec = os.date("*t",tonumber(v.startTime)/1000)
         --startStr = startRec.year.."-"..startRec.month.."-"..startRec.day
         --local endRec = os.date("*t",tonumber(v.endTime)/1000)
         --local timeText = startRec.year.."/"..startRec.month.."/"..startRec.day.."".."-"..endRec.year.."/"..endRec.month.."/"..endRec.day..""
-        local now = getSyncedTime()
-        if now < v.startTime/1000  then
-            addActivityInfo("未开启：距离开启还有"..getDiffTimeDetail(v.startTime/1000,now),52,20,32,ccc3(156,156,156))
-        elseif now < v.endTime/1000 then
-            addActivityInfo("开启中：距离结束还有"..getDiffTimeDetail(v.endTime/1000,now),52,20,32,ccc3(0,255,0))
-        else 
-            addActivityInfo("已结束",52,20,32,ccc3(156,156,156))
-        end
-        if v.activityList ~= "" then
-           local arr = splitString(v.activityList,",")
-           for i = 1, #arr do
-               local tmp = template['activity'][tonumber(arr[i])]
-               printTable(tmp)
-               if tmp then
-                  if tmp.name then
-                     addActivityInfo(tmp.name,65,20,50,ccc3(255,255,0))
-                  end
-                  local strArr = splitString(tmp.desc, "|")
-                  for i = 1, #strArr do
-                      addActivityInfo(strArr[i],52,0,32)
-                  end
-               end
-           end
-        end
+        -- local now = getSyncedTime()
+        -- if now < v.startTime/1000  then
+        --     addActivityInfo("未开启：距离开启还有"..getDiffTimeDetail(v.startTime/1000,now),52,20,32,ccc3(156,156,156))
+        -- elseif now < v.endTime/1000 then
+        --     addActivityInfo("开启中：距离结束还有"..getDiffTimeDetail(v.endTime/1000,now),52,20,32,ccc3(0,255,0))
+        -- else 
+        --     addActivityInfo(v.time,52,20,32,ccc3(0,255,156))
+        -- end
+        -- if v.activityList ~= "" then
+        --    local arr = splitString(v.activityList,",")
+        --    for i = 1, #arr do
+        --        local tmp = template['activity'][tonumber(arr[i])]
+        --        printTable(tmp)
+        --        if tmp then
+        --           if tmp.name then
+        --              addActivityInfo(tmp.name,65,20,50,ccc3(255,255,0))
+        --           end
+        --           local strArr = splitString(tmp.desc, "|")
+        --           for i = 1, #strArr do
+        --               addActivityInfo(strArr[i],52,0,32)
+        --           end
+        --        end
+        --    end
+        -- end
     end
 end
 
@@ -104,7 +117,7 @@ end
 function exit()
   if this then
       event.pushEvent("ON_BACK")
-      event.unListen("ON_GET_ALL_ACTIVITY_INFO",onGetAllActivityInfo)
+      -- event.unListen("ON_GET_ALL_ACTIVITY_INFO",onGetAllActivityInfo)
       widget.panel.bg.list.obj:removeAllItems()
       this:removeFromParentAndCleanup(true)
       tool.cleanWidgetRef(widget)

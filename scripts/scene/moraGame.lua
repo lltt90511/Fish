@@ -74,6 +74,7 @@ function create(_parent,_parentModule)
    event.listen("ON_FINGER_GAME_RESULT",onFingerGameResult)
    event.listen("ON_FINGER_GAME_INVITE_AGREE_SUCCEED",onFingerGameInviteAgreeSucceed)
    event.listen("ON_BET_ALERT_BACK",onBetAlertBack)
+   event.listen("ON_FINGER_GAME_LEAVE",onFingerGameLeave)
    return this
 end
 
@@ -268,6 +269,14 @@ function onFingerGameEndTime()
    if not hasOtherGuess then
       hasOtherGuess = true
    end
+end
+
+function onFingerGameLeave()
+   initView()
+   widget.bg.yaoqing.obj:setVisible(true)
+   widget.bg.yaoqing.obj:setTouchEnabled(true)
+   widget.bg.yazhu.obj:setVisible(false)
+   widget.bg.yazhu.obj:setTouchEnabled(false)
 end
 
 function onFingerGameResult(_data)
@@ -549,6 +558,7 @@ function exit()
       event.unListen("ON_FINGER_GAME_RESULT",onFingerGameResult)
       event.unListen("ON_FINGER_GAME_INVITE_AGREE_SUCCEED",onFingerGameInviteAgreeSucceed)
       event.unListen("ON_BET_ALERT_BACK",onBetAlertBack)
+      event.unListen("ON_FINGER_GAME_LEAVE",onFingerGameLeave)
       cleanEvent()
       data = {}
       inviterId = nil

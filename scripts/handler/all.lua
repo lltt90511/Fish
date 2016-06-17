@@ -254,6 +254,8 @@ handlerMap = {
    [35003] = "onFingerGameGuessFailed",
    [35004] = "onFingerGameEndTime",
    [35005] = "onFingerGameResult",
+
+   [36002] = "onFingerGameLeave",
 }
 
 

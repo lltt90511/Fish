@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.net.Uri;
 
 import org.cocos2dx.lib.*;
 
@@ -540,6 +541,14 @@ public class mainActivity extends Cocos2dxActivity{
      	android.os.Process.killProcess(android.os.Process.myPid()); 
 	}
     
+	public static void goToDownLoad(String s) {
+     	Intent intent = new Intent();       
+        intent.setAction("android.intent.action.VIEW");   
+        Uri content_url = Uri.parse(s);  
+        intent.setData(content_url); 
+        main.startActivity(intent);
+	}
+	
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	//super.onActivityResult(requestCode, resultCode, data);
     	// Bundle bundle = data.getExtras();

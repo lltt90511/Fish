@@ -361,7 +361,7 @@ function onFingerGameBetSucceed(data)
 	event.pushEvent("ON_FINGER_GAME_BET_SUCCEED",data)
 end
 
-function onFingerGameBetFailed(msg)
+function onFingerGameBetFailed(data)
 	if data and data.msg then
 	   alert.create(data.msg)
     end
@@ -441,6 +441,15 @@ function onFingerGameInviteCancel(data)
     if inviterAlert.this then
        inviterAlert.exit()	
     end
+end
+
+function onFingerGameLeave(data)
+	print("onFingerGameLeave!!!!!!!!!!!!!!!!!!!")
+	if data and data.gameid and data.gameid == 10 then
+	print("onFingerGameLeave1!!!!!!!!!!!!!!!!!!!")
+		printTable(data)
+       event.pushEvent("ON_FINGER_GAME_LEAVE")
+	end
 end
 
 function onGetAllActivityInfo(infoList)

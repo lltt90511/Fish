@@ -239,7 +239,7 @@ function onGetGameStatus(gameData)
       if not isPlaying then
          playFishEffect()
       end
-      if data.GameResult.f[1] == 1 or data.GameResult.f[1] == 3 or data.GameResult.f[1] == 4 then
+      if data.GameResult and data.GameResult.f and data.GameResult.f[1] and data.GameResult.f[1] == 1 or data.GameResult.f[1] == 3 or data.GameResult.f[1] == 4 then
          setIsBigWin()
       end
    end
@@ -536,54 +536,54 @@ function playCircle(maxNum, name)
       widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
       -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(0)
       tool.createEffect(tool.Effect.delay,{time=delay}, widget.fish["panel_"..name.."_"..st].light.obj,
-                        function()
-      if name == "outside" then
-         AudioEngine.playEffect("effect_19")
-      end
-                           -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(255)
-                           widget.fish["panel_"..name.."_"..st].light.obj:stopAllActions()
+      function()
+        if name == "outside" then
+           AudioEngine.playEffect("effect_19")
+        end
+        -- widget.fish["panel_"..name.."_"..st].light.obj:setOpacity(255)
+        widget.fish["panel_"..name.."_"..st].light.obj:stopAllActions()
 
-                           local _st = st
-                           if data.type == 201 then
-                              local resultCnt = name == "inside" and data.GameResult.f[2] or data.GameResult.f[1]
-                              local totalCnt = name == "inside" and maxNum + resultCnt - lastOpenId[name] + 12 or maxNum + resultCnt - lastOpenId[name]
-                              local _id = name == "inside" and st + 12 or st
-                              -- print("201!!!!!!!!!!!!!!!!!!!!!",totalCnt,cnt,st,resultCnt,_id)
-                              delay = 0.4
-                              if fishList[_id].id == resultCnt then
-                                 -- print("end ",_id,resultCnt,fishList[_id].id,fishList[_id].name)
-                                 resultName[name] = fishList[_id].name
-                                 finishCircleCnt = finishCircleCnt + 1
-                                 lastOpenId[name] = st
-                                 widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
-                                 if finishCircleCnt == 2 then
-                                    -- AudioEngine.stopEffect(effectId)
-                                    AudioEngine.stopAllEffects()
-                                    endEffect() 
-                                 end 
-                                 return
-                              end
-                           end
-                           cnt = cnt + 1
-                           st = st + 1
-                           if data.type == 200 then
-                             if cnt > 4 then
-                                delay = 0.1
-                             elseif cnt > 8 then
-                                delay = 0.05
-                             end
-                           end
-                           if st == maxNum + 1 then
-                              st = 1
-                           end 
-                           widget.fish["panel_"..name.."_".._st].light.obj:setVisible(false)
-                           -- tool.createEffect(tool.Effect.delay,{time = delay-0.1 > 0.1 and delay-0.1 or 0.1},widget.fish["panel_"..name.."_".._st].light.obj,
-                           --                   function()
-                           --                      widget.fish["panel_"..name.."_".._st].light.obj:setVisible(false)                                                
-                           --                   end
-                           -- )
-                           func()
-                        end
+       local _st = st
+       if data.type == 201 then
+          local resultCnt = name == "inside" and data.GameResult.f[2] or data.GameResult.f[1]
+          local totalCnt = name == "inside" and maxNum + resultCnt - lastOpenId[name] + 12 or maxNum + resultCnt - lastOpenId[name]
+          local _id = name == "inside" and st + 12 or st
+          -- print("201!!!!!!!!!!!!!!!!!!!!!",totalCnt,cnt,st,resultCnt,_id)
+          delay = 0.4
+          if fishList[_id].id == resultCnt then
+             -- print("end ",_id,resultCnt,fishList[_id].id,fishList[_id].name)
+             resultName[name] = fishList[_id].name
+             finishCircleCnt = finishCircleCnt + 1
+             lastOpenId[name] = st
+             widget.fish["panel_"..name.."_"..st].light.obj:setVisible(true)
+             if finishCircleCnt == 2 then
+                -- AudioEngine.stopEffect(effectId)
+                AudioEngine.stopAllEffects()
+                endEffect() 
+             end 
+             return
+          end
+       end
+       cnt = cnt + 1
+       st = st + 1
+       if data.type == 200 then
+         if cnt > 4 then
+            delay = 0.1
+         elseif cnt > 8 then
+            delay = 0.05
+         end
+       end
+       if st == maxNum + 1 then
+          st = 1
+       end 
+       widget.fish["panel_"..name.."_".._st].light.obj:setVisible(false)
+       -- tool.createEffect(tool.Effect.delay,{time = delay-0.1 > 0.1 and delay-0.1 or 0.1},widget.fish["panel_"..name.."_".._st].light.obj,
+       --                   function()
+       --                      widget.fish["panel_"..name.."_".._st].light.obj:setVisible(false)                                                
+       --                   end
+       -- )
+       func()
+    end
       )
    end
    func()

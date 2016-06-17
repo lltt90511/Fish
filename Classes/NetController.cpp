@@ -354,60 +354,60 @@ int NetController::connectServer(char* ip, int port) {
     if (isConnected()) {
         return -1;
     }
-//#ifdef WIN32
-//	 WSADATA  Ws;
-//     //Init Windows Socket
-//     if ( WSAStartup(MAKEWORD(2,2), &Ws) != 0 )
-//     {
-//         std::cout<<"Init Windows Socket Failed::"<<GetLastError()<<std::endl;
-//         return -1;
-//     }
-//#endif
-//	int sockfd;
-//    
-//    struct sockaddr_in servaddr;
-//    
-//    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-//
-//	if (sockfd == -1){
-//		CCLog("Error In Open Socket Connect LastError : %s", strerror(errno));
-//		return sockfd;
-//	}
-//    
-//    //bzero(&servaddr, sizeof(servaddr));
-//	
-//	memset(&servaddr, 0, sizeof(servaddr));
-//    
-//    servaddr.sin_family = AF_INET;
-//    
-//    servaddr.sin_port = htons(port);
-//    
-//#ifdef WIN32
-//	servaddr.sin_addr.s_addr = inet_addr(ip);
-//#else
-//    inet_pton(AF_INET, ip, &servaddr.sin_addr);
-//#endif
-//    
-//	CCLog("now, begin to connect to %s %d %d", ip, port, sockfd);
-//    int timeout = 5;
-//#ifdef WIN32
-//	int ret = connect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
-//#else
-//    int ret = timeConnect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr), timeout);
-//#endif
-//	
-//	if (ret == 0) {
-//		this->setSockfd(sockfd);
-//        CCLog("connect to %s success", ip);
-//    }else{
-//        this->setSockfd(-1);
-//		CCLog("connect to %s faild", ip);
-//    }
-//
-//    LogicController::getInstance()->onConnect(ret);
-//    
-//    return sockfd;
+#ifdef WIN32
+	 WSADATA  Ws;
+     //Init Windows Socket
+     if ( WSAStartup(MAKEWORD(2,2), &Ws) != 0 )
+     {
+         std::cout<<"Init Windows Socket Failed::"<<GetLastError()<<std::endl;
+         return -1;
+     }
+#endif
+	int sockfd;
     
+    struct sockaddr_in servaddr;
+    
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (sockfd == -1){
+		CCLog("Error In Open Socket Connect LastError : %s", strerror(errno));
+		return sockfd;
+	}
+    
+    //bzero(&servaddr, sizeof(servaddr));
+	
+	memset(&servaddr, 0, sizeof(servaddr));
+    
+    servaddr.sin_family = AF_INET;
+    
+    servaddr.sin_port = htons(port);
+    
+#ifdef WIN32
+	servaddr.sin_addr.s_addr = inet_addr(ip);
+#else
+    inet_pton(AF_INET, ip, &servaddr.sin_addr);
+#endif
+    
+	CCLog("now, begin to connect to %s %d %d", ip, port, sockfd);
+    int timeout = 5;
+#ifdef WIN32
+	int ret = connect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
+#else
+    int ret = timeConnect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr), timeout);
+#endif
+	
+	if (ret == 0) {
+		this->setSockfd(sockfd);
+        CCLog("connect to %s success", ip);
+    }else{
+        this->setSockfd(-1);
+		CCLog("connect to %s faild", ip);
+    }
+
+    LogicController::getInstance()->onConnect(ret);
+    
+    return sockfd;
+	/*
     struct addrinfo hints, *res, *res0;
     int error, s;
     const char *cause = NULL;
@@ -420,7 +420,7 @@ int NetController::connectServer(char* ip, int port) {
     int length = sprintf(portStr, "%d", port);
     error = getaddrinfo(ip, portStr, &hints, &res0);
     if (error) {
-        /*NOTREACHED*/
+        //NOTREACHED
     }
     s = -1;
     for (res = res0; res; res = res->ai_next) {
@@ -438,10 +438,10 @@ int NetController::connectServer(char* ip, int port) {
 //            continue;
 //        }
         
-        break;  /* okay we got one */
+        break;  // okay we got one 
     }
     if (s < 0) {
-        /*NOTREACHED*/
+        // NOTREACHED
     }
     
     int ret = timeConnect(s, res0->ai_addr, res->ai_addrlen, 5);
@@ -455,7 +455,7 @@ int NetController::connectServer(char* ip, int port) {
     
     freeaddrinfo(res0);
     
-    return s;
+	return s;*/
 }
 void NetController::sendData(const char *data, int data_len, int protocol) {
     if (!isConnected() && getSendQueueLen() >= 1) {
