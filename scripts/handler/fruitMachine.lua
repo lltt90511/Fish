@@ -17,12 +17,12 @@ function onEnterGameSucceed(gameData)
          mainScene.createSubWidget(mod)
       end
    end
-   if gameData.gameid == 1 then--大场
+   if gameData.gameid == 11 then--大场
       local fishMachine = package.loaded["scene.fishMachine.main"]
       fishMachine.initData(gameData,gameData.gameid)
       -- enterGameFunc(mainScene.widgetID.fruitMachine)
       mainScene.createSubWidget(mainScene.widgetID.fishMachine)
-   elseif gameData.gameid == 2 then--小场
+   elseif gameData.gameid == 12 then--小场
       local fishMachine = package.loaded["scene.fishMachine.main"]
       fishMachine.initData(gameData,gameData.gameid)
       -- enterGameFunc(mainScene.widgetID.fishMachine)

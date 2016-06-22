@@ -1140,7 +1140,7 @@ end
 function onBack(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
-      call(7001,1)
+      call(7001,gId)
       -- local mainScene = package.loaded["scene.main"]
       -- mainScene.createSubWidget(nil)
    end

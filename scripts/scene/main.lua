@@ -980,7 +980,7 @@ middleList ={
         end
         -- gameLoading.gameTitle = 2
         -- createSubWidget(widgetID.gameLoading)
-        call(6001, 2)--初级
+        call(6001, 12)--初级
   end},
   {img = "image/game02.png",call = function ()
         tool.buttonSound("releaseUp","effect_12")
@@ -997,7 +997,7 @@ middleList ={
         end
         -- gameLoading.gameTitle = 2
         -- createSubWidget(widgetID.gameLoading)
-        call(6001, 1)--高级
+        call(6001, 11)--高级
   end},
   {img = "image/game03.png",call = function ()
         tool.buttonSound("releaseUp","effect_12")
