@@ -354,7 +354,7 @@ int NetController::connectServer(char* ip, int port) {
     if (isConnected()) {
         return -1;
     }
-#ifdef WIN32
+/*#ifdef WIN32
 	 WSADATA  Ws;
      //Init Windows Socket
      if ( WSAStartup(MAKEWORD(2,2), &Ws) != 0 )
@@ -406,56 +406,110 @@ int NetController::connectServer(char* ip, int port) {
 
     LogicController::getInstance()->onConnect(ret);
     
-    return sockfd;
-	/*
+    return sockfd;*/
+    
+    int sockfd,ret;
+#ifdef WIN32
+    WSADATA  Ws;
+    //Init Windows Socket
+    if ( WSAStartup(MAKEWORD(2,2), &Ws) != 0 )
+    {
+        std::cout<<"Init Windows Socket Failed::"<<GetLastError()<<std::endl;
+        return -1;
+    }
+    
+    struct sockaddr_in servaddr;
+    
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    
+    if (sockfd == -1){
+        CCLog("Error In Open Socket Connect LastError : %s", strerror(errno));
+        return sockfd;
+    }
+    
+    //bzero(&servaddr, sizeof(servaddr));
+    
+    memset(&servaddr, 0, sizeof(servaddr));
+    
+    servaddr.sin_family = AF_INET;
+    
+    servaddr.sin_port = htons(port);
+    
+    servaddr.sin_addr.s_addr = inet_addr(ip);
+    
+    ret = connect(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr));
+#else
     struct addrinfo hints, *res, *res0;
-    int error, s;
-    const char *cause = NULL;
+    int error;
     
     memset(&hints, 0, sizeof(hints));
-    hints.ai_family = PF_UNSPEC;
+    hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_DEFAULT;
+    hints.ai_protocol = IPPROTO_TCP;
+    //    hints.ai_flags = AI_DEFAULT;
     char portStr[10];
     int length = sprintf(portStr, "%d", port);
     error = getaddrinfo(ip, portStr, &hints, &res0);
-    if (error) {
+    if (error == 0) {
         //NOTREACHED
-    }
-    s = -1;
-    for (res = res0; res; res = res->ai_next) {
-        s = socket(res->ai_family, res->ai_socktype,
-                   res->ai_protocol);
-        if (s < 0) {
-            cause = "socket";
-            continue;
+        sockfd = -1;
+        struct sockaddr_in *sa;
+        for (res = res0; res; res = res->ai_next) {
+            if (AF_INET6 == res->ai_addr->sa_family){
+                char buf[128] = {};
+                sa = (struct sockaddr_in*)res->ai_addr;
+                inet_ntop(AF_INET6, &((reinterpret_cast<struct sockaddr_in6*>(sa))->sin6_addr), buf, 128);
+                
+                sockfd = socket(res->ai_family, res->ai_socktype, 0);
+                if (sockfd == -1) {
+                    CCLog("error socket create");
+                    return -1;
+                }
+                struct sockaddr_in6 svraddr;
+                memset(&svraddr, 0, sizeof(svraddr)); //注意初始化
+                svraddr.sin6_family = AF_INET6;
+                svraddr.sin6_port = htons(port);
+                if (inet_pton(AF_INET6,buf,&svraddr.sin6_addr) < 0)
+                {
+                    CCLog("error addr");
+                }
+                ret = timeConnect(sockfd, (struct sockaddr*) &svraddr, sizeof(svraddr), 5);
+                //TODO....遇到IPv6就退出
+                break;
+            }
+            else if (AF_INET == res->ai_addr->sa_family){
+                char buf[32] = {};
+                sa = (struct sockaddr_in*)res->ai_addr;
+                inet_ntop(AF_INET, &sa->sin_addr, buf, 32);
+                
+                sockfd = socket(res->ai_family, res->ai_socktype, 0);
+                if (sockfd == -1) {
+                    CCLog("error socket create");
+                    return -1;
+                }
+                
+                struct sockaddr_in svraddr;
+                svraddr.sin_family = AF_INET;
+                svraddr.sin_addr.s_addr = inet_addr(buf);
+                svraddr.sin_port = htons(port);
+                ret = timeConnect(sockfd, (struct sockaddr*) &svraddr, sizeof(svraddr), 5);
+                break;
+            }
         }
-        
-//        if (connect(s, res->ai_addr, res->ai_addrlen) < 0) {
-//            cause = "connect";
-//            close(s);
-//            s = -1;
-//            continue;
-//        }
-        
-        break;  // okay we got one 
-    }
-    if (s < 0) {
-        // NOTREACHED
     }
     
-    int ret = timeConnect(s, res0->ai_addr, res->ai_addrlen, 5);
+    freeaddrinfo(res0);
+#endif
+    
     if (ret == 0) {
-        this->setSockfd(s);
+        this->setSockfd(sockfd);
         CCLog("connect to %s success", ip);
     }else{
         this->setSockfd(-1);
         CCLog("connect to %s faild", ip);
     }
     
-    freeaddrinfo(res0);
-    
-	return s;*/
+	return sockfd;
 }
 void NetController::sendData(const char *data, int data_len, int protocol) {
     if (!isConnected() && getSendQueueLen() >= 1) {

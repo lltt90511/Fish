@@ -15,7 +15,7 @@ function platformInit(devId,params)
 end
 function onPushToken(type,token)
 	print("onPushToken-",type,token)
-	call("registerPushToken",type,token)
+	-- call("registerPushToken",type,token)
 end
 function onPushData(msgId,msgType)
 	print("onPushData-",msgId,msgType)
@@ -78,7 +78,7 @@ function onResult(header,body)
 	if userdata.sdkplatform == "xmw" then
 		setSdkUserInfo(cjson.encode(tab))
 		nc.connect()
-        call("login", 0, userdata.sdkPlatformInfo.uId)
+        -- call("login", 0, userdata.sdkPlatformInfo.uId)
 	end
 end
 

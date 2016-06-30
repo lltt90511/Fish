@@ -25,7 +25,7 @@ require "deploy"
 require "appChannel"
 local http = require"logic.http"
 require "umeng"
-require "scene.alert"
+local sceneAlert = require "scene.alert"
 require "logic.guideUpload"
 luaoc = require"luaoc"
 luaj = require "luaj"
@@ -367,11 +367,11 @@ function onDownloadUpdateList(header,body)
          downloadServerList() --客户端与服务端版本号不同，引擎版本号相同，重新进入更新
       else
          if platform == "Android" then
-            alert.create("检测到新版本，是否前去更新？",nil,function()
+            sceneAlert.create("检测到新版本，是否前去更新？",nil,function()
                luaj.callStaticMethod("cc/yongdream/nshx/mainActivity","goToDownLoad",{hash[serverVersion].url})
             end,nil,"立即更新","暂不更新")
          elseif platform == "IOS" then
-            alert.create("请前往APPSTORE重新下载app")
+            sceneAlert.create("请前往APPSTORE重新下载app")
          else
             label:setString("请重新下载app")
          end

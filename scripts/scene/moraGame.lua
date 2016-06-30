@@ -33,12 +33,13 @@ local isCountDown = false
 local hasGuess = false
 local hasOtherGuess = false
 local needChangeGold = 0
+local gId = 0
 
 function create(_parent,_parentModule)
    thisParent = _parent
    parentModule = _parentModule
    this = tool.loadWidget("cash/moraGame",widget,thisParent)
-   commonTop.create(this,package.loaded["scene.moraGame"])
+   commonTop.create(this,package.loaded["scene.moraGame"],gId)
    AudioEngine.playMusic("bgm03.mp3",true)
    AudioEngine.playEffect("effect_15") 
    initView()
@@ -78,8 +79,9 @@ function create(_parent,_parentModule)
    return this
 end
 
-function initData(_data)
+function initData(_data,_id)
    -- printTable(fingerInfo)
+   gId = _id
    data = {}
    for k,v in pairs(_data) do
        data[k] = v
@@ -594,6 +596,7 @@ function exit()
       parentModule = nil
       thisParent = nil
       this = nil
+      gId = 0
    end
 end
 

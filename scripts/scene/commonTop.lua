@@ -116,7 +116,7 @@ end
 
 function onExchange(event)
    if event == "releaseUp" then
-      if gameId == 10 then return end
+      -- if gameId == 10 then return end
       tool.buttonSound("releaseUp","effect_12")
       call(18001)
       exchange.create(thisParent,gameId)
