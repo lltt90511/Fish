@@ -87,7 +87,8 @@ function initInfo()
     widget.panel.bg.vipLv.obj:setStringValue(userdata.UserInfo.vipLevel)
     widget.panel.bg.vipNum.obj:setText("0".."/".."1000")
     widget.panel.bg.vipBar.obj:setPercent(0/1000*100)
-    switchSex(userdata.UserInfo.sex)
+    printTable(userdata.UserInfo)
+    switchSex(tonumber(userdata.UserInfo.sex))
 end
 
 function cleanEvent()

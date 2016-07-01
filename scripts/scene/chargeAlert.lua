@@ -30,6 +30,7 @@ function create(_parent,_type)
    end
    if platform == "IOS" then
       chargeNum = chargeListIOS[1]
+      print("userdata.UserInfo.aip",userdata.UserInfo.aip)
       if userdata.UserInfo.aip == 0 then
          widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
          widget.alert.confirm.obj:setPosition(ccp(0,-955))
@@ -38,60 +39,72 @@ function create(_parent,_type)
          widget.alert.ios.obj:setTouchEnabled(false)
          widget.alert.aibei.obj:setVisible(false)
          widget.alert.aibei.obj:setTouchEnabled(false)
-      else
-         widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1115))
-         widget.alert.confirm.obj:setPosition(ccp(0,-1045))
-         widget.alert.bar_2.obj:setPosition(ccp(0,widget.alert.bar_3.obj:getPositionY()))
-         widget.alert.ios.obj:setBright(false)
-         widget.alert.ios.obj:setVisible(true)
+         widget.alert.bar_2.obj:setVisible(false)
+         widget.alert.bar_3.obj:setVisible(true)
+         for i=1,6 do
+              widget.alert.bar_2["btn_"..i].obj:setTouchEnabled(false)
+              widget.alert.bar_3["btn_"..i].obj:setTouchEnabled(true)
+              widget.alert.bar_3["btn_"..i].text.obj:setText(chargeListIOS[i].."元")
+              widget.alert.bar_3["btn_"..i].obj:registerEventScript(function(event)
+                  if event == "releaseUp" then
+                     tool.buttonSound("releaseUp","effect_12")
+                     chargeNum = chargeListIOS[i]
+                     for j=1,6 do
+                         if i == j then
+                             widget.alert.bar_3["btn_"..j].obj:setTouchEnabled(false)
+                             widget.alert.bar_3["btn_"..j].obj:setBright(false)
+                             widget.alert.bar_3["btn_"..j].text.obj:setColor(ccc3(5,3,0))
+                         else
+                             widget.alert.bar_3["btn_"..j].obj:setTouchEnabled(true)
+                             widget.alert.bar_3["btn_"..j].obj:setBright(true)
+                             widget.alert.bar_3["btn_"..j].text.obj:setColor(ccc3(254,177,23))
+                         end
+                     end
+                  end
+              end)
+          end
+        widget.alert.bar_3.btn_1.obj:setTouchEnabled(false)
+        widget.alert.bar_3.btn_1.obj:setBright(false)
+        widget.alert.bar_3.btn_1.text.obj:setColor(ccc3(5,3,0))
+      else 
+         chargeNum = chargeListANDROID[1]
+         widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
+         widget.alert.confirm.obj:setPosition(ccp(0,-955))
+         widget.alert.bar_3.obj:setPosition(ccp(0,widget.alert.bar_2.obj:getPositionY()))
+         widget.alert.ios.obj:setVisible(false)
          widget.alert.ios.obj:setTouchEnabled(false)
-         widget.alert.aibei.obj:setVisible(true)
-         widget.alert.aibei.obj:setTouchEnabled(true)
-      end
-      widget.alert.bar_2.obj:setVisible(false)
-      widget.alert.bar_3.obj:setVisible(true)
-      for i=1,6 do
-          widget.alert.bar_2["btn_"..i].obj:setTouchEnabled(false)
-          widget.alert.bar_2["btn_"..i].text.obj:setText(chargeListANDROID[i].."元")
-          widget.alert.bar_2["btn_"..i].obj:registerEventScript(function(event)
-              if event == "releaseUp" then
-                 tool.buttonSound("releaseUp","effect_12")
-                 chargeNum = chargeListANDROID[i]
-                 for j=1,6 do
-                     if i == j then
-                         widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(false)
-                         widget.alert.bar_2["btn_"..j].obj:setBright(false)
-                         widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(5,3,0))
-                     else
-                         widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(true)
-                         widget.alert.bar_2["btn_"..j].obj:setBright(true)
-                         widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(254,177,23))
+         widget.alert.aibei.obj:setVisible(false)
+         widget.alert.aibei.obj:setTouchEnabled(false)
+         widget.alert.bar_2.obj:setVisible(true)
+         widget.alert.bar_3.obj:setVisible(false)
+          for i=1,6 do
+              widget.alert.bar_2["btn_"..i].obj:setTouchEnabled(true)
+              widget.alert.bar_3["btn_"..i].obj:setTouchEnabled(false)
+              widget.alert.bar_2["btn_"..i].text.obj:setText(chargeListANDROID[i].."元")
+              widget.alert.bar_2["btn_"..i].obj:registerEventScript(function(event)
+                  if event == "releaseUp" then
+                     tool.buttonSound("releaseUp","effect_12")
+                     chargeNum = chargeListANDROID[i]
+                     for j=1,6 do
+                         if i == j then
+                             widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(false)
+                             widget.alert.bar_2["btn_"..j].obj:setBright(false)
+                             widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(5,3,0))
+                         else
+                             widget.alert.bar_2["btn_"..j].obj:setTouchEnabled(true)
+                             widget.alert.bar_2["btn_"..j].obj:setBright(true)
+                             widget.alert.bar_2["btn_"..j].text.obj:setColor(ccc3(254,177,23))
+                         end
                      end
-                 end
-              end
-           end)
-          widget.alert.bar_3["btn_"..i].text.obj:setText(chargeListIOS[i].."元")
-          widget.alert.bar_3["btn_"..i].obj:registerEventScript(function(event)
-              if event == "releaseUp" then
-                 tool.buttonSound("releaseUp","effect_12")
-                 chargeNum = chargeListIOS[i]
-                 for j=1,6 do
-                     if i == j then
-                         widget.alert.bar_3["btn_"..j].obj:setTouchEnabled(false)
-                         widget.alert.bar_3["btn_"..j].obj:setBright(false)
-                         widget.alert.bar_3["btn_"..j].text.obj:setColor(ccc3(5,3,0))
-                     else
-                         widget.alert.bar_3["btn_"..j].obj:setTouchEnabled(true)
-                         widget.alert.bar_3["btn_"..j].obj:setBright(true)
-                         widget.alert.bar_3["btn_"..j].text.obj:setColor(ccc3(254,177,23))
-                     end
-                 end
-              end
-           end)
+                  end
+               end)
+          end
+        widget.alert.bar_2.btn_1.obj:setTouchEnabled(false)
+        widget.alert.bar_2.btn_1.obj:setBright(false)
+        widget.alert.bar_2.btn_1.text.obj:setColor(ccc3(5,3,0))
       end
-      widget.alert.bar_3.btn_1.obj:setTouchEnabled(false)
-      widget.alert.bar_3.btn_1.obj:setBright(false)
-      widget.alert.bar_3.btn_1.text.obj:setColor(ccc3(5,3,0))
+      -- widget.alert.bar_2.obj:setVisible(false)
+      -- widget.alert.bar_3.obj:setVisible(true)
    else
       chargeNum = chargeListANDROID[1]
       widget.alert.obj:setSize(CCSize(widget.alert.obj:getSize().width,1025))
@@ -305,7 +318,7 @@ function initInput()
                                                    textInput2:setPosition(ccp(0,0))
                                                 end
    end)
-   if platform == "IOS" then
+   if platform == "IOS" and userdata.UserInfo.aip == 0 then
       widget.alert.bar_2.input.obj:setTouchEnabled(false)
    end
 end
@@ -342,9 +355,9 @@ function onConfirm(event)
    if event == "releaseUp" then
       tool.buttonSound("releaseUp","effect_12")
       if platform == "IOS" then
-         if chargeType == 1 then
+         if userdata.UserInfo.aip == 0 then
             call(21001,chargeNum*100,recommendId,24)
-         elseif chargeType == 2 then
+         elseif userdata.UserInfo.aip == 1 then
             call(21001,chargeNum*100,recommendId,2)
          end
       else

@@ -23,10 +23,10 @@ function create(_parent,_gameid)
    gameId = _gameid
    selectNum = 1
    selectType = 1
-   if gameId == 1 then
+   if gameId == 11 then
       bigNum = 100000
       smallNum = 1000
-   elseif gameId == 2 then
+   elseif gameId == 12 or gameId == 10 then
       bigNum = 100
       smallNum = 10
    end

@@ -127,7 +127,7 @@ void* getUUIDFromFileName(const char* fileName)
     return name;
 }
 #ifndef __arm64__
-#define INT_PTR int
+#define INT_PTR long int
 #else
 #define INT_PTR long
 #endif
@@ -387,7 +387,7 @@ bool createDirectoryBack(std::string path) {
 }
     
 void *do_download(void *datai) {
-    INT_PTR i = INT_PTR(datai);
+    INT_PTR i = (INT_PTR)(datai);
 //    printf("download thread %d run\n", i);
     while (true) {
         DownloadData data;

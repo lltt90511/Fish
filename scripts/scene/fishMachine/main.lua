@@ -81,12 +81,11 @@ function create(_parent, _parentModule)
    commonTop.create(this,package.loaded["scene.fishMachine.main"],gId)
    AudioEngine.playMusic("bgm02.mp3",true)
    -- AudioEngine.preloadEffect("effect_19")
-   if userdata.lastFishSingleIndex and userdata.lastFishSingleIndex ~= 0 then
-      singleIndex = userdata.lastFishSingleIndex
+   if userdata.lastFishSingleIndex[gId] and userdata.lastFishSingleIndex[gId] ~= 0 then
+        singleIndex = userdata.lastFishSingleIndex[gId]
    end
-   -- print("create!!!!",userdata.lastFishSingleType)
-   if userdata.lastFishSingleType and userdata.lastFishSingleType ~= "" then
-      local splitList = splitString(userdata.lastFishSingleType,";")
+   if userdata.lastFishSingleType[gId] and userdata.lastFishSingleType[gId] ~= "" then
+      local splitList = splitString(userdata.lastFishSingleType[gId],";")
       for k,v in pairs(splitList) do
           local list = splitString(v,",")
           historyBet[tonumber(list[1])] = tonumber(list[2])
@@ -112,6 +111,12 @@ function create(_parent, _parentModule)
    lastOpenId = {inside=1,outside=1}
    initView()
    initChatView()
+   setHelp(false)
+   widget.help.obj:registerEventScript(function(event)
+      if event == "releaseUp" then
+         setHelp(false)
+      end
+   end)
    totalCashGold = 0
    currentUserPage = 1
    -- widget.bigAward.obj:setVisible(false)
@@ -335,11 +340,11 @@ function initView()
           widget.bottom.bet_btn_bg["btn_"..i].obj:registerEventScript(function(event)
               if event == "releaseUp" then
                  singleIndex = i
-                 userdata.lastFishSingleIndex = singleIndex
-                 saveSetting("fishIndex",singleIndex)
+                 userdata.lastFishSingleIndex[gId] = singleIndex
+                 saveSetting("fishIndex"..gId,singleIndex)
                  for j=1,#singleArr do
                      if widget.bottom.bet_btn_bg["btn_"..j].obj then
-                        print("on widget!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",j,singleIndex)
+                        -- print("on widget!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",j,singleIndex)
                         if j == singleIndex then
                            widget.bottom.bet_btn_bg["btn_"..j].obj:setTouchEnabled(false)
                            widget.bottom.bet_btn_bg["btn_"..j].obj:setBright(false)
@@ -402,11 +407,18 @@ function initView()
       isBet[arr[i]] = {bool=false,id=i}
       local typeTmp = fishList[arr[i]]
       local hasBet = false
+      local equipId = 0
       -- if data.type == 100 then
       if data.info and type(data.info) == type({}) then
          for k,v in pairs(data.info) do
              if v.id and v.id == arr[i] then
-                hasBet = true
+                hasBet = true         
+                for i=1,#singleGoldArr do
+                    if singleGoldArr[i] == v.money then
+                       equipId = i
+                       break
+                    end
+                end
                 break
              end
          end
@@ -414,6 +426,9 @@ function initView()
       widget.bottom.bet_bg["bet_"..i].img.obj:setVisible(hasBet)
       widget.bottom.bet_bg["bet_"..i].img.obj:setTouchEnabled(hasBet)
       widget.bottom.bet_bg["bet_"..i].img.img.obj:setVisible(hasBet)
+      if hasBet then
+         widget.bottom.bet_bg["bet_"..i].img.img.obj:loadTexture("cash/qietu/fish/equip_"..equipId..".png")
+      end
       widget.bottom.bet_bg["bet_"..i].obj:registerEventScript(function(ev,data)
                           if isBet[arr[i]].bool then
                              return
@@ -834,7 +849,7 @@ function checkWinResult()
              if v.i == userdata.UserInfo.uidx then
                 isInResult = true
                 if v.m > 0 then
-                   widget.bottom.layout.text.obj:setText("恭喜您获得"..getWinStr(v.m))
+                   widget.bottom.layout.text.obj:setText("恭喜您获得"..getWinStr(v.m/2))
                    widget.bottom.layout.bg.obj:setVisible(true)
                 end
              else
@@ -842,7 +857,7 @@ function checkWinResult()
              resultMsg.type = 1
              resultMsg.name = v.i == userdata.UserInfo.uidx and "你" or v.e
              resultMsg.id = v.i
-             resultMsg.msg = getWinStr(v.m)
+             resultMsg.msg = getWinStr(v.m/2)
              chat.setMessage(resultMsg,1) 
              if v.i == userdata.UserInfo.uidx then
                 chat.setMessage(resultMsg,3) 
@@ -1174,8 +1189,8 @@ function onGameUserActionSucceed(id,money)
    for k,v in pairs(historyBet) do
        str = str..k..","..v..";"
    end
-   saveSetting("fishType",str)
-   userdata.lastFishSingleType = str
+   saveSetting("fishType"..gId,str)
+   userdata.lastFishSingleType[gId] = str
 end
 
 function onGameUserActionFailed(_limit)
@@ -1202,6 +1217,26 @@ function alertFunc(obj)
           end)
        end)
     end)
+end
+
+function onHelp(event)
+  if event == "releaseUp" then
+     tool.buttonSound("releaseUp","effect_12")
+     setHelp(true)
+  end
+end
+
+function onHelpBack(event)
+  if event == "releaseUp" then
+     tool.buttonSound("releaseUp","effect_12")
+     setHelp(false)
+  end
+end
+
+function setHelp(flag)
+   widget.help.obj:setVisible(flag)
+   widget.help.obj:setTouchEnabled(flag) 
+   widget.help.help_alert.back.obj:setTouchEnabled(flag) 
 end
 
 widget = {
@@ -1392,6 +1427,24 @@ widget = {
         fish = {_type = "ImageView"},
       },
       bigWin = {_type = "Layout"},
+      help = {_type = "Button",_func = onHelp},
+   },
+   help = {
+      _type = "Layout",
+      help_alert = {
+          _type = "ImageView",
+          back = {_type = "Button",_func = onHelpBack},
+          title = {_type = "Label"},
+          label_1 = {_type = "Label"},
+          label_2 = {_type = "Label"},
+          label_3 = {_type = "Label"},
+          label_4 = {_type = "Label"},
+          label_5 = {_type = "Label"},
+          label_6 = {_type = "Label"},
+          label_7 = {_type = "Label"},
+          label_8 = {_type = "Label"},
+          label_9 = {_type = "Label"},
+      },
    },
 }
                                

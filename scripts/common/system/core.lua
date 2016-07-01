@@ -227,7 +227,7 @@ function getSyncedTime()
 	return os.time()
 end
 function setAutoLockScreen(flag)
-	--luaoc.callStaticMethod("AppController","setAutoLockScreen",{flag=flag})
+	luaoc.callStaticMethod("AppController","setAutoLockScreen",{flag=flag})
 end
 
 function getDiffTime(t,startTime)

@@ -60,15 +60,34 @@ function create()
    initView()
    initMiddle()
    addLight()
-   if UserSetting["fishIndex"] then
-      userdata.lastFishSingleIndex = tonumber(UserSetting["fishIndex"])
-   end 
+   -- printTable(UserSetting)
+   for i=11,12 do
+       if UserSetting["fishIndex"..i] then
+          userdata.lastFishSingleIndex[i] = tonumber(UserSetting["fishIndex"..i])
+       else
+          userdata.lastFishSingleIndex[i] = 1   
+       end
+       if UserSetting["fishType"..i] then
+          userdata.lastFishSingleType[i] = UserSetting["fishType"..i]
+       else
+          userdata.lastFishSingleType[i] = ""
+       end
+   end
+   -- if UserSetting["fishIndex11"] then
+   --    userdata.lastFishSingleIndex[11] = tonumber(UserSetting["fishIndex11"])
+   -- end 
+   -- if UserSetting["fishIndex12"] then
+   --    userdata.lastFishSingleIndex[12] = tonumber(UserSetting["fishIndex12"])
+   -- end 
    if UserSetting["fruitIndex"] then
       userdata.lastFruitSingleIndex = tonumber(UserSetting["fruitIndex"])
    end 
-   if UserSetting["fishType"] then
-      userdata.lastFishSingleType = UserSetting["fishType"]
-   end 
+   -- if UserSetting["fishType11"] then
+   --    userdata.lastFishSingleType[11] = UserSetting["fishType11"]
+   -- end 
+   -- if UserSetting["fishType12"] then
+   --    userdata.lastFishSingleType[12] = UserSetting["fishType12"]
+   -- end 
    if UserSetting["fruitType"] then
       userdata.lastFruitSingleType = UserSetting["fruitType"]
    end 
@@ -83,6 +102,12 @@ function create()
    if UserSetting["fishHistoryGold"] then
       userdata.userFishHistoryGold = UserSetting["fishHistoryGold"]
    end
+   if UserSetting["lightOpen"] then
+      setAutoLockScreen(tonumber(UserSetting["lightOpen"]) == 1 and true or false)
+   else
+      setAutoLockScreen(true)
+   end
+            
    -- getChar(userdata.UserInfo.id or userdata.UserInfo.charId)
    -- local now = os.time()
    -- for k,v in pairs(UserChar) do
@@ -212,7 +237,7 @@ function playSystemMessageEffect()
           richText:pushBackElement(_text1)     
           local _text2 = RichElementText:create(2,ccc3(255,255,255),255,"获得",DEFAULT_FONT,40)         
           richText:pushBackElement(_text2)  
-          local msg = getWinStr(data.money)
+          local msg = getWinStr(data.money/2)
           local _text3 = RichElementText:create(3,ccc3(253,78,62),255,msg,DEFAULT_FONT,40)         
           richText:pushBackElement(_text3)   
           local label = Label:create()

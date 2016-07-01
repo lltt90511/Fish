@@ -357,6 +357,7 @@ function onGetPrivateCharListFailed(data)
 end
 
 function onFingerGameBetSucceed(data)
+	print("onFingerGameBetSucceed!!!!!!!!!")
 	userdata.goldAction = true
 	event.pushEvent("ON_FINGER_GAME_BET_SUCCEED",data)
 end
@@ -375,6 +376,7 @@ function onFingerGameGuessFailed(data)
 	if data and data.msg then
 	   alert.create(data.msg)
     end
+    userdata.goldAction = false
 	event.pushEvent("ON_FINGER_GAME_GUESS_FAILED")
 end
 
@@ -404,7 +406,7 @@ end
 
 function onFingerGameInviteAgreeSucceed(data)
 	local moraGame = package.loaded["scene.moraGame"]
-    moraGame.initData(data)
+    moraGame.initData(data,10)
     if waitInviterAlert.this then
        waitInviterAlert.exit()
     end
@@ -472,7 +474,9 @@ function onChangeNameFailed(data)
 end
 
 function onChangeSexSucceed(data)
-	userdata.UserInfo.sex = data.sex
+	print("onChangeSexSucceed")
+	printTable(data)
+	userdata.UserInfo.sex = data.p1
 end
 
 function onChangeSexFailed(data)

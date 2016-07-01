@@ -13,7 +13,7 @@ subWidget = nil
  Setting = {
    music ={percent = "musicPercent",open = "musicOpen"},
    effect ={percent = "effectPercent",open = "effectOpen"},
-   zhengdong ={open = "zhengdongOpen"},
+   -- zhengdong ={open = "zhengdongOpen"},
    light ={open = "lightOpen"},
    -- push ={open = "pushOpen"},
 }
@@ -23,14 +23,17 @@ function create(parent)
   SettingObjList = {
     music = widget.panel.bg.music.check.obj,
     effect = widget.panel.bg.effect.check.obj,
-    zhengdong = widget.panel.bg.zhengdong.check.obj,
+    -- zhengdong = widget.panel.bg.zhengdong.check.obj,
     light = widget.panel.bg.light.check.obj,
-    push = widget.panel.bg.push.check.obj,
+    -- push = widget.panel.bg.push.check.obj,
   }
+  widget.panel.bg.zhengdong.check.obj:setTouchEnabled(false)
+  widget.panel.bg.push.check.obj:setTouchEnabled(false)
   initSettingStatus()
    return this
 end
 function initSettingStatus()
+  print("initSettingStatus!!!!!!!!!!!")
   printTable(UserSetting)
   for i,v in pairs(SettingObjList) do
     print (i)
@@ -159,16 +162,16 @@ function onCloseEffect(event,data1,data)
 end
 function onZhengdong(event,data1,data)
   if event == "releaseUp" then
-      tool.buttonSound("releaseUp","effect_12")
-    data = tolua.cast(data,"CheckBox")
-    local check = data:getSelectedState()
-    check = not check
-     local c = 0
-     if check == true then
-        c = 1
-     end
-     UserSetting[Setting.zhengdong.open] = c
-     saveSetting(Setting.zhengdong.open,c)
+    --   tool.buttonSound("releaseUp","effect_12")
+    -- data = tolua.cast(data,"CheckBox")
+    -- local check = data:getSelectedState()
+    -- check = not check
+    --  local c = 0
+    --  if check == true then
+    --     c = 1
+    --  end
+    --  UserSetting[Setting.zhengdong.open] = c
+    --  saveSetting(Setting.zhengdong.open,c)
 
   end
 end
@@ -184,20 +187,21 @@ function onLight(event,data1,data)
      end
      UserSetting[Setting.light.open] = c
      saveSetting(Setting.light.open,c)
+     setAutoLockScreen(tonumber(UserSetting[Setting.light.open]) == 1 and true or false)
 
   end
 end
 function onPush(event,data1,data)
   if event == "releaseUp" then
-      tool.buttonSound("releaseUp","effect_12")
-    data = tolua.cast(data,"CheckBox")
-    local check = data:getSelectedState()
-    check = not check
-     local c = 0
-     if check == true then
-        c = 1
-     end
-     saveSetting(Setting.push.open,c)
+    --   tool.buttonSound("releaseUp","effect_12")
+    -- data = tolua.cast(data,"CheckBox")
+    -- local check = data:getSelectedState()
+    -- check = not check
+    --  local c = 0
+    --  if check == true then
+    --     c = 1
+    --  end
+    --  saveSetting(Setting.push.open,c)
 
   end
 end

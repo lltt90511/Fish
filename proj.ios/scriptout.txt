@@ -1,15 +1,15 @@
 Debug
-scriptsVersion=317
-_TARGET_BUILD_CONTENTS_PATH: /Users/LIT/Library/Developer/Xcode/DerivedData/Ball-dfxoaclmnvucjlgadpmsybuwwfps/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app
-PWD: /Users/LIT/Documents/client/Fish/proj.ios
-Cleaning /Users/LIT/Library/Developer/Xcode/DerivedData/Ball-dfxoaclmnvucjlgadpmsybuwwfps/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/
+scriptsVersion=2
+_TARGET_BUILD_CONTENTS_PATH: /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app
+PWD: /Users/zhangjie/Documents/client/Fish/proj.ios
+Cleaning /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/
 processing lua script files
 compilation finished
 ------------------------------
 
-copy ../ios_sound to /Users/LIT/Library/Developer/Xcode/DerivedData/Ball-dfxoaclmnvucjlgadpmsybuwwfps/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/sound/
-copy ../build to /Users/LIT/Library/Developer/Xcode/DerivedData/Ball-dfxoaclmnvucjlgadpmsybuwwfps/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/scripts/
-copy ../res to /Users/LIT/Library/Developer/Xcode/DerivedData/Ball-dfxoaclmnvucjlgadpmsybuwwfps/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/res/
+copy ../ios_sound to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/sound/
+copy ../build to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/scripts/
+copy ../res to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/res/
 write scripts version
-scriptsVersion = 317
+scriptsVersion = 2
 end build sh

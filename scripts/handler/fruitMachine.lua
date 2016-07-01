@@ -30,7 +30,7 @@ function onEnterGameSucceed(gameData)
    elseif gameData.gameid == 10 then
       -- print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
       local moraGame = package.loaded["scene.moraGame"]
-      -- moraGame.initData(gameData)
+      moraGame.initData(gameData,gameData.gameid)
       -- enterGameFunc(mainScene.widgetID.moraGame)
       mainScene.createSubWidget(mainScene.widgetID.moraGame)
    end

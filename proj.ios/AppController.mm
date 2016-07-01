@@ -203,7 +203,7 @@ bool once = true;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
-    [XGPush handleLaunching:launchOptions];
+//    [XGPush handleLaunching:launchOptions];
     return YES;
 }
 
@@ -257,20 +257,20 @@ bool once = true;
 }
 
 + (void) creatPush:(NSDictionary*)dict {
-    [self delPush:dict];
-    NSString *type = [dict objectForKey:@"type"];
-    NSString *time = [dict objectForKey:@"time"];
-    NSString *content = [dict objectForKey:@"content"];
-    
-    int t = [time intValue];
-    //本地推送示例
-    NSDate *fireDate = [[NSDate new] dateByAddingTimeInterval:t];
-    
-    NSMutableDictionary *dicUserInfo = [[NSMutableDictionary alloc] init];
-    [dicUserInfo setValue:@"push" forKey:type];
-    NSDictionary *userInfo = dicUserInfo;
-    
-    [XGPush localNotification:fireDate alertBody:content badge:1 alertAction:nil userInfo:userInfo];
+//    [self delPush:dict];
+//    NSString *type = [dict objectForKey:@"type"];
+//    NSString *time = [dict objectForKey:@"time"];
+//    NSString *content = [dict objectForKey:@"content"];
+//    
+//    int t = [time intValue];
+//    //本地推送示例
+//    NSDate *fireDate = [[NSDate new] dateByAddingTimeInterval:t];
+//    
+//    NSMutableDictionary *dicUserInfo = [[NSMutableDictionary alloc] init];
+//    [dicUserInfo setValue:@"push" forKey:type];
+//    NSDictionary *userInfo = dicUserInfo;
+//    
+//    [XGPush localNotification:fireDate alertBody:content badge:1 alertAction:nil userInfo:userInfo];
 }
 
 + (void) gameInit:(NSDictionary*)dict {
@@ -330,8 +330,8 @@ bool once = true;
 }
 
 + (void) delPush:(NSDictionary*)dict {
-    NSString *type = [dict objectForKey:@"type"];
-    [XGPush delLocalNotification:type userInfoValue:@"push"];
+//    NSString *type = [dict objectForKey:@"type"];
+//    [XGPush delLocalNotification:type userInfoValue:@"push"];
 }
 
 + (void) getURLSchemes:(NSDictionary *)dict {
@@ -363,12 +363,12 @@ bool once = true;
 
 + (void) clearPush:(NSDictionary*)dict {
     NSLog(@"clearPush");
-    [XGPush clearLocalNotifications];
+//    [XGPush clearLocalNotifications];
 }
 
 + (void) unRegisterPush:(NSDictionary*)dict {
     NSLog(@"unRegisterPush");
-    [XGPush unRegisterDevice];
+//    [XGPush unRegisterDevice];
 }
 
 + (void) clearColor:(NSDictionary*)dict {
@@ -479,7 +479,7 @@ bool once = true;
     //[XGPush localNotificationAtFrontEnd:notification userInfoKey:@"clockID" userInfoValue:@"myid"];
     
     //删除推送列表中的这一条
-    [XGPush delLocalNotification:notification];
+//    [XGPush delLocalNotification:notification];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 }
 
@@ -498,33 +498,33 @@ bool once = true;
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     
-    NSString* deviceTokenStr = [XGPush getDeviceToken:deviceToken];
-    Boolean getToken = false;
+//    NSString* deviceTokenStr = [XGPush getDeviceToken:deviceToken];
+//    Boolean getToken = false;
     
-    void (^successBlock)(void) = ^(void){
-        //成功之后的处理
-        NSLog(@"[xgpush]register successBlock ,deviceToken: %@",deviceTokenStr);
-        if (getToken == false) {
-            [rootViewControllerPtr pushToken:1 tk:deviceTokenStr];
-        }
-    };
-    
-    void (^errorBlock)(void) = ^(void){
-        //失败之后的处理
-        NSLog(@"[xgpush]register errorBlock");
-    };
-    
-    //注册设备
-    [XGPush registerDevice:deviceToken successCallback:successBlock errorCallback:errorBlock];
+//    void (^successBlock)(void) = ^(void){
+//        //成功之后的处理
+//        NSLog(@"[xgpush]register successBlock ,deviceToken: %@",deviceTokenStr);
+//        if (getToken == false) {
+//            [rootViewControllerPtr pushToken:1 tk:deviceTokenStr];
+//        }
+//    };
+//    
+//    void (^errorBlock)(void) = ^(void){
+//        //失败之后的处理
+//        NSLog(@"[xgpush]register errorBlock");
+//    };
+//    
+//    //注册设备
+//    [XGPush registerDevice:deviceToken successCallback:successBlock errorCallback:errorBlock];
     
     //如果不需要回调
     //[XGPush registerDevice:deviceToken];
     
     //打印获取的deviceToken的字符串
-    NSLog(@"deviceTokenStr is %@",deviceTokenStr);
-    if (getToken == false) {
-        [rootViewControllerPtr pushToken:1 tk:deviceTokenStr];
-    }
+//    NSLog(@"deviceTokenStr is %@",deviceTokenStr);
+//    if (getToken == false) {
+//        [rootViewControllerPtr pushToken:1 tk:deviceTokenStr];
+//    }
 }
 
 //如果deviceToken获取不到会进入此事件
@@ -541,7 +541,7 @@ bool once = true;
     NSLog(@"didReceiveRemoteNotification");
     
     //推送反馈(app运行时)
-    [XGPush handleReceiveNotification:userInfo];
+//    [XGPush handleReceiveNotification:userInfo];
     NSLog(@"Notification%@",userInfo);
     
     
@@ -557,7 +557,7 @@ bool once = true;
     if (msgType) {
         messageType = [msgType intValue];
     }
-    [self onPushData:messageId type:messageType];
+//    [self onPushData:messageId type:messageType];
     
     //    Notification{
     //        aps =     {
@@ -1506,7 +1506,7 @@ bool once = true;
 
 + (void)setAutoLockScreen:(NSDictionary*)dict{
     Boolean flag = [[dict objectForKey:@"flag"]boolValue];
-    [[UIApplication sharedApplication] setIdleTimerDisabled: !flag];
+    [[UIApplication sharedApplication] setIdleTimerDisabled: flag];
 }
 
 
