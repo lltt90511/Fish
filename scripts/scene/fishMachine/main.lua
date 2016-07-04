@@ -1443,7 +1443,6 @@ widget = {
           label_6 = {_type = "Label"},
           label_7 = {_type = "Label"},
           label_8 = {_type = "Label"},
-          label_9 = {_type = "Label"},
       },
    },
 }

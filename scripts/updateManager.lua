@@ -23,6 +23,7 @@ md5 = require "md5"
 require"config"
 require "deploy"
 require "appChannel"
+require "AudioEngine"
 local http = require"logic.http"
 require "umeng"
 local sceneAlert = require "scene.alert"
@@ -210,22 +211,23 @@ function onDownloadServerList(header,body,flag)
    -- print(body)
    local tab = cjson.decode(body)
    -- printTable(tab)
-   if tab.restartUrl then
-      RestartUrl = tab.restartUrl
-   end
+   -- if tab.restartUrl then
+   --    RestartUrl = tab.restartUrl
+   -- end
    for k,v in pairs(tab) do
-      table.insert(serverList,v)
+      serverList[k] = v
+      -- table.insert(serverList,v)
    end
-   defaultList = tab.defaultAnnounce
-   if defaultList == nil then
-      defaultList = {}
-   end
+   -- defaultList = tab.defaultAnnounce
+   -- if defaultList == nil then
+   --    defaultList = {}
+   -- end
    --uploadURL = tab.uploadURL
    --downloadURL = tab.downloadURL
    serverVersion = tab.build
-   if tab.AppVersion then
-      version = tab.AppVersion
-   end
+   -- if tab.AppVersion then
+   --    version = tab.AppVersion
+   -- end
    setServerUrl(tab.loginServerUrl)
    appstoreVersion = tab.appstoreversion
    --loginServerUrl = ""
@@ -234,22 +236,57 @@ function onDownloadServerList(header,body,flag)
    --    finishUpdate()
    --    return
    -- end
-   firstLaunch()
-   if scriptsVersion >= tab.build  then
-      local flag = checkUnfinishedFile()
-      if flag == true then
-         print("88888888888888888 true")
-         finishUpdate() 
+   local func = function()
+      firstLaunch()
+      if scriptsVersion >= tab.build  then
+         local flag = checkUnfinishedFile()
+         if flag == true then
+            print("88888888888888888 true")
+            finishUpdate() 
+         else
+            print("88888888888888888 false")
+            finishCallBack = finishUpdate
+         end
       else
-         print("88888888888888888 false")
-         finishCallBack = finishUpdate
+         print("ready to download updateList")
+         haveUpdate = true
+         --download(updateDownLoadURL,"update/updateList.json",6,0)
+         http.request(updateDownLoadURL.."updateFiles/updateList.json",onDownloadUpdateList)
+      end
+   end
+   if platform == "Android" then
+      if appVersion < tab.buildAndroid then
+         if appVersion < tab.buildAndroidMust then
+            sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
+               luaj.callStaticMethod("cc/yongdream/nshx/mainActivity","goToDownLoad",{tab.urlAndroid})
+            end,nil,"立即更新","isOne")
+         else 
+            sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
+               luaj.callStaticMethod("cc/yongdream/nshx/mainActivity","goToDownLoad",{tab.urlAndroid})
+            end,func,"立即更新","暂不更新")
+         end
+         return
+      end
+   elseif platform == "IOS" then 
+      if appVersion < tab.buildIos then
+         if appVersion < tab.buildIosMust then
+            sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
+               luaoc.callStaticMethod("AppController","openUrlWithSafari",{url=tab.urlIos})
+            end,nil,"立即更新","isOne")
+         else 
+            sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
+               luaoc.callStaticMethod("AppController","openUrlWithSafari",{url=tab.urlIos})
+            end,func,"立即更新","暂不更新")
+         end
+         return
       end
    else
-      print("ready to download updateList")
-      haveUpdate = true
-      --download(updateDownLoadURL,"update/updateList.json",6,0)
-      http.request(updateDownLoadURL.."updateFiles/updateList.json",onDownloadUpdateList)
+      if appVersion < tab.buildAndroid then
+         sceneAlert.create("请重新下载app",scene)
+         return
+      end
    end
+   func()
 end
 
 function checkUnfinishedFile()

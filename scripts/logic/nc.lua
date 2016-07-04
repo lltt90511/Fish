@@ -8,10 +8,10 @@ function connect()
    -- local server = serverList[connectId]
    print("connect!!!!!!!!!!!!!!!")
    printTable(serverList)
-   C_connectAsync(serverList[1], serverList[3])
+   C_connectAsync(serverList["SocketIp"], serverList["SocketPort"])
    -- C_connectAsync("10.0.39.11", "51111")
    -- setUploadURL(server.uploadURL)
-   setDownloadURL(serverList[4])
+   setDownloadURL(serverList["Srv_Img"])
    -- setPayServerUrl(server.payUrl)
 end
 

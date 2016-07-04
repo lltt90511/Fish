@@ -60,7 +60,11 @@ function create(str,_scene,_okFunc,_cancelFunc,_okStr,_cancelStr,isHide)
 	
 	local ok = Button:create()
 	ok:loadTextures("ui/changBt01.png","ui/changBt01.png","ui/changBt01.png",0)
-	ok:setPosition(ccp(-256, -128))
+	if _cancelStr == "isOne" then
+		ok:setPosition(ccp(0, -128))
+	else
+		ok:setPosition(ccp(-256, -128))
+	end
 	if _okStr == nil or _okStr == "" then
 		_okStr = "确定"
 	end
@@ -90,38 +94,40 @@ function create(str,_scene,_okFunc,_cancelFunc,_okStr,_cancelStr,isHide)
 
 	bg:addChild(ok,3)
 	
-	local cancel = Button:create()
-	cancel:loadTextures("ui/changBt01.png","ui/changBt01.png","ui/changBt01.png",0)
-	cancel:setPosition(ccp(256, -128))
-	if _cancelStr == nil or _cancelStr == "" then
-		_cancelStr = "取消"
-	end
-	cancel:registerEventScript(
-		function (event1)
-			if event1 == "releaseUp" then
-				if _cancelFunc then
-					_cancelFunc()
-				end
-				this.exit()
-			end
+	if _cancelStr ~= "isOne" then
+		local cancel = Button:create()
+		cancel:loadTextures("ui/changBt01.png","ui/changBt01.png","ui/changBt01.png",0)
+		cancel:setPosition(ccp(256, -128))
+		if _cancelStr == nil or _cancelStr == "" then
+			_cancelStr = "取消"
 		end
-	)
+		cancel:registerEventScript(
+			function (event1)
+				if event1 == "releaseUp" then
+					if _cancelFunc then
+						_cancelFunc()
+					end
+					this.exit()
+				end
+			end
+		)
 
-	local cancelLb = Label:create()
-	cancelLb:setText(_cancelStr)
-	cancelLb:setFontName(DEFAULT_FONT)
-	cancelLb:setFontSize(40)
-	cancelLb:setColor(ccc3(0x80,0x4E,0x0A))
-	cancelLb:setPosition(ccp(0,0))
-	cancel:addChild(cancelLb,1)
-	local cancelShadow = tolua.cast(cancelLb:clone(),"Label")
-	cancelShadow:setColor(ccc3(255,255,255))
-	cancelShadow:setPosition(ccp(0,-2))
-	cancel:addChild(cancelShadow,0)
+		local cancelLb = Label:create()
+		cancelLb:setText(_cancelStr)
+		cancelLb:setFontName(DEFAULT_FONT)
+		cancelLb:setFontSize(40)
+		cancelLb:setColor(ccc3(0x80,0x4E,0x0A))
+		cancelLb:setPosition(ccp(0,0))
+		cancel:addChild(cancelLb,1)
+		local cancelShadow = tolua.cast(cancelLb:clone(),"Label")
+		cancelShadow:setColor(ccc3(255,255,255))
+		cancelShadow:setPosition(ccp(0,-2))
+		cancel:addChild(cancelShadow,0)
 
-	bg:addChild(cancel,4)
+		bg:addChild(cancel,4)
+	end
 	_scene:addChild(this,31)
-	
+
 	if type(isHide) == type(true) and isHide == true then
 	   performWithDelay(function()
 	     this.exit()

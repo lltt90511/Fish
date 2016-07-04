@@ -1,5 +1,6 @@
 #!/bin/bash
 version=$2
+aVersion=$3
 if [ $1 = "0" ]
     then
     echo "Debug"
@@ -14,7 +15,7 @@ if [ $1 = "2" ]
     then
     echo "Min Release"
 fi
-echo "scriptsVersion=$2"
+echo "scriptsVersion=$2 appVersion = $3"
 
 _TARGET_BUILD_CONTENTS_PATH=$TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH
 
@@ -39,7 +40,7 @@ else
         echo "module('release', package.seeall) release = true" > ../scripts/release.lua
     fi
 fi
-echo "scriptsVersion = $version" >../scripts/config.lua
+echo "scriptsVersion = $version appVersion = $aVersion" >../scripts/config.lua
 chmod 777 ../../cocos2dx/tools/cocos2d-console/console/bin/lua/luajit-mac
 python ../../cocos2dx/tools/cocos2d-console/console/cocos2d.py luacompile -s ../scripts -d ../build -e True -k l8KQKnBIgBq1RHi -b P4I7gouyNiqbYMR --disable-compile
 mv ../config_tmp.lua ../scripts/config.lua 
