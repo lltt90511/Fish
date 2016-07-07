@@ -634,6 +634,7 @@ function endEffect()
    -- widget.fish["panel_inside_"..lastOpenId.inside].light.obj:setVisible(false)
    if isDoBet then
        performWithDelay(function()
+         if not this then return end
          isPlaying = false
        end,3.0)
    else
@@ -665,6 +666,7 @@ function endEffect()
           showDenglongyu(1,ccp(440,220),100,0)
           showWugui(1,ccp(640,220),100,0)
           performWithDelay(function()
+              if not this then return end
               widget.fish.bigWin.obj:removeAllNodes()
               goBo()
           end,2.0)
@@ -672,6 +674,7 @@ function endEffect()
           showJinbi()
           showShayu(1.5,ccp(Screen.width/2,692/2),100,-30)
           performWithDelay(function()
+              if not this then return end
               widget.fish.bigWin.obj:removeAllNodes()
               goBo()
           end,2.0)
@@ -679,6 +682,7 @@ function endEffect()
           showJinbi()
           showMoguiyu(1.5,ccp(Screen.width/2,692/2),100,-150)
           performWithDelay(function()
+              if not this then return end
               widget.fish.bigWin.obj:removeAllNodes()
               goBo()
           end,2.0)
@@ -740,6 +744,7 @@ function setIsBigWin()
    anim2:playWithIndex(0)
 
    performWithDelay(function()
+      if not this then return end
       widget.fish.bigWin.obj:removeAllNodes()
       widget.fish.panel_outside_1.fish.obj:stopAllActions()
       widget.fish.panel_outside_1.fish.obj:setRotation(0)

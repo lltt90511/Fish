@@ -541,11 +541,10 @@ public class mainActivity extends Cocos2dxActivity{
      	android.os.Process.killProcess(android.os.Process.myPid()); 
 	}
     
-	public static void goToDownLoad(String s) {
-     	Intent intent = new Intent();       
-        intent.setAction("android.intent.action.VIEW");   
-        Uri content_url = Uri.parse(s);  
-        intent.setData(content_url); 
+	public static void openAPK(String s) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);  
+        intent.setDataAndType(Uri.fromFile(new File(s)),  
+                "application/vnd.android.package-archive");  
         main.startActivity(intent);
 	}
 	
