@@ -166,6 +166,7 @@
 		1AB87024175E0A2D005D39BF /* WebSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AB87022175E0A2D005D39BF /* WebSocket.cpp */; };
 		1AB87029175E0A40005D39BF /* CCSkeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AB87025175E0A40005D39BF /* CCSkeleton.cpp */; };
 		1AB8702A175E0A40005D39BF /* CCSkeletonAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AB87027175E0A40005D39BF /* CCSkeletonAnimation.cpp */; };
+		2F794B6D1D3367E900AE57B1 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F794B6C1D3367E900AE57B1 /* Default@2x.png */; };
 		4609FBD91D14F58A00AFCE8F /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4609FBD61D14F58A00AFCE8F /* libcrypto.a */; };
 		4609FBDA1D14F58A00AFCE8F /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4609FBD71D14F58A00AFCE8F /* libcurl.a */; };
 		4609FBDB1D14F58A00AFCE8F /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4609FBD81D14F58A00AFCE8F /* libssl.a */; };
@@ -180,7 +181,6 @@
 		4621D6871D071DE2007CA14F /* libXG-SDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A27D6EAE198F595C0037DB98 /* libXG-SDK.a */; };
 		4624DF451D093BC500236A0B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4624DF441D093BC500236A0B /* Security.framework */; };
 		4624DF521D093F6800236A0B /* libMobClickGameLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4624DF4F1D093F6800236A0B /* libMobClickGameLibrary.a */; };
-		46A1EDF31D0862DC003EA467 /* LaunchImage.launchimage.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 46A1EDF21D0862DC003EA467 /* LaunchImage.launchimage.xcassets */; };
 		46C1008C16BF786A00F74D54 /* CCLuaBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46C1007A16BF786A00F74D54 /* CCLuaBridge.cpp */; };
 		46C1008D16BF786A00F74D54 /* CCLuaEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46C1007C16BF786A00F74D54 /* CCLuaEngine.cpp */; };
 		46C1008E16BF786A00F74D54 /* CCLuaStack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46C1007E16BF786A00F74D54 /* CCLuaStack.cpp */; };
@@ -703,6 +703,7 @@
 		1AB87028175E0A40005D39BF /* CCSkeletonAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSkeletonAnimation.h; sourceTree = "<group>"; };
 		1AB8702E175E0A5B005D39BF /* libwebsockets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libwebsockets.h; sourceTree = "<group>"; };
 		1AB87030175E0A5B005D39BF /* libwebsockets.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwebsockets.a; sourceTree = "<group>"; };
+		2F794B6C1D3367E900AE57B1 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		4601A0691D08567C00FE1B14 /* UMMobClick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UMMobClick.framework; path = umeng/UMMobClick.framework; sourceTree = "<group>"; };
 		4609FBD61D14F58A00AFCE8F /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../cocos2dx/cocos2dx/platform/third_party/ios/libraries/libcrypto.a; sourceTree = "<group>"; };
 		4609FBD71D14F58A00AFCE8F /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../../cocos2dx/cocos2dx/platform/third_party/ios/libraries/libcurl.a; sourceTree = "<group>"; };
@@ -722,7 +723,6 @@
 		4624DF4F1D093F6800236A0B /* libMobClickGameLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickGameLibrary.a; sourceTree = "<group>"; };
 		4624DF501D093F6800236A0B /* MobClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClick.h; sourceTree = "<group>"; };
 		4624DF511D093F6800236A0B /* MobClickGameAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClickGameAnalytics.h; sourceTree = "<group>"; };
-		46A1EDF21D0862DC003EA467 /* LaunchImage.launchimage.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = LaunchImage.launchimage.xcassets; path = Ball/LaunchImage.launchimage.xcassets; sourceTree = "<group>"; };
 		46C1007A16BF786A00F74D54 /* CCLuaBridge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLuaBridge.cpp; sourceTree = "<group>"; };
 		46C1007B16BF786A00F74D54 /* CCLuaBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLuaBridge.h; sourceTree = "<group>"; };
 		46C1007C16BF786A00F74D54 /* CCLuaEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLuaEngine.cpp; sourceTree = "<group>"; };
@@ -739,8 +739,6 @@
 		46C1008916BF786A00F74D54 /* CCLuaObjcBridge.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CCLuaObjcBridge.mm; sourceTree = "<group>"; };
 		46C1008A16BF786A00F74D54 /* tolua_fix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tolua_fix.c; sourceTree = "<group>"; };
 		46C1008B16BF786A00F74D54 /* tolua_fix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tolua_fix.h; sourceTree = "<group>"; };
-		A249872519862A9B0016DB88 /* Default-568h@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Default-568h@2x.jpg"; sourceTree = "<group>"; };
-		A249872619862A9B0016DB88 /* Default-568h@2x222.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x222.png"; sourceTree = "<group>"; };
 		A249872D19862CD60016DB88 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "iOS 6/Icon-72.png"; sourceTree = "<group>"; };
 		A249872E19862CD60016DB88 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "iOS 6/Icon-72@2x.png"; sourceTree = "<group>"; };
 		A249872F19862CD60016DB88 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "iOS 6/Icon-Small-50.png"; sourceTree = "<group>"; };
@@ -2435,6 +2433,7 @@
 		F1AFDA8718FE9AFA00E1AF57 /* Res */ = {
 			isa = PBXGroup;
 			children = (
+				2F794B6C1D3367E900AE57B1 /* Default@2x.png */,
 				A249872D19862CD60016DB88 /* Icon-72.png */,
 				A249872E19862CD60016DB88 /* Icon-72@2x.png */,
 				A249872F19862CD60016DB88 /* Icon-Small-50.png */,
@@ -2443,8 +2442,6 @@
 				A249873219862CD60016DB88 /* Icon-Small@2x.png */,
 				A249873319862CD60016DB88 /* Icon.png */,
 				A249873419862CD60016DB88 /* Icon@2x.png */,
-				A249872519862A9B0016DB88 /* Default-568h@2x.jpg */,
-				A249872619862A9B0016DB88 /* Default-568h@2x222.png */,
 				CF4D2725192348660000C560 /* nc_crop_reset_btn.png */,
 				CF4D2726192348660000C560 /* nc_crop_reset_btn_h.png */,
 				CF4D2727192348660000C560 /* nc_crop_rotate_btn.png */,
@@ -2465,7 +2462,6 @@
 		F293B3BD15EB7BE500256477 = {
 			isa = PBXGroup;
 			children = (
-				46A1EDF21D0862DC003EA467 /* LaunchImage.launchimage.xcassets */,
 				F1ED98F71A1C3EC5008AF0AE /* Images.xcassets */,
 				F1AFDA8718FE9AFA00E1AF57 /* Res */,
 				CF025FF718E1DA4500265A5D /* Entitlements.plist */,
@@ -2680,6 +2676,7 @@
 				F1ED98F81A1C3EC5008AF0AE /* Images.xcassets in Resources */,
 				F1BE103019115F84002F8477 /* iTunesArtwork@2x.png in Resources */,
 				CF4D2729192348660000C560 /* nc_crop_reset_btn.png in Resources */,
+				2F794B6D1D3367E900AE57B1 /* Default@2x.png in Resources */,
 				A2B57D7719A71B3D0047EA79 /* webViewController.xib in Resources */,
 				4609FC1B1D15035800AFCE8F /* AlipaySDK.bundle in Resources */,
 				F1BE102819115F84002F8477 /* Icon-40@2x.png in Resources */,
@@ -2689,7 +2686,6 @@
 				CF4D272A192348660000C560 /* nc_crop_reset_btn_h.png in Resources */,
 				A249873A19862CD60016DB88 /* Icon-Small-50@2x.png in Resources */,
 				F1BE102919115F84002F8477 /* Icon-60.png in Resources */,
-				46A1EDF31D0862DC003EA467 /* LaunchImage.launchimage.xcassets in Resources */,
 				A249873D19862CD60016DB88 /* Icon.png in Resources */,
 				A249873B19862CD60016DB88 /* Icon-Small.png in Resources */,
 				A249873C19862CD60016DB88 /* Icon-Small@2x.png in Resources */,
@@ -2720,7 +2716,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# arg1 0 for debug 1 for release (full package) 2 for release (min package)\n# arg2 scripts build\nsh ../xcodebuild.sh 0 2 > scriptout.txt";
+			shellScript = "# arg1 0 for debug 1 for release (full package) 2 for release (min package)\n# arg2 scripts build\n# arg3 app version \nsh ../xcodebuild.sh 1 2 100 > scriptout.txt";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3179,7 +3175,6 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer: lixiang xu (Y98PPQ828G)";
@@ -3240,7 +3235,11 @@
 					"$(PROJECT_DIR)/DependenceSDK/UPPay/libs",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-pagezero_size",
+					10000,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.youngdream.hddbh;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -3257,7 +3256,6 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: lixiang xu (R9Y272ERLL)";
