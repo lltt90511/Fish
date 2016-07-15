@@ -27,7 +27,6 @@ require "AudioEngine"
 local http = require"logic.http"
 require "umeng"
 local sceneAlert = require "scene.alert"
-local sceneFileManager = require"logic.fileManager"
 require "logic.guideUpload"
 luaoc = require"luaoc"
 luaj = require "luaj"
@@ -255,23 +254,21 @@ function onDownloadServerList(header,body,flag)
          http.request(updateDownLoadURL.."updateFiles/updateList.json",onDownloadUpdateList)
       end
    end
-   if platform == "Android" then
+   if platform == "Android" and tab.buildAndroid then
       if appVersion < tab.buildAndroid then
-         luaj.callStaticMethod("cc/yongdream/nshx/Util","deleteDirectory",{path.."download"})
          if appVersion < tab.buildAndroidMust then
             sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
-            sceneFileManager.download(tab.Srv_Img,tab.urlAndroid,9,0)
+               luaj.callStaticMethod("cc/yongdream/nshx/mainActivity","goToDownLoad",{tab.urlAndroid})
             end,nil,"立即更新","isOne")
          else 
             sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
-            sceneFileManager.download(tab.Srv_Img,tab.urlAndroid,9,0)
+               luaj.callStaticMethod("cc/yongdream/nshx/mainActivity","goToDownLoad",{tab.urlAndroid})
             end,func,"立即更新","暂不更新")
          end
          return
       end
-   elseif platform == "IOS" then 
+   elseif platform == "IOS" and tab.buildIos then 
       if appVersion < tab.buildIos then
-         luaoc.callStaticMethod("AppController","deleteDirectory",{path=path.."download"})
          if appVersion < tab.buildIosMust then
             sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
                luaoc.callStaticMethod("AppController","openUrlWithSafari",{url=tab.urlIos})
@@ -283,11 +280,9 @@ function onDownloadServerList(header,body,flag)
          end
          return
       end
-   else
+   elseif tab.buildAndroid then
       if appVersion < tab.buildAndroid then
-         sceneAlert.create("检测到新版本，是否前去更新？",scene,function()
-            sceneFileManager.download(tab.Srv_Img,tab.urlAndroid,9,0)
-         end,nil,"立即更新","isOne")
+         sceneAlert.create("请重新下载app",scene)
          return
       end
    end
@@ -606,19 +601,12 @@ end
 
 function onDownloadError(t,nowIndex)
    if t == 7 or t == 8 then
-      -- label:setString("更新失败，重启或重装应用")
-   elseif t == 9 then
-      label:setString("更新失败，请重启或重装应用")
+      --label:setString("更新失败，重启或重装应用")
    end
 end
 
 function onProgress(t,nowIndex,per)
-   if t == 9 then
-      if not per or per < 0 then
-         per = 0
-      end
-      bar.show("更新安装包：",per,100)
-   end
+   
 end
 
 function onDownload(t,fileName,nowIndex,bytes)
@@ -630,9 +618,7 @@ function onDownload(t,fileName,nowIndex,bytes)
    elseif t == 7 then --更新版本信息文件
       onDownloadVersionInfo(fileName)
    elseif t == 8 then --更新资源及脚本
-      onDownloadNewFile(fileName) 
-   elseif t == 9 then --更新安卓包
-      luaj.callStaticMethod("cc/yongdream/nshx/mainActivity","openAPK",{fileName})
+     onDownloadNewFile(fileName) 
    end
 end
 

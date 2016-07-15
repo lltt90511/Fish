@@ -1,15 +1,15 @@
 Full Release
-scriptsVersion=2 appVersion = 100
-_TARGET_BUILD_CONTENTS_PATH: /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Products/Debug-iphonesimulator/Ball.app
+scriptsVersion=2 appVersion = 1
+_TARGET_BUILD_CONTENTS_PATH: /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app
 PWD: /Users/zhangjie/Documents/client/Fish/proj.ios
-Cleaning /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Products/Debug-iphonesimulator/Ball.app/
+Cleaning /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/
 processing lua script files
 compilation finished
 ------------------------------
 
-copy ../ios_sound to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Products/Debug-iphonesimulator/Ball.app/Res/sound/
-copy ../build to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Products/Debug-iphonesimulator/Ball.app/Res/scripts/
-copy ../res to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Products/Debug-iphonesimulator/Ball.app/Res/res/
+copy ../ios_sound to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/sound/
+copy ../build to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/scripts/
+copy ../res to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/res/
 encodeImage ../res ../encodeTmp/res 
 请输入源文件目录
 请输入输出目录
@@ -578,9 +578,9 @@ encodeImage ../unPackagedRes/res/Image ../encodeTmp/res/Image
 encodeImage ../unPackagedRes/res/nshx ../encodeTmp/res/nshx 
 请输入源文件目录
 请输入输出目录
-copy ../unPackagedRes/music to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Products/Debug-iphonesimulator/Ball.app/Res/music/
+copy ../unPackagedRes/music to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/music/
 DIRECTORY not found!
-copy ../encodeTmp/res/ to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Products/Debug-iphonesimulator/Ball.app/Res/res/
+copy ../encodeTmp/res/ to /Users/zhangjie/Library/Developer/Xcode/DerivedData/Ball-cffcmculcurzbcdvwagdhtlgvlms/Build/Intermediates/ArchiveIntermediates/Ball/InstallationBuildProductsLocation/Applications/Ball.app/Res/res/
 write scripts version
 scriptsVersion = 2
 end build sh

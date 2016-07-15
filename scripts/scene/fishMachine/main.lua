@@ -634,7 +634,7 @@ function endEffect()
    -- widget.fish["panel_inside_"..lastOpenId.inside].light.obj:setVisible(false)
    if isDoBet then
        performWithDelay(function()
-         if not this then return end
+        if not this then return end
          isPlaying = false
        end,3.0)
    else
@@ -666,7 +666,7 @@ function endEffect()
           showDenglongyu(1,ccp(440,220),100,0)
           showWugui(1,ccp(640,220),100,0)
           performWithDelay(function()
-              if not this then return end
+            if not this then return end
               widget.fish.bigWin.obj:removeAllNodes()
               goBo()
           end,2.0)
@@ -674,7 +674,7 @@ function endEffect()
           showJinbi()
           showShayu(1.5,ccp(Screen.width/2,692/2),100,-30)
           performWithDelay(function()
-              if not this then return end
+            if not this then return end
               widget.fish.bigWin.obj:removeAllNodes()
               goBo()
           end,2.0)
@@ -682,7 +682,7 @@ function endEffect()
           showJinbi()
           showMoguiyu(1.5,ccp(Screen.width/2,692/2),100,-150)
           performWithDelay(function()
-              if not this then return end
+            if not this then return end
               widget.fish.bigWin.obj:removeAllNodes()
               goBo()
           end,2.0)
@@ -854,7 +854,7 @@ function checkWinResult()
              if v.i == userdata.UserInfo.uidx then
                 isInResult = true
                 if v.m > 0 then
-                   widget.bottom.layout.text.obj:setText("恭喜您获得"..getWinStr(v.m/2))
+                   widget.bottom.layout.text.obj:setText("恭喜您获得"..v.m.."点游戏豆")
                    widget.bottom.layout.bg.obj:setVisible(true)
                 end
              else
@@ -862,7 +862,7 @@ function checkWinResult()
              resultMsg.type = 1
              resultMsg.name = v.i == userdata.UserInfo.uidx and "你" or v.e
              resultMsg.id = v.i
-             resultMsg.msg = getWinStr(v.m/2)
+             resultMsg.msg = tostring(v.m)
              chat.setMessage(resultMsg,1) 
              if v.i == userdata.UserInfo.uidx then
                 chat.setMessage(resultMsg,3) 

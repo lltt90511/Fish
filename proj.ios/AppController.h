@@ -22,8 +22,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-//#import<IapppayKit/IapppayKit.h>
-//#import<IapppayKit/IapppayOrderUtils.h>
+#import<IapppayKit/IapppayKit.h>
+#import<IapppayKit/IapppayOrderUtils.h>
 
 //商户在爱贝注册的应用ID
 static NSString *mOrderUtilsAppId = @"30055354";
@@ -39,7 +39,7 @@ static NSString *mOrderUtilsCpPrivateKey = @"MIICXAIBAAKBgQCD2/6puqO0W8Nlf1a9X8X
 
 @class RootViewController;
 
-@interface AppController : NSObject <UIAccelerometerDelegate, UIAlertViewDelegate, UITextFieldDelegate,UIApplicationDelegate> {
+@interface AppController : NSObject <UIAccelerometerDelegate, UIAlertViewDelegate, UITextFieldDelegate,UIApplicationDelegate,IapppayKitPayRetDelegate> {
     UIWindow *window;
     RootViewController    *viewController;
     

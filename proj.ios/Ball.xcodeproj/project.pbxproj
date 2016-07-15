@@ -2716,7 +2716,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# arg1 0 for debug 1 for release (full package) 2 for release (min package)\n# arg2 scripts build\n# arg3 app version \nsh ../xcodebuild.sh 1 2 100 > scriptout.txt";
+			shellScript = "# arg1 0 for debug 1 for release (full package) 2 for release (min package)\n# arg2 scripts build\n# arg3 app version \nsh ../xcodebuild.sh 1 2 1 > scriptout.txt";
 		};
 /* End PBXShellScriptBuildPhase section */
 

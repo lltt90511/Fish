@@ -191,11 +191,11 @@ bool once = true;
     //    [MobClickGameAnalytice ]
     
     //设置支付宝回调地址
-//    [[IapppayKit sharedInstance] setAppAlipayScheme:@"iapppay.alipay.com.AiBei.IapppayExample"];
-//    
-//    self.mCheckResultKey = mOrderUtilsCheckResultKey;
-//    [[IapppayKit sharedInstance] setAppId:mOrderUtilsAppId mACID:mOrderUtilsChannel];
-//    [[IapppayKit sharedInstance] setIapppayPayWindowOrientationMask:UIInterfaceOrientationMaskPortrait];
+    [[IapppayKit sharedInstance] setAppAlipayScheme:@"iapppay.alipay.com.AiBei.IapppayExample"];
+    
+    self.mCheckResultKey = mOrderUtilsCheckResultKey;
+    [[IapppayKit sharedInstance] setAppId:mOrderUtilsAppId mACID:mOrderUtilsChannel];
+    [[IapppayKit sharedInstance] setIapppayPayWindowOrientationMask:UIInterfaceOrientationMaskPortrait];
     
     //推送反馈(app不在前台运行时，点击推送激活时)
     //[XGPush handleLaunching:launchOptions];
@@ -210,14 +210,14 @@ bool once = true;
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
     //此方法在某一时刻弃用，使用application:openURL:sourceApplication:annotation:代替
-//    [[IapppayKit sharedInstance] handleOpenUrl:url];
+    [[IapppayKit sharedInstance] handleOpenUrl:url];
     return YES;
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     //此方法为代替application:handleOpenURL:
-//    [[IapppayKit sharedInstance] handleOpenUrl:url];
+    [[IapppayKit sharedInstance] handleOpenUrl:url];
     return YES;
 }
 
@@ -629,20 +629,20 @@ bool once = true;
 }
 
 +(void) iapppayBuy:(NSDictionary*)dict{
-//    NSString *orderId = [dict objectForKey:@"orderId"];
-//    NSString *price = [dict objectForKey:@"price"];
-//    NSString *productId = [dict objectForKey:@"productId"];
-//    NSString *userId = [dict objectForKey:@"userId"];
-//    IapppayOrderUtils *orderInfo = [[IapppayOrderUtils alloc] init];
-//    orderInfo.appId         = mOrderUtilsAppId;
-//    orderInfo.cpPrivateKey  = mOrderUtilsCpPrivateKey;
-//    orderInfo.cpOrderId     = orderId;
-//    orderInfo.waresId       = productId;
-//    orderInfo.price         = price;
-//    orderInfo.appUserId     = userId;
-//    
-//    NSString *trandInfo = [orderInfo getTrandData];
-//    [[IapppayKit sharedInstance] makePayForTrandInfo:trandInfo payDelegate:self];
+    NSString *orderId = [dict objectForKey:@"orderId"];
+    NSString *price = [dict objectForKey:@"price"];
+    NSString *productId = [dict objectForKey:@"productId"];
+    NSString *userId = [dict objectForKey:@"userId"];
+    IapppayOrderUtils *orderInfo = [[IapppayOrderUtils alloc] init];
+    orderInfo.appId         = mOrderUtilsAppId;
+    orderInfo.cpPrivateKey  = mOrderUtilsCpPrivateKey;
+    orderInfo.cpOrderId     = orderId;
+    orderInfo.waresId       = productId;
+    orderInfo.price         = price;
+    orderInfo.appUserId     = userId;
+    
+    NSString *trandInfo = [orderInfo getTrandData];
+    [[IapppayKit sharedInstance] makePayForTrandInfo:trandInfo payDelegate:self];
 }
 
 +(void) popWeb:(NSDictionary*)dict{
@@ -693,43 +693,43 @@ bool once = true;
  * 此处方法是支付结果处理
  **/
 #pragma mark - IapppayKitPayRetDelegate
-//- (void)iapppayKitRetPayStatusCode:(IapppayKitPayRetCodeType)statusCode
-//                        resultInfo:(NSDictionary *)resultInfo
-//{
-//    NSLog(@"statusCode : %d, resultInfo : %@", (int)statusCode, resultInfo);
-//    
-//    if (statusCode == IAPPPAY_PAYRETCODE_SUCCESS)
-//    {
-//        BOOL isSuccess = [IapppayOrderUtils checkPayResult:resultInfo[@"Signature"]
-//                                                withAppKey:self.mCheckResultKey];
-//        if (isSuccess) {
-//            //支付成功，验签成功
-////            [MBProgressHUD showTextHUDAddedTo:self.view Msg:@"支付成功，验签成功" animated:YES];
-//        } else {
-//            //支付成功，验签失败
-////            [MBProgressHUD showTextHUDAddedTo:self.view Msg:@"支付成功，验签失败" animated:YES];
-//        }
-//    }
-//    else if (statusCode == IAPPPAY_PAYRETCODE_FAILED)
-//    {
-//        //支付失败
-//        NSString *message = @"支付失败";
-//        if (resultInfo != nil) {
-//            message = [NSString stringWithFormat:@"%@:code:%@\n（%@）",message,resultInfo[@"RetCode"],resultInfo[@"ErrorMsg"]];
-//        }
-//        
-////        [MBProgressHUD showTextHUDAddedTo:self.view Msg:message animated:YES];
-//    }
-//    else
-//    {
-//        //支付取消
-//        NSString *message = @"支付取消";
-//        if (resultInfo != nil) {
-//            message = [NSString stringWithFormat:@"%@:code:%@\n（%@）",message,resultInfo[@"RetCode"],resultInfo[@"ErrorMsg"]];
-//        }
-////        [MBProgressHUD showTextHUDAddedTo:self.view Msg:message animated:YES];
-//    }
-//}
+- (void)iapppayKitRetPayStatusCode:(IapppayKitPayRetCodeType)statusCode
+                        resultInfo:(NSDictionary *)resultInfo
+{
+    NSLog(@"statusCode : %d, resultInfo : %@", (int)statusCode, resultInfo);
+    
+    if (statusCode == IAPPPAY_PAYRETCODE_SUCCESS)
+    {
+        BOOL isSuccess = [IapppayOrderUtils checkPayResult:resultInfo[@"Signature"]
+                                                withAppKey:self.mCheckResultKey];
+        if (isSuccess) {
+            //支付成功，验签成功
+//            [MBProgressHUD showTextHUDAddedTo:self.view Msg:@"支付成功，验签成功" animated:YES];
+        } else {
+            //支付成功，验签失败
+//            [MBProgressHUD showTextHUDAddedTo:self.view Msg:@"支付成功，验签失败" animated:YES];
+        }
+    }
+    else if (statusCode == IAPPPAY_PAYRETCODE_FAILED)
+    {
+        //支付失败
+        NSString *message = @"支付失败";
+        if (resultInfo != nil) {
+            message = [NSString stringWithFormat:@"%@:code:%@\n（%@）",message,resultInfo[@"RetCode"],resultInfo[@"ErrorMsg"]];
+        }
+        
+//        [MBProgressHUD showTextHUDAddedTo:self.view Msg:message animated:YES];
+    }
+    else
+    {
+        //支付取消
+        NSString *message = @"支付取消";
+        if (resultInfo != nil) {
+            message = [NSString stringWithFormat:@"%@:code:%@\n（%@）",message,resultInfo[@"RetCode"],resultInfo[@"ErrorMsg"]];
+        }
+//        [MBProgressHUD showTextHUDAddedTo:self.view Msg:message animated:YES];
+    }
+}
 
 #pragma mark -
 #pragma mark Memory management
