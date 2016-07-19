@@ -67,7 +67,7 @@ if [ $1 = 0 ]
 	copyAssert unPackagedRes/music assets
 	copyAssert unPackagedRes/res assets
 	
-	echo "scriptsVersion = 999999" >$APP_ANDROID_ROOT/assets/config.lua
+	echo "scriptsVersion = 999999 appVersion = $4" >$APP_ANDROID_ROOT/assets/config.lua
 	 echo "module('release', package.seeall) release = false" > $APP_ANDROID_ROOT/assets/release.lua
 fi
 if [ $1 = 1 ]
@@ -80,7 +80,7 @@ if [ $1 = 1 ]
 	encodeImageAndCopy "res"  "encodeTmp/res"
 #cd proj.android
 	copyAssert encodeTmp/res assets
-	echo "scriptsVersion = $2" >$APP_ANDROID_ROOT/assets/config.lua
+	echo "scriptsVersion = $2 appVersion = $4" >$APP_ANDROID_ROOT/assets/config.lua
 	echo "module('release', package.seeall) release = true" > $APP_ANDROID_ROOT/assets/release.lua
 fi
 if [ $1 = 2 ]
@@ -96,7 +96,7 @@ if [ $1 = 2 ]
 	encodeImageAndCopy "unPackagedRes/res"  "encodeTmp/res"
 #cd proj.android
 	copyAssert encodeTmp/res assets
-	echo "scriptsVersion = $2" >$APP_ANDROID_ROOT/assets/config.lua
+	echo "scriptsVersion = $2 appVersion = $4" >$APP_ANDROID_ROOT/assets/config.lua
 	echo "module('release', package.seeall) release = true ; isSelfServer =true;" > $APP_ANDROID_ROOT/assets/release.lua
 fi
 
@@ -113,6 +113,6 @@ if [ $1 = 3 ]
 	encodeImageAndCopy "unPackagedRes/res"  "encodeTmp/res"
 #cd proj.android
 	copyAssert encodeTmp/res assets
-	echo "scriptsVersion = $2" >$APP_ANDROID_ROOT/assets/config.lua
+	echo "scriptsVersion = $2 appVersion = $4" >$APP_ANDROID_ROOT/assets/config.lua
 	echo "module('release', package.seeall) release = true ;" > $APP_ANDROID_ROOT/assets/release.lua
 fi
